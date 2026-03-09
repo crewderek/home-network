@@ -6,14 +6,14 @@ services:
     hostname: adguard-dns
     environment:
       # Find your PUID and PGID by running "id $user" in your terminal
-      - PUID=1000
-      - PGID=1000
+      - PUID=0
+      - PGID=0
       - TZ=America/Denver # Replace with your timezone
     networks:
       - dns_net
     volumes:
-      - adguard_config:/opt/adguardhome/conf
-      - adguard_work:/opt/adguardhome/work
+      - /mnt/docker/adguard/config:/opt/adguardhome/conf
+      - /mnt/docker/adguard/work:/opt/adguardhome/work
     ports:
       # Host mode ensures you see client IPs in the dashboard
       - target: 53
@@ -45,17 +45,3 @@ networks:
   dns_net:
     driver: overlay
     attachable: true
-
-volumes:
-  adguard_config:
-    driver: local
-    driver_opts:
-      type: nfs
-      o: "addr=${NFS_ADDRESS},nfsvers=4,nolock,soft,rw" # Replace with your NFS Server IP
-      device: ":${CONFIG_NFS_DIRECTORY}"
-  adguard_work:
-    driver: local
-    driver_opts:
-      type: nfs
-      o: "addr=${NFS_ADDRESS},nfsvers=4,nolock,soft,rw" # Replace with your NFS Server IP
-      device: ":${WORK_NFS_DIRECTORY}"
