@@ -6,18 +6,18 @@ services:
     hostname: adguard-dns
     networks:
       - dns_net
-    volumes:
-          # Long syntax to use a subpath inside an external volume
-          - type: volume
-            source: nfs_volume
-            target: /opt/adguardhome/conf
-            volume:
-              subpath: adguard/config
-          - type: volume
-            source: nfs_volume
-            target: /opt/adguardhome/work
-            volume:
-              subpath: adguard/work
+#    volumes:
+#          # Long syntax to use a subpath inside an external volume
+#          - type: volume
+#            source: nfs_volume
+#            target: /opt/adguardhome/conf
+#            volume:
+#              subpath: adguard/config
+#          - type: volume
+#            source: nfs_volume
+#            target: /opt/adguardhome/work
+#            volume:
+#              subpath: adguard/work
     ports:
       # Host mode ensures you see client IPs in the dashboard
       - target: 53
@@ -50,6 +50,6 @@ networks:
     driver: overlay
     attachable: true
 
-volumes:
-  nfs_volume:
-    external: true
+#volumes:
+#  nfs_volume:
+#    external: true
