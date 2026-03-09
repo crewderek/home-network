@@ -4,6 +4,11 @@ services:
   adguard:
     image: adguard/adguardhome:v0.107.71
     hostname: adguard-dns
+    environment:
+      # Find your PUID and PGID by running "id $user" in your terminal
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Denver # Replace with your timezone
     networks:
       - dns_net
     volumes:
