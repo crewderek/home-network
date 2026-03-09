@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  agent:
+    image: portainer/agent:2.39.0-alpine
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+    networks:
+      - agent_network
+    deploy:
+      mode: global
+      placement:
+        constraints: [node.platform.os == linux]
+
+  portainer:
+    image: portainer/portainer-ce:2.39.0-alpine
+    command: -H tcp://tasks.agent:9001 --tlsskipverify
+    ports:
+      - "9443:9443"
+    volumes:
+      - portainer_data:/data
+    networks:
+      - agent_network
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          # This ensures the UI only runs on a node with the Manager role
+          - node.role == manager
+
+networks:
+  agent_network:
+    driver: overlay
+    attachable: true
+
+volumes:
+  portainer_data:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=192.168.1.5,nfsvers=4,nolock,soft,rw" # Replace with your NFS Server IP
+      device: ":/mnt/HomeStorage-Exos/docker/portainer/data"
