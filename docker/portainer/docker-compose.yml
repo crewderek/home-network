@@ -6,7 +6,6 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/lib/docker/volumes:/var/lib/docker/volumes
-      - nfs_volume:/mnt/nfs_volumes
     networks:
       - agent_network
     deploy:
@@ -43,9 +42,9 @@ volumes:
       type: nfs
       o: "addr=${NFS_ADDRESS},nfsvers=4,nolock,soft,rw" # Replace with your NFS Server IP
       device: ":${PORTAINER_NFS_DIRECTORY}"
-  nfs_volume:
-    driver: local
-    driver_opts:
-      type: nfs
-      o: "addr=${NFS_ADDRESS},nfsvers=4,nolock,soft,rw" # Replace with your NFS Server IP
-      device: ":${BASE_NFS_DIRECTORY}"
+#  nfs_volume:
+#    driver: local
+#    driver_opts:
+#      type: nfs
+#      o: "addr=${NFS_ADDRESS},nfsvers=4,nolock,soft,rw" # Replace with your NFS Server IP
+#      device: ":${BASE_NFS_DIRECTORY}"
