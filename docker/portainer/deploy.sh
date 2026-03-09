@@ -1,0 +1,1 @@
+docker compose config | docker stack deploy -c docker-compose.yml portainer

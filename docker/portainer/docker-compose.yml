@@ -40,5 +40,5 @@ volumes:
     driver: local
     driver_opts:
       type: nfs
-      o: "addr=192.168.1.5,nfsvers=4,nolock,soft,rw" # Replace with your NFS Server IP
-      device: ":/mnt/HomeStorage-Exos/docker/portainer/data"
+      o: "addr=${NFS_ADDRESS},nfsvers=4,nolock,soft,rw" # Replace with your NFS Server IP
+      device: ":${NFS_DIRECTORY}"
