@@ -7,6 +7,7 @@ services:
       - proxy_public
       - proxy_private
       - maria_db_net
+      - dns_network
     ports:
 #      - target: 80
 #        published: 80
@@ -48,6 +49,9 @@ networks:
   maria_db_net:
     external: true
     name: database_maria_db_net
+  dns_network:
+    external: true
+    name: dns_dns_net
 
 volumes:
   nginx_nfs:
