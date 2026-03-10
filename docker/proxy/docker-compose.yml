@@ -6,7 +6,7 @@ services:
     networks:
       - proxy_public
       - proxy_private
-      - maria_db_net
+#      - maria_db_net
     ports:
       - target: 80
         published: 18000
@@ -24,11 +24,11 @@ services:
       - nginx_nfs:/data:subpath=data
       - nginx_nfs:/etc/letsencrypt:subpath=letsencrypt
     environment:
-      DB_MYSQL_HOST: "maria-db"
-      DB_MYSQL_PORT: 3306
-      DB_MYSQL_USER: "node_proxy_manager"
-      DB_MYSQL_PASSWORD: /run/secrets/maria_db_user_node_proxy_manager_password
-      DB_MYSQL_NAME: "node_proxy_manager"
+#      DB_MYSQL_HOST: "maria-db"
+#      DB_MYSQL_PORT: 3306
+#      DB_MYSQL_USER: "node_proxy_manager"
+#      DB_MYSQL_PASSWORD: /run/secrets/maria_db_user_node_proxy_manager_password
+#      DB_MYSQL_NAME: "node_proxy_manager"
       PUID: 1000
       PGID: 1000
       TZ: America/Denver
@@ -45,9 +45,9 @@ networks:
     driver: overlay
     attachable: true
     name: proxy_private
-  maria_db_net:
-    external: true
-    name: database_maria_db_net
+#  maria_db_net:
+#    external: true
+#    name: database_maria_db_net
 
 volumes:
   nginx_nfs:
