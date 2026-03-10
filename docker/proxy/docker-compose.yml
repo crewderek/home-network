@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  app:
+  node_proxy_manager:
     image: 'jc21/nginx-proxy-manager:latest'
     networks:
       - proxy_public
@@ -13,7 +13,7 @@ services:
         protocol: tcp
         mode: ingress
       - target: 443
-        published: 443
+        published: 14443
         protocol: tcp
         mode: ingress
       - target: 81
