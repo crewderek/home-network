@@ -8,8 +8,6 @@ services:
       - /var/lib/docker/volumes:/var/lib/docker/volumes
     networks:
       - agent_network
-      - dns_network
-      - proxy_private
     deploy:
       mode: global
       placement:
@@ -24,6 +22,8 @@ services:
       - portainer_data:/data
     networks:
       - agent_network
+      - dns_network
+      - proxy_private
     deploy:
       mode: replicated
       replicas: 1
@@ -38,7 +38,7 @@ networks:
     attachable: true
   dns_network:
     external: true
-    name: dns_dns_network
+    name: dns_dns_net
   proxy_private:
     external: true
     name: proxy_private
@@ -50,9 +50,3 @@ volumes:
       type: nfs
       o: "addr=${NFS_ADDRESS},nfsvers=4,nolock,soft,rw" # Replace with your NFS Server IP
       device: ":${PORTAINER_NFS_DIRECTORY}"
-#  nfs_volume:
-#    driver: local
-#    driver_opts:
-#      type: nfs
-#      o: "addr=${NFS_ADDRESS},nfsvers=4,nolock,soft,rw" # Replace with your NFS Server IP
-#      device: ":${BASE_NFS_DIRECTORY}"
