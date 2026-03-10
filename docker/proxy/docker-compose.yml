@@ -21,7 +21,7 @@ services:
         protocol: tcp
         mode: ingress
     volumes:
-      - nginx_data:/data
+#      - nginx_data:/data
       - /mnt/docker/node_proxy_manager/letsencrypt:/etc/letsencrypt
     environment:
       DB_MYSQL_HOST: "maria-db"
@@ -49,10 +49,10 @@ networks:
     external: true
     name: database_maria_db_net
 
-volumes:
-  nginx_data:
-    driver: local
-    driver_opts:
-      type: nfs
-      o: "addr=${NFS_ADDRESS},nfsvers=4,nolock,soft,rw" # Replace with your NFS Server IP
-      device: ":${PROXY_DATA_NFS_DIRECTORY}"
+#volumes:
+#  nginx_data:
+#    driver: local
+#    driver_opts:
+#      type: nfs
+#      o: "addr=${NFS_ADDRESS},nfsvers=4,nolock,soft,rw" # Replace with your NFS Server IP
+#      device: ":${PROXY_DATA_NFS_DIRECTORY}"
