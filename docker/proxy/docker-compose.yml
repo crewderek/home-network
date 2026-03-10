@@ -30,7 +30,7 @@ services:
       DB_MYSQL_PASSWORD: /run/secrets/maria_db_user_node_proxy_manager_password
       DB_MYSQL_NAME: "node_proxy_manager"
       PUID: 1000
-      GUID: 1000
+      PGID: 1000
       TZ: America/Denver
     deploy:
       placement:
