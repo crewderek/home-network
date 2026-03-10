@@ -21,7 +21,7 @@ services:
         protocol: tcp
         mode: ingress
     volumes:
-#      - nginx_data:/data
+      - /mnt/docker/node_proxy_manager/data:/data
       - /mnt/docker/node_proxy_manager/letsencrypt:/etc/letsencrypt
     environment:
       DB_MYSQL_HOST: "maria-db"
