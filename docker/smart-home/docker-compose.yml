@@ -1,0 +1,77 @@
+services:
+  homeassistant:
+    container_name: home-assistant
+    image: "ghcr.io/home-assistant/home-assistant:2026.3"
+    volumes:
+      - /mnt/docker/home-assistant/config:/config
+      - /etc/localtime:/etc/localtime:ro
+    restart: unless-stopped
+    privileged: true
+    networks:
+      - host_net
+    deploy:
+      mode: replicated
+      replicas: 1
+#      placement:
+#        constraints:
+#          - node.hostname == your-smart-home-node
+
+#  # Optional but highly recommended: MQTT Broker
+#  mosquitto:
+#    image: eclipse-mosquitto:2.0
+#    container_name: mosquitto
+#    restart: unless-stopped
+#    ports:
+#      - "1883:1883"
+#      - "9001:9001"
+#    volumes:
+#      - /PATH_TO_YOUR_CONFIG/mosquitto/config:/mosquitto/config
+#      - /PATH_TO_YOUR_CONFIG/mosquitto/data:/mosquitto/data
+#      - /PATH_TO_YOUR_CONFIG/mosquitto/log:/mosquitto/log
+#    environment:
+#      - TZ=America/New_York
+#
+#  zigbee2mqtt:
+#    container_name: zigbee2mqtt
+#    image: ghcr.io/koenkk/zigbee2mqtt
+#    restart: unless-stopped
+#    volumes:
+#      - /PATH_TO_YOUR_CONFIG/zigbee2mqtt:/app/data
+#      - /run/udev:/run/udev:ro
+#    ports:
+#      - "8080:8080" # Frontend UI
+#    devices:
+#      # Replace with your actual Zigbee stick path
+#      - /dev/serial/by-id/usb-Sonoff_Zigbee_3.0_USB_Dongle_Plus-if00-port0:/dev/ttyACM0
+#    environment:
+#      - TZ=America/New_York
+#
+#  zwave-js-ui:
+#    container_name: zwave-js-ui
+#    image: zwavejs/zwave-js-ui:latest
+#    restart: unless-stopped
+#    tty: true
+#    stop_signal: SIGINT
+#    environment:
+#      - SESSION_SECRET=replace_with_a_random_string
+#      - TZ=America/New_York
+#    devices:
+#      # Replace with your actual Z-Wave stick path
+#      - /dev/serial/by-id/usb-Zooz_800_Z-Wave_Stick-if00-port0:/dev/zwave
+#    volumes:
+#      - /PATH_TO_YOUR_CONFIG/zwave:/usr/src/app/store
+#    ports:
+#      - "8091:8091" # Frontend UI
+#      - "3000:3000" # Z-Wave JS Websocket (Preferred for HA)
+
+networks:
+  smart-home-network:
+    driver: overlay
+    attachable: true
+    name: smart-home-network
+  dns_network:
+    external: true
+    name: dns_dns_net
+  proxy_private:
+    external: true
+    name: proxy_private
