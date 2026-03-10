@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  node_proxy_manager:
+  nginx_proxy_manager:
     image: 'jc21/nginx-proxy-manager:2.14.0'
     networks:
       - proxy_public
@@ -22,7 +22,7 @@ services:
         mode: ingress
     volumes:
       - nginx_data:/data
-#      - /mnt/docker/node_proxy_manager/letsencrypt:/etc/letsencrypt
+      - /mnt/docker/node_proxy_manager/letsencrypt:/etc/letsencrypt
     environment:
       DB_MYSQL_HOST: "maria-db"
       DB_MYSQL_PORT: 3306
