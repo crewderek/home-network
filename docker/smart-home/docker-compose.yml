@@ -6,6 +6,8 @@ services:
       - /etc/localtime:/etc/localtime:ro
     networks:
       - smart-home-network
+      - dns_network
+      - proxy_private
     deploy:
       mode: replicated
       replicas: 1
