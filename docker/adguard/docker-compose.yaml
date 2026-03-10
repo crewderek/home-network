@@ -1,9 +1,9 @@
 version: '3.8'
 
 services:
-  adguard:
+  adguard-primary:
     image: adguard/adguardhome:v0.107.71
-    hostname: adguard-dns
+    hostname: adguard-dns-primary
     environment:
       # Find your PUID and PGID by running "id $user" in your terminal
       - PUID=0
@@ -25,19 +25,59 @@ services:
         protocol: tcp
         mode: host
       # Setup/Web UI
-      - target: 3000
-        published: 3000
-        protocol: tcp
-      - target: 80
-        published: 80
-        protocol: tcp
+#      - target: 3000
+#        published: 3000
+#        protocol: tcp
+#      - target: 80
+#        published: 80
+#        protocol: tcp
     deploy:
       mode: replicated
       replicas: 1
       placement:
         constraints:
           # This ensures it ONLY runs on the labeled node
-          - node.labels.type == DNS
+          - node.labels.static_ip == 192.168.4.47
+      restart_policy:
+        condition: on-failure
+
+  adguard-secondary:
+    image: adguard/adguardhome:v0.107.71
+    hostname: adguard-dns-secondary
+    environment:
+      # Find your PUID and PGID by running "id $user" in your terminal
+      - PUID=0
+      - PGID=0
+      - TZ=America/Denver # Replace with your timezone
+    networks:
+      - dns_net
+    volumes:
+      - /mnt/docker/adguard/config:/opt/adguardhome/conf
+      - /mnt/docker/adguard/work-secondary:/opt/adguardhome/work
+    ports:
+      # Host mode ensures you see client IPs in the dashboard
+      - target: 53
+        published: 53
+        protocol: udp
+        mode: host
+      - target: 53
+        published: 53
+        protocol: tcp
+        mode: host
+      # Setup/Web UI
+#      - target: 3000
+#        published: 3000
+#        protocol: tcp
+#      - target: 80
+#        published: 80
+#        protocol: tcp
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          # This ensures it ONLY runs on the labeled node
+          - node.labels.static_ip == 192.168.4.22
       restart_policy:
         condition: on-failure
 
