@@ -33,7 +33,7 @@ services:
       - LOG_LEVEL=debug
       - TZ=America/Denver
     volumes:
-      - jellyseerr_config:/app/config
+      - /mnt/docker/jellyseer/config:/app/config
     deploy:
       replicas: 1
 
@@ -49,7 +49,5 @@ networks:
     name: dns_dns_net
 
 volumes:
-  jellyfin_config:
-    driver: local
   jellyfin_cache:
     driver: local
