@@ -68,7 +68,7 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.label.zwave == true
+          - node.labels.zwave == true
 
 networks:
   smart-home-network:
