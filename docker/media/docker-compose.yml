@@ -38,6 +38,21 @@ services:
     deploy:
       replicas: 1
 
+  test-jellyseer:
+    image:  fallenbagel/jellyseerr:2.7.3
+    networks:
+      - media_network
+      - proxy_public
+      - dns_network
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=America/Denver
+#    user: 1000:1000
+#    volumes:
+#      - jellyseer_nfs:/app/config:subpath=config
+    deploy:
+      replicas: 1
+
 networks:
   media_network:
     driver: overlay
