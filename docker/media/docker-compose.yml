@@ -34,7 +34,7 @@ services:
       - TZ=America/Denver
     user: 1000:1000
     volumes:
-      - /mnt/docker/jellyseer/config:/app/config
+      - jellyseer_nfs:/app/config:subpath=config
     deploy:
       replicas: 1
 
@@ -52,9 +52,9 @@ networks:
 volumes:
   jellyfin_cache:
     driver: local
-#  jellyseer_nfs:
-#    driver: local
-#    driver_opts:
-#      type: nfs
-#      o: "addr=${NFS_ADDRESS},nfsvers=3,nolock,soft,rw"
-#      device: ":${SEERR_CONF_NFS_DIRECTORY}"
+  jellyseer_nfs:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${NFS_ADDRESS},nfsvers=3,nolock,soft,rw"
+      device: ":${SEERR_CONF_NFS_DIRECTORY}"
