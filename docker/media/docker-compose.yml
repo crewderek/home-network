@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:10
+#    ports:
+#      - "8096:8096"
+    networks:
+      - media_network
+      - proxy_public
+      - dns_network
+    environment:
+      - JELLYFIN_PublishedServerUrl=${DOMAIN}
+    volumes:
+      - /mnt/docker/jellyfin/config:/config
+#      - jellyfin_cache:/cache
+      - /mnt/video/data/movie:/media/movie:ro
+      - /mnt/video/data/shows:/media/shows:ro
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.type == media # Or specify a node with GPU for transcoding
+
+networks:
+  media_network:
+    driver: overlay
+    attachable: true
+    name: media-network
+  proxy_public:
+    external: true
+  dns_network:
+    external: true
+    name: dns_dns_net
+
+volumes:
+  jellyfin_config:
+    driver: local
+  jellyfin_cache:
+    driver: local
