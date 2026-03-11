@@ -22,6 +22,21 @@ services:
         constraints:
           - node.labels.type == media # Or specify a node with GPU for transcoding
 
+
+  jellyseerr:
+    image: fallenbagel/jellyseerr:2.7.3
+    networks:
+      - media_network
+      - proxy_public
+      - dns_network
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=America/Denver
+    volumes:
+      - jellyseerr_config:/app/config
+    deploy:
+      replicas: 1
+
 networks:
   media_network:
     driver: overlay
