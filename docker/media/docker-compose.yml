@@ -24,7 +24,7 @@ services:
 
 
   jellyseer:
-    image: fallenbagel/jellyseerr:2.7.3
+    image: seerr/seerr:v3.1.0
     networks:
       - media_network
       - proxy_public
