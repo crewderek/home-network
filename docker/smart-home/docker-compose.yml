@@ -47,23 +47,28 @@ services:
 #    environment:
 #      - TZ=America/New_York
 #
-#  zwave-js-ui:
-#    container_name: zwave-js-ui
-#    image: zwavejs/zwave-js-ui:latest
-#    restart: unless-stopped
-#    tty: true
-#    stop_signal: SIGINT
-#    environment:
-#      - SESSION_SECRET=replace_with_a_random_string
-#      - TZ=America/New_York
-#    devices:
-#      # Replace with your actual Z-Wave stick path
-#      - /dev/serial/by-id/usb-Zooz_800_Z-Wave_Stick-if00-port0:/dev/zwave
-#    volumes:
-#      - /PATH_TO_YOUR_CONFIG/zwave:/usr/src/app/store
+  zwave-js-ui:
+    image: zwavejs/zwave-js-ui:11.14
+    environment:
+      - TZ=America/Denver
+    devices:
+      # Replace with your actual Z-Wave stick path
+      - /dev/serial/by-id/${ZWAVE_DEVICE_ID}:/dev/zwave
+    volumes:
+      - /mnt/docker/zwave:/usr/src/app/store
+    networks:
+      - proxy_private
+      - dns_network
+      - smart-home-network
 #    ports:
 #      - "8091:8091" # Frontend UI
 #      - "3000:3000" # Z-Wave JS Websocket (Preferred for HA)
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.label.zwave == true
 
 networks:
   smart-home-network:
