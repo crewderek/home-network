@@ -23,7 +23,7 @@ services:
           - node.labels.type == media # Or specify a node with GPU for transcoding
 
 
-  jellyseerr:
+  jellyseer:
     image: fallenbagel/jellyseerr:2.7.3
     networks:
       - media_network
