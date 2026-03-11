@@ -24,7 +24,7 @@ services:
 
 
   jellyseer:
-    image: seerr/seerr:v3.1.0
+    image:  ghcr.io/seerr-team/seerr:v3.1.0
     networks:
       - media_network
       - proxy_public
@@ -32,6 +32,7 @@ services:
     environment:
       - LOG_LEVEL=debug
       - TZ=America/Denver
+    user: 1000:1000
     volumes:
       - /mnt/docker/jellyseer/config:/app/config
     deploy:
@@ -51,3 +52,9 @@ networks:
 volumes:
   jellyfin_cache:
     driver: local
+#  jellyseer_nfs:
+#    driver: local
+#    driver_opts:
+#      type: nfs
+#      o: "addr=${NFS_ADDRESS},nfsvers=3,nolock,soft,rw"
+#      device: ":${SEERR_CONF_NFS_DIRECTORY}"
