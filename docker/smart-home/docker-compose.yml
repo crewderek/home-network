@@ -18,19 +18,19 @@ services:
 #          - node.hostname == your-smart-home-node
 
 #  # Optional but highly recommended: MQTT Broker
-#  mosquitto:
-#    image: eclipse-mosquitto:2.0
-#    container_name: mosquitto
-#    restart: unless-stopped
-#    ports:
-#      - "1883:1883"
-#      - "9001:9001"
-#    volumes:
-#      - /PATH_TO_YOUR_CONFIG/mosquitto/config:/mosquitto/config
-#      - /PATH_TO_YOUR_CONFIG/mosquitto/data:/mosquitto/data
-#      - /PATH_TO_YOUR_CONFIG/mosquitto/log:/mosquitto/log
-#    environment:
-#      - TZ=America/New_York
+  mosquitto:
+    image: eclipse-mosquitto:2.0
+    container_name: mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - /mnt/docker/mosquitto/config:/mosquitto/config
+      - /mnt/docker/mosquitto/data:/mosquitto/data
+      - /mnt/docker/mosquitto/log:/mosquitto/log
+    environment:
+      - TZ=America/Denver
 #
 #  zigbee2mqtt:
 #    container_name: zigbee2mqtt
