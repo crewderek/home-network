@@ -22,13 +22,15 @@ services:
     image: eclipse-mosquitto:2.0
     container_name: mosquitto
     restart: unless-stopped
-    ports:
-      - "1883:1883"
-      - "9001:9001"
+    networks:
+      - smart-home-network
+#    ports:
+#      - "1883:1883"
+#      - "9001:9001"
     volumes:
-      - /mnt/docker/mosquitto/config:/mosquitto/config
-      - /mnt/docker/mosquitto/data:/mosquitto/data
-      - /mnt/docker/mosquitto/log:/mosquitto/log
+      - mosquitto_nfs:/mosquitto/config:subpath=config
+      - mosquitto_nfs:/mosquitto/data:subpath=data
+      - mosquitto_nfs:/mosquitto/log:subpath=log
     environment:
       - TZ=America/Denver
 #
@@ -79,3 +81,11 @@ networks:
   proxy_private:
     external: true
     name: proxy_private
+
+volumes:
+  mosquitto_nfs:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${NFS_ADDRESS},nfsvers=3,nolock,soft,rw"
+      device: ":${MOSQUITTO_NFS_DIRECTORY}"
