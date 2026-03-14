@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  prometheus:
+    image: prom/prometheus:v3.10.0
+#    ports:
+#      - "9090:9090"
+    networks:
+      - monitor-network
+    user: 0:0
+    volumes:
+      - /mnt/docker/prometheus/config/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - /mnt/docker/prometheus/data:/prometheus
+    deploy:
+      replicas: 1
+#      placement:
+#        constraints:
+#          - node.role == manager
+
+  grafana:
+    image: grafana/grafana:12.3
+    networks:
+      - monitor-network
+      - proxy_private
+      - dns_network
+#    ports:
+#      - "3000:3000"
+    volumes:
+      - /mnt/docker/grafana/data:/var/lib/grafana
+    deploy:
+      replicas: 1
+#      placement:
+#        constraints:
+#          - node.role == manager
+
+  node-exporter:
+    image: prom/node-exporter:v1.10.2
+    networks:
+      - monitor-network
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+    deploy:
+      mode: global  # This runs it on EVERY node automatically
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.55.1
+    networks:
+      - monitor-network
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    deploy:
+      mode: global  # This collects container stats from EVERY node
+
+networks:
+  monitor-network:
+    name: monitor_network
+    attachable: true
+  dns_network:
+    external: true
+    name: dns_dns_net
+  proxy_private:
+    external: true
+    name: proxy_private
