@@ -41,10 +41,15 @@ services:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
       - /:/rootfs:ro
+      - /etc/hostname:/etc/nodename:ro
     command:
       - '--path.procfs=/host/proc'
       - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host)($$|/)'
+      - '--collector.textfile.directory=/etc/nodename'
+    environment:
+      - NODE_ID={{.Node.ID}}
+    hostname: "{{.Node.Hostname}}"
     deploy:
       mode: global  # This runs it on EVERY node automatically
 
