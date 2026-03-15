@@ -28,9 +28,6 @@ services:
 #    driver: local
 
 networks:
-    dns_network:
-      external: true
-      name: dns_dns_net
     proxy_private:
       external: true
       name: proxy_private
