@@ -3,6 +3,8 @@ version: '3.8'
 services:
   n8n:
     image: n8nio/n8n:2.11.4
+    networks:
+      - proxy_private
     environment:
       - N8N_HOST=automate.derek-crew.com
       - NODE_ENV=production
@@ -24,3 +26,11 @@ services:
 #volumes:
 #  n8n_data:
 #    driver: local
+
+networks:
+    dns_network:
+      external: true
+      name: dns_dns_net
+    proxy_private:
+      external: true
+      name: proxy_private
