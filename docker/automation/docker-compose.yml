@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  n8n:
+    image: n8nio/n8n:2.11.4
+    environment:
+      - N8N_HOST=automate.derek-crew.com
+      - NODE_ENV=production
+      - GENERIC_TIMEZONE=America/Denver
+#      - NODES_EXCLUDE=[]
+    volumes:
+      - /mnt/docker/n8n:/home/node/.local/share/n8n
+#    ports:
+#      - target: 5678
+#        published: 5678
+#        protocol: tcp
+#        mode: host
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+#volumes:
+#  n8n_data:
+#    driver: local
