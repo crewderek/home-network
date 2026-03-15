@@ -6,11 +6,11 @@ services:
     networks:
       - dns_network
       - proxy_private
-    ports:
-      - target: 80
-        published: 8080
-        protocol: tcp
-        mode: host
+#    ports:
+#      - target: 80
+#        published: 8080
+#        protocol: tcp
+#        mode: host
     deploy:
       mode: replicated
       replicas: 1
