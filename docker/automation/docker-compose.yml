@@ -23,6 +23,23 @@ services:
       restart_policy:
         condition: on-failure
 
+
+  uptime-kuma:
+    image: louislam/uptime-kuma:2.2.1
+    volumes:
+      - /mnt/docker/uptime-kuma/data:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock
+#    ports:
+#      - target: 3001
+#        published: 3001
+#        protocol: tcp
+#        mode: host
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
 #volumes:
 #  n8n_data:
 #    driver: local
