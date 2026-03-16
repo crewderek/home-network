@@ -28,7 +28,6 @@ services:
     image: louislam/uptime-kuma:2.2.1
     networks:
       - proxy_private
-      - dns_network
     volumes:
       - /mnt/docker/uptime-kuma/data:/app/data
       - /var/run/docker.sock:/var/run/docker.sock
@@ -51,6 +50,3 @@ networks:
     proxy_private:
       external: true
       name: proxy_private
-    dns_network:
-      external: true
-      name: dns_dns_net
