@@ -4,8 +4,8 @@ services:
   it-tools:
     image: corentinth/it-tools:2024.10.22-7ca5933
     networks:
-      - dns_network
       - proxy_private
+      - tools
 #    ports:
 #      - target: 80
 #        published: 8080
@@ -21,9 +21,10 @@ services:
         condition: on-failure
 
 networks:
-    dns_network:
-      external: true
-      name: dns_dns_net
     proxy_private:
       external: true
       name: proxy_private
+    tools:
+      name: tools-network
+      driver: overlay
+      attachable: true
