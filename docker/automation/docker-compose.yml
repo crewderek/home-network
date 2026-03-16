@@ -26,6 +26,8 @@ services:
 
   uptime-kuma:
     image: louislam/uptime-kuma:2.2.1
+    networks:
+      - proxy_private
     volumes:
       - /mnt/docker/uptime-kuma/data:/app/data
       - /var/run/docker.sock:/var/run/docker.sock
