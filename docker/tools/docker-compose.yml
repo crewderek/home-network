@@ -27,7 +27,7 @@ services:
       - PGID=1000
       - TZ=America/Denver
     volumes:
-      - /mnt/docker/heimdall/config:/config
+      - heimdall_nfs:/config:subpath=config
     networks:
       - proxy_private
 #    ports:
@@ -60,3 +60,11 @@ networks:
       name: tools-network
       driver: overlay
       attachable: true
+
+volumes:
+  heimdall_nfs:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${NFS_ADDRESS},nfsvers=3,nolock,soft,rw"
+      device: ":${HEIMDALL_CONFIG_NFS_DIRECTORY}"
