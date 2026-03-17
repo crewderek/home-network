@@ -20,6 +20,38 @@ services:
       restart_policy:
         condition: on-failure
 
+  heimdall:
+    image: lscr.io/linuxserver/heimdall:2.7.6
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Denver
+    volumes:
+      - /mnt/docker/heimdall/config:/config
+    networks:
+      - proxy_private
+#    ports:
+#      - "8080:80"
+#      - "8443:443"
+    deploy:
+      mode: replicated
+      replicas: 1
+#      placement:
+#        constraints:
+#          - node.role == manager # Often best to keep dashboards on managers
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
 networks:
     proxy_private:
       external: true
