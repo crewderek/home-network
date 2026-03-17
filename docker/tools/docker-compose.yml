@@ -20,6 +20,8 @@ services:
       restart_policy:
         condition: on-failure
 
+
+#################### Heimdall #######################################
   heimdall:
     image: lscr.io/linuxserver/heimdall:2.7.6
     environment:
@@ -51,6 +53,41 @@ services:
         reservations:
           cpus: '0.25'
           memory: 128M
+
+########################## Excalidraw ############################3
+  excalidraw:
+    image: excalidraw/excalidraw:latest
+#    ports:
+#      - "5000:80"
+    networks:
+      - tools
+    environment:
+      # This tells the browser where to find the collaboration server
+      # Replace 'excalidraw.yourdomain.com' with your actual IP or Domain
+      - VITE_APP_WS_SERVER_URL=http://tools_excalidraw-room
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+  # The Collaboration Backend (Socket server)
+  excalidraw-room:
+    image: excalidraw/excalidraw-room:latest
+    networks:
+      - tools
+#    ports:
+#      - "8081:8080"
+    deploy:
+      replicas: 1
+#      placement:
+#        constraints:
+#          - node.role == worker # Can run anywhere
+      restart_policy:
+        condition: on-failure
+
 
 networks:
     proxy_private:
