@@ -79,7 +79,7 @@ services:
     image: excalidraw/excalidraw-room:latest
     networks:
       - tools
-      - proxy_private
+#      - proxy_private
 #    ports:
 #      - "8081:8080"
     deploy:
