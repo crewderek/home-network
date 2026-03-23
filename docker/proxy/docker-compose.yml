@@ -21,6 +21,10 @@ services:
         published: 81
         protocol: tcp
         mode: ingress
+      - target: 1883
+        published: 1883
+        protocol: tcp
+        mode: ingress
     volumes:
       - nginx_nfs:/data:subpath=data
       - nginx_nfs:/etc/letsencrypt:subpath=letsencrypt
