@@ -42,6 +42,40 @@ services:
       restart_policy:
         condition: on-failure
 
+
+  ntfy:
+    image: binwiederhier/ntfy:v2.19.1
+    command: serve
+    environment:
+      - TZ=America/Denver # Change to your timezone, e.g., America/New_York
+    volumes:
+      - /mnt/docker/ntfy/cache:/var/cache/ntfy
+      - /mnt/docker/ntfy/lib:/var/lib/ntfy
+      # - ./server.yml:/etc/ntfy/server.yml:ro # Uncomment if using a custom config file
+    networks:
+      - proxy_private
+      - smart_home
+#    ports:
+#      - target: 80
+#        published: 8080 # Change this to your desired public port
+#        mode: ingress
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+#      placement:
+#        constraints:
+          # Pin to a specific node if you aren't using shared storage (NFS/Gluster)
+          # Get node name via 'docker node ls'
+#          - node.hostname == my-main-node
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+        reservations:
+          cpus: '0.10'
+          memory: 64M
+
 #volumes:
 #  n8n_data:
 #    driver: local
@@ -50,3 +84,6 @@ networks:
     proxy_private:
       external: true
       name: proxy_private
+    smart_home:
+      external:  true
+      name: smart-home-network
