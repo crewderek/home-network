@@ -47,7 +47,6 @@ services:
 
   wg-easy:
     image: ghcr.io/wg-easy/wg-easy
-    container_name: wg-easy
 #    ports:
 #      - "51820:51820/udp"
 #      - "51821:51821/tcp" # Web UI
@@ -59,8 +58,8 @@ services:
 #      - PASSWORD_HASH=$$2y$$10$$... # Use a hash for security
       - PORT=51821
       - INSECURE=true
-    volumes:
-      - wg-data:/etc/wireguard
+#    volumes:
+#      - wg-data:/etc/wireguard
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
