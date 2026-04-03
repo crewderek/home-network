@@ -8,6 +8,7 @@ services:
       - proxy_private
       - maria_db_net
       - dns_network
+      - vpn_network
     ports:
 #      - target: 80
 #        published: 80
