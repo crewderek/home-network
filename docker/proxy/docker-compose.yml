@@ -58,7 +58,8 @@ services:
     networks:
       - vpn_network
     environment:
-      - WG_HOST=vpn.derek-crew.com
+      - WG_HOST=${HOST}
+      - WG_DEFAULT_DNS=${DNS}
 #      - PASSWORD_HASH=$$2y$$10$$... # Use a hash for security
       - PORT=51821
       - INSECURE=true
