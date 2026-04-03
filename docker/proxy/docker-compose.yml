@@ -60,6 +60,7 @@ services:
     environment:
       - WG_HOST=${HOST}
       - WG_DEFAULT_DNS=${DNS}
+      - WG_MTU=1280
 #      - PASSWORD_HASH=$$2y$$10$$... # Use a hash for security
       - PORT=51821
       - INSECURE=true
