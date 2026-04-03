@@ -29,6 +29,10 @@ services:
         published: 5683
         protocol: udp
         mode: ingress
+      - target: 51820
+        published: 51820
+        protocol: udp
+        mode: ingress
     volumes:
       - nginx_nfs:/data:subpath=data
       - nginx_nfs:/etc/letsencrypt:subpath=letsencrypt
@@ -52,7 +56,6 @@ services:
 #      - "51821:51821/tcp" # Web UI
     networks:
       - vpn_network
-      - proxy_private
     environment:
       - WG_HOST=vpn.derek-crew.com
 #      - PASSWORD_HASH=$$2y$$10$$... # Use a hash for security
