@@ -51,6 +51,9 @@ services:
 #    ports:
 #      - "51820:51820/udp"
 #      - "51821:51821/tcp" # Web UI
+    networks:
+      - vpn_network
+      - proxy_private
     environment:
       - WG_HOST=vpn.derek-crew.com
 #      - PASSWORD_HASH=$$2y$$10$$... # Use a hash for security
