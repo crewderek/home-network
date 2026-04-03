@@ -58,8 +58,8 @@ services:
 #      - PASSWORD_HASH=$$2y$$10$$... # Use a hash for security
       - PORT=51821
       - INSECURE=true
-#    volumes:
-#      - wg-data:/etc/wireguard
+    volumes:
+      - /mnt/docker/wireguard/data:/etc/wireguard
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
