@@ -9,6 +9,7 @@ services:
       - maria_db_net
       - dns_network
       - vpn_network
+      - business_network
     ports:
 #      - target: 80
 #        published: 80
@@ -69,6 +70,9 @@ networks:
     driver: overlay
     attachable: true
     name: vpn_network
+  business_network:
+    external: true
+    name: business-network
 
 volumes:
   nginx_nfs:
