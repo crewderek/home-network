@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   jellyfin:
     image: jellyfin/jellyfin:10
@@ -25,10 +23,10 @@ services:
           - node.labels.type == media # Or specify a node with GPU for transcoding
       resources:
         reservations:
-          devices:
-            - driver: nvidia
-              count: 1 # or 'all'
-              capabilities: [ gpu ]
+          generic_resources:
+            - discrete_resource_spec:
+                kind: 'NVIDIA-GPU'
+                value: 1
 
 
   jellyseer:
