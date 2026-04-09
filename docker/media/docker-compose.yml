@@ -21,12 +21,12 @@ services:
       placement:
         constraints:
           - node.labels.type == media # Or specify a node with GPU for transcoding
-      resources:
-        reservations:
-          generic_resources:
-            - discrete_resource_spec:
-                kind: 'NVIDIA-GPU'
-                value: 1
+#      resources:
+#        reservations:
+#          generic_resources:
+#            - discrete_resource_spec:
+#                kind: 'NVIDIA-GPU'
+#                value: 1
 
 
   jellyseer:
