@@ -11,6 +11,8 @@ services:
       - dns_network
     environment:
       - JELLYFIN_PublishedServerUrl=${DOMAIN}
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
     volumes:
       - /mnt/docker/jellyfin/config:/config
 #      - jellyfin_cache:/cache
@@ -21,6 +23,12 @@ services:
       placement:
         constraints:
           - node.labels.type == media # Or specify a node with GPU for transcoding
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1 # or 'all'
+              capabilities: [ gpu ]
 
 
   jellyseer:
