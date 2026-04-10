@@ -17,16 +17,15 @@ services:
       - /mnt/video/data/movie:/media/movie:ro
       - /mnt/video/data/shows:/media/shows:ro
     deploy:
-      replicas: 1
       placement:
         constraints:
-          - node.labels.type == media # Or specify a node with GPU for transcoding
-#      resources:
-#        reservations:
-#          generic_resources:
-#            - discrete_resource_spec:
-#                kind: 'NVIDIA-GPU'
-#                value: 1
+          - node.labels.gpu == true
+      resources:
+        reservations:
+          generic_resources:
+            - discrete_resource_spec:
+                kind: 'NVIDIA-GPU'
+                value: 0
 
 
   jellyseer:
