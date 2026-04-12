@@ -11,7 +11,7 @@ services:
     environment:
       DB_HOSTNAME: ${DB_HOSTNAME}
       DB_USERNAME: ${DB_USERNAME}
-      DB_DATABASE_NAME: ${DB_DATABASE_NAME:-immich}
+      DB_DATABASE_NAME: ${DB_DATABASE_NAME}
       # If using secrets (recommended):
       DB_PASSWORD_FILE: /run/secrets/db_password
       # Redis
@@ -58,3 +58,8 @@ networks:
   immich-network:
     driver: overlay
     name: immich-network
+
+secrets:
+  db_password:
+    external: true
+    name: immich-database-password
