@@ -51,7 +51,6 @@ services:
       - immich-network
 
   database:
-    container_name: immich_postgres
     image: ghcr.io/tensorchord/vchord-postgres:pg16-latest
     networks:
       - immich-network
