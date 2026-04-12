@@ -9,11 +9,12 @@ services:
     secrets:
       - db_password
     environment:
-      DB_HOSTNAME: ${DB_HOSTNAME}
-      DB_USERNAME: ${DB_USERNAME}
-      DB_DATABASE_NAME: ${DB_DATABASE_NAME}
+      DB_URL: ${DB_URL}
+#      DB_HOSTNAME: ${DB_HOSTNAME}
+#      DB_USERNAME: ${DB_USERNAME}
+#      DB_DATABASE_NAME: ${DB_DATABASE_NAME}
       # If using secrets (recommended):
-      DB_PASSWORD_FILE: /run/secrets/db_password
+#      DB_PASSWORD_FILE: /run/secrets/db_password
       # Redis
       REDIS_HOSTNAME: redis
       # General
