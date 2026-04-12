@@ -73,6 +73,9 @@ networks:
   business_network:
     external: true
     name: business-network
+  immich_network:
+    external: true
+    name: immich-network
 
 volumes:
   nginx_nfs:

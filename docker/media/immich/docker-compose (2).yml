@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  immich-server:
+    image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION}
+    volumes:
+      - /mnt/photo:/data
+      - /etc/localtime:/etc/localtime:ro
+    secrets:
+      - db_password
+    environment:
+      DB_HOSTNAME: ${DB_HOSTNAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_DATABASE_NAME: ${DB_DATABASE_NAME:-immich}
+      # If using secrets (recommended):
+      DB_PASSWORD_FILE: /run/secrets/db_password
+      # Redis
+      REDIS_HOSTNAME: redis
+      # General
+      IMMICH_VERSION: ${IMMICH_VERSION}
+#    env_file:
+#      - immich.env
+#    ports:
+#      - 2283:2283
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    networks:
+      - immich-network
+
+  immich-machine-learning:
+    image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION}
+    volumes:
+      - model-cache:/cache
+#    env_file:
+#      - immich.env
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    networks:
+      - immich-network
+
+  redis:
+    image: docker.io/valkey/valkey:${REDIS_VERSION}
+    deploy:
+      restart_policy:
+        condition: on-failure
+    networks:
+      - immich-network
+
+
+volumes:
+  model-cache:
+
+networks:
+  immich-network:
+    driver: overlay
+    name: immich-network
