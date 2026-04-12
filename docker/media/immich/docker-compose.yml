@@ -51,7 +51,7 @@ services:
       - immich-network
 
   database:
-    image: ghcr.io/tensorchord/vchord-postgres:pg16-latest
+    image: ghcr.io/tensorchord/vchord-postgres:${DATABASE_VERSION}
     networks:
       - immich-network
     environment:
