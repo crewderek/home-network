@@ -13,7 +13,7 @@ services:
 #    ports:
 #      - 8080:80
     volumes:
-      - /mnt/docker/nextcloud:/var/www/html
+      - /mnt/docker/next-cloud:/var/www/html
     environment:
       - MYSQL_HOST=${DB_HOST}
       - MYSQL_DATABASE=next_cloud
