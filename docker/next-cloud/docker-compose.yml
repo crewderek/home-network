@@ -13,7 +13,7 @@ services:
 #    ports:
 #      - 8080:80
     volumes:
-      - /mnt/docker/next-cloud/main:/var/www/html
+#      - /mnt/docker/next-cloud/main:/var/www/html
       - /mnt/docker/next-cloud/custom_apps:/var/www/html/custom_apps
       - /mnt/docker/next-cloud/config:/var/www/html/config
       - /mnt/docker/next-cloud/data:/var/www/html/data
