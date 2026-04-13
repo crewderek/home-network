@@ -31,4 +31,4 @@ networks:
     name: joplin-network
   proxy-private:
     external: true
-    name: proxy-private
+    name: proxy_private
