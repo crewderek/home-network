@@ -10,8 +10,8 @@ services:
 
   app:
     image: nextcloud:${NEXTCLOUD_VERSION}
-#    ports:
-#      - 8080:80
+    ports:
+      - 8888:80
     volumes:
       - next-cloud-nfs:/var/www/html
       - next-cloud-nfs:/var/www/html/custom_apps:subpath=custom_apps
