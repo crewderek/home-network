@@ -1,0 +1,32 @@
+services:
+  app:
+    image: joplin/server:${JOPLIN_VERSION}
+#    depends_on:
+#      - db
+#    ports:
+#      - "22300:22300"
+    environment:
+      - APP_PORT=22300
+      - APP_BASE_URL=https://joplin.your-domain.com
+      - DB_CLIENT=pg
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DATABASE=joplin
+      - POSTGRES_USER=joplin
+      - POSTGRES_PORT=5432
+      - POSTGRES_HOST=${DB_HOST}
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+#      labels:
+#        - "traefik.enable=true" # Optional: If using Traefik as a Swarm ingress
+    networks:
+      - joplin-net
+
+networks:
+  joplin-net:
+    driver: overlay
+
+volumes:
+  joplin-db-data:
+    driver: local
