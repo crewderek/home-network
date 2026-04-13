@@ -9,11 +9,15 @@ services:
       replicas: 1
 
   app:
-    image: linuxserver/nextcloud:${NEXTCLOUD_VERSION}
+    image: nextcloud:${NEXTCLOUD_VERSION}
 #    ports:
 #      - 8080:80
     volumes:
       - next-cloud-nfs:/var/www/html
+      - next-cloud-nfs:/var/www/html/custom_apps:subpath=custom_apps
+      - next-cloud-nfs:/var/www/html/config:subpath=config
+      - next-cloud-nfs:/var/www/html/data:subpath=data
+#      - next-cloud-nfs:/var/www/html/theme:subpath=theme
 #      - /mnt/docker/next-cloud:/var/www/html
 #      - /mnt/docker/next-cloud/custom_apps:/var/www/html/custom_apps
 #      - /mnt/docker/next-cloud/config:/var/www/html/config
