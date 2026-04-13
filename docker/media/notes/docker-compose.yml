@@ -7,13 +7,14 @@ services:
 #      - "22300:22300"
     environment:
       - APP_PORT=22300
-      - APP_BASE_URL=https://joplin.your-domain.com
+      - APP_BASE_URL=${BASE_URL}
       - DB_CLIENT=pg
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DATABASE=joplin
       - POSTGRES_USER=joplin
       - POSTGRES_PORT=5432
       - POSTGRES_HOST=${DB_HOST}
+      - POSTGRES_SSL_IGNORE_TLS_ERRORS=1
     deploy:
       replicas: 1
       restart_policy:
