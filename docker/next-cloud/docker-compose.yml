@@ -13,7 +13,8 @@ services:
 #    ports:
 #      - 8080:80
     volumes:
-      - /mnt/docker/next-cloud:/var/www/html
+      - next-cloud-nfs:/var/www/html
+#      - /mnt/docker/next-cloud:/var/www/html
 #      - /mnt/docker/next-cloud/custom_apps:/var/www/html/custom_apps
 #      - /mnt/docker/next-cloud/config:/var/www/html/config
 #      - /mnt/docker/next-cloud/data:/var/www/html/data
@@ -60,3 +61,11 @@ secrets:
   nextcloud_admin_password:
     external: true
     name: next-cloud-admin-password
+
+volumes:
+  next-cloud-nfs:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${NFS_ADDRESS},nfsvers=3,nolock,soft,rw"
+      device: ":${NEXT_CLOUD_NFS_DIRECTORY}"
