@@ -23,11 +23,12 @@ services:
 #        - "traefik.enable=true" # Optional: If using Traefik as a Swarm ingress
     networks:
       - joplin-net
+      - proxy-private
 
 networks:
   joplin-net:
     driver: overlay
-
-volumes:
-  joplin-db-data:
-    driver: local
+    name: joplin-network
+  proxy-private:
+    external: true
+    name: proxy-private
