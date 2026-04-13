@@ -34,10 +34,10 @@ services:
     depends_on:
       - redis
     deploy:
-      replicas: 2 # Scale horizontally across the swarm
-      update_config:
-        parallelism: 1
-        delay: 10s
+      replicas: 1 # Scale horizontally across the swarm
+#      update_config:
+#        parallelism: 1
+#        delay: 10s
 
 networks:
   next-cloud:
