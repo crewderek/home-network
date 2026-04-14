@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+  # Database Service
+#  db:
+#    image: postgres:15-alpine
+#    environment:
+#      - POSTGRES_DB=opencloud
+#      - POSTGRES_USER=opencloud_user
+#      - POSTGRES_PASSWORD=${DB_PASSWORD}
+#    volumes:
+#      - db_data:/var/lib/postgresql/data
+#    deploy:
+#      placement:
+#        constraints: [node.role == manager]
+
+  # Main OpenCloud Application
+  app:
+    image: opencloud/opencloud:latest # Use the specific opencloud-eu image
+    environment:
+      - OC_DOMAIN=${DOMAIN}
+      - DB_TYPE=postgres
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=opencloud
+      - DB_USER=opencloud_user
+      - DB_PASS=${DB_PASSWORD}
+#    ports:
+#      - "8080:80"
+    volumes:
+      - /mnt/docker/open-cloud/data:/var/www/html/data
+      - /mnt/docker/open-cloud/config:/var/www/html/config
+    deploy:
+      replicas: 1
+
+#volumes:
+#  db_data:
+#    driver: local
+#    driver_opts:
+#      type: nfs
+#      o: "addr=192.168.1.100,rw,nfsvers=4,nolock,soft"
+#      device: ":/mnt/nfs/opencloud/postgres"
+#
+##  app_data:
+#    driver: local
+#    driver_opts:
+#      type: nfs
+#      o: "addr=192.168.1.100,rw,nfsvers=4,nolock,soft"
+#      device: ":/mnt/nfs/opencloud/data"
+#
+#  app_config:
+#    driver: local
+#    driver_opts:
+#      type: nfs
+#      o: "addr=192.168.1.100,rw,nfsvers=4,nolock,soft"
+#      device: ":/mnt/nfs/opencloud/config"
