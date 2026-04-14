@@ -16,7 +16,7 @@ services:
 
   # Main OpenCloud Application
   app:
-    image: opencloud/opencloud:latest # Use the specific opencloud-eu image
+    image: ${OPEN_CLOUD_VERSION} # Use the specific opencloud-eu image
     environment:
       - OC_DOMAIN=${DOMAIN}
       - DB_TYPE=postgres
