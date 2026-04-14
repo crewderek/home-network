@@ -17,6 +17,9 @@ services:
   # Main OpenCloud Application
   app:
     image: ${OPEN_CLOUD_VERSION} # Use the specific opencloud-eu image
+    networks:
+      - open-cloud-net
+      - proxy-private
     environment:
       - OC_DOMAIN=${DOMAIN}
       - DB_TYPE=postgres
@@ -42,6 +45,14 @@ services:
     deploy:
       replicas: 1
 
+networks:
+  open-cloud-net:
+    driver: overlay
+    attachable: true
+    name: open-cloud-network
+  proxy-private:
+    external: true
+    name: proxy_private
 #volumes:
 #  open-cloud-data:
 #    driver: local
