@@ -21,17 +21,18 @@ services:
       - open-cloud-net
       - proxy-private
     environment:
-      - OC_DOMAIN=${DOMAIN}
-      - DB_TYPE=postgres
-      - DB_HOST=${DB_HOST}
-      - DB_NAME=opencloud
-      - DB_USER=opencloud_user
-      - DB_PASS=${DB_PASSWORD}
+#      - OC_DOMAIN=${DOMAIN}
+#      - DB_TYPE=postgres
+#      - DB_HOST=${DB_HOST}
+#      - DB_NAME=opencloud
+#      - DB_USER=opencloud_user
+#      - DB_PASS=${DB_PASSWORD}
       - OC_JWT_SECRET=${JWT_SECRET}
       - OC_TRANSFER_SECRET=${TRANSFER_SECRET}
       - OC_MACHINE_AUTH_API_KEY=${MACHINE_API_KEY}
       - OC_ADMIN_USER_ID=${ADMIN_USER_UUID}
       - OC_SYSTEM_USER_ID=${SYSTEM_USER_UUID}
+      - PROXY_HTTP_ADDR=0.0.0.0:9200
       - OC_URL=https://${DOMAIN}
       - OC_INSECURE=true
       - IDM_ADMIN_PASSWORD=${IDM_ADMIN_PASSWORD}
