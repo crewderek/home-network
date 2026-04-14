@@ -35,8 +35,8 @@ services:
 #    ports:
 #      - "8080:80"
     volumes:
-      - open-cloud-data:/var/www/html/data:subpath=data
-      - open-cloud-data:/var/www/html/config:subpath=config
+      - open-cloud-data:/var/lib/opencloud:subpath=data
+      - open-cloud-data:/etc/opencloud:subpath=config
     deploy:
       replicas: 1
 
