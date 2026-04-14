@@ -24,6 +24,9 @@ services:
       - DB_NAME=opencloud
       - DB_USER=opencloud_user
       - DB_PASS=${DB_PASSWORD}
+      - OC_JWT_SECRET=${JWT_SECRET}
+      - OC_TRANSFER_SECRET=${TRANSFER_SECRET}
+      - OC_MACHINE_AUTH_API_KEY=${MACHINE_API_KEY}
 #    ports:
 #      - "8080:80"
     volumes:
