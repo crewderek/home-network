@@ -35,15 +35,17 @@ services:
 #    ports:
 #      - "8080:80"
     volumes:
-      - open-cloud-data:/var/lib/opencloud:subpath=data
-      - open-cloud-data:/etc/opencloud:subpath=config
+#      - open-cloud-data:/var/lib/opencloud:subpath=data
+#      - open-cloud-data:/etc/opencloud:subpath=config
+      - /mnt/docker/open-cloud/data:/var/lib/opencloud
+      - /mnt/docker/open-cloud/config:/etc/opencloud
     deploy:
       replicas: 1
 
-volumes:
-  open-cloud-data:
-    driver: local
-    driver_opts:
-      type: nfs
-      o: "addr=${NFS_ADDRESS},nfsvers=3,nolock,soft,rw"
-      device: ":${OPENCLOUD_NFS_DIRECTORY}"
+#volumes:
+#  open-cloud-data:
+#    driver: local
+#    driver_opts:
+#      type: nfs
+#      o: "addr=${NFS_ADDRESS},nfsvers=3,nolock,soft,rw"
+#      device: ":${OPENCLOUD_NFS_DIRECTORY}"
