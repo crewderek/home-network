@@ -35,29 +35,15 @@ services:
 #    ports:
 #      - "8080:80"
     volumes:
-      - /mnt/docker/open-cloud/data:/var/www/html/data
-      - /mnt/docker/open-cloud/config:/var/www/html/config
+      - open-cloud-data:/var/www/html/data:subpath=data
+      - open-cloud-data:/var/www/html/config:subpath=config
     deploy:
       replicas: 1
 
-#volumes:
-#  db_data:
-#    driver: local
-#    driver_opts:
-#      type: nfs
-#      o: "addr=192.168.1.100,rw,nfsvers=4,nolock,soft"
-#      device: ":/mnt/nfs/opencloud/postgres"
-#
-##  app_data:
-#    driver: local
-#    driver_opts:
-#      type: nfs
-#      o: "addr=192.168.1.100,rw,nfsvers=4,nolock,soft"
-#      device: ":/mnt/nfs/opencloud/data"
-#
-#  app_config:
-#    driver: local
-#    driver_opts:
-#      type: nfs
-#      o: "addr=192.168.1.100,rw,nfsvers=4,nolock,soft"
-#      device: ":/mnt/nfs/opencloud/config"
+volumes:
+  open-cloud-data:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${NFS_ADDRESS},nfsvers=3,nolock,soft,rw"
+      device: ":${OPENCLOUD_NFS_DIRECTORY}"
