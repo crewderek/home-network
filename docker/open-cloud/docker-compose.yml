@@ -46,8 +46,8 @@ services:
       - OC_URL=https://${DOMAIN}
       - OC_INSECURE=${OC_INSECURE}
       - IDM_ADMIN_PASSWORD=${IDM_ADMIN_PASSWORD}
-    ports:
-      - "9200:9200"
+#    ports:
+#      - "9200:9200"
     volumes:
 #      - open-cloud-data:/var/lib/opencloud:subpath=data
 #      - open-cloud-data:/etc/opencloud:subpath=config
