@@ -34,7 +34,7 @@ services:
 #      - OC_SYSTEM_USER_ID=${SYSTEM_USER_UUID}
       - PROXY_HTTP_ADDR=${PROXY_HTTP_ADDR}
       - OC_URL=https://${DOMAIN}
-      - OC_INSECURE=true
+      - OC_INSECURE=${OC_INSECURE}
       - IDM_ADMIN_PASSWORD=${IDM_ADMIN_PASSWORD}
 #    ports:
 #      - "8080:80"
