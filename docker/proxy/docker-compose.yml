@@ -76,7 +76,7 @@ services:
       - "9883:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - nginx_nfs:/letsencrypt:subpath=letsencrypt:ro
+      - nginx_nfs:/letsencrypt:subpath=letsencrypt
     networks:
       - proxy_private
       - proxy_public
