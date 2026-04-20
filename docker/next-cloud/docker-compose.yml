@@ -19,9 +19,9 @@ services:
 #      - /mnt/docker/next-cloud/config:/var/www/html/config
 #      - /mnt/docker/next-cloud/data:/var/www/html/data
       - next-cloud-data:/var/www/html
-      - next-cloud-data:/var/www/html/custom_apps:subpath=custom_apps
-      - next-cloud-data:/var/www/html/config:subpath=config
-      - next-cloud-data:/var/www/html/data:subpath=data
+#      - next-cloud-data:/var/www/html/custom_apps:subpath=custom_apps
+#      - next-cloud-data:/var/www/html/config:subpath=config
+#      - next-cloud-data:/var/www/html/data:subpath=data
     environment:
       - PUID=1000
       - PGID=1000
