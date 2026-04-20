@@ -70,13 +70,14 @@ services:
       # (Optional) Automatic SSL via Let's Encrypt
       - "--certificatesresolvers.mydnschallenge.acme.dnschallenge=true"
       - "--certificatesresolvers.mydnschallenge.acme.dnschallenge.provider=route53"
-      - "--certificatesresolvers.mydnschallenge.acme.email=${ACME-EMAIL}"
+#      - "--certificatesresolvers.mydnschallenge.acme.email="
       - "--certificatesresolvers.mydnschallenge.acme.storage=/letsencrypt/acme.json"
     environment:
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_KEY}
       - AWS_REGION=${AWS_REGION} # Or your specific region
       - AWS_HOSTED_ZONE_ID=${HOSTED_ZONE_ID}
+      - TRAEFIK_CERTIFICATESRESOLVERS_MYDNSCHALLENGE_ACME_EMAIL=${ACME_EMAIL}
     ports:
       - "9888:80"
       - "9883:443"
