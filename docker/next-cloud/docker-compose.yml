@@ -43,8 +43,8 @@ services:
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     networks:
       - next-cloud-network
-    # volumes:
-      # - ./nextclouddb:/var/lib/mysql
+    volumes:
+      - /opt/mysql/next-cloud:/var/lib/mysql
     environment:
       - PUID=1000
       - PGID=1000
@@ -73,7 +73,7 @@ services:
       - TZ=America/Los_Angeles
       - password=password
       - username=nextcloud
-      - domain=example.com
+      - domain=${DOMAIN}
       - extra_params=--o:ssl.enable=true
 #    ports:
 #      - 9980:9980
