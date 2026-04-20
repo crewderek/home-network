@@ -31,6 +31,7 @@ services:
       - MYSQL_PASSWORD=${DB_PASSWORD}
       - MYSQL_HOST=nextclouddb
       - REDIS_HOST=redis
+      - NEXTCLOUD_TRUSTED_DOMAINS=${TRUSTED_DOMAINS}
     deploy:
 #      labels:
 #        - "traefik.enable=true"
