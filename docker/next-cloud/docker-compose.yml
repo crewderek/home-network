@@ -36,12 +36,12 @@ services:
       labels:
         - "traefik.enable=true"
 #        # The URL you will use to access Nextcloud
-        - "traefik.http.routers.next-cloud-nextcloud.rule=Host(`${DOMAIN}`)"
-        - "traefik.http.routers.next-cloud-nextcloud.entrypoints=websecure"
-        - "traefik.http.routers.next-cloud-nextcloud.tls=true"
-        - "traefik.http.routers.nextcloud.tls.certresolver=myresolver"
+        - "traefik.http.routers.nextcloud.rule=Host(`${DOMAIN}`)"
+        - "traefik.http.routers.nextcloud.entrypoints=websecure"
+        - "traefik.http.routers.nextcloud.tls=true"
+        - "traefik.http.routers.nextcloud.tls.certresolver=mydnschallenge"
 #        # Critical for Swarm: Specify the internal container port
-        - "traefik.http.services.next-cloud-nextcloud.loadbalancer.server.port=80"
+        - "traefik.http.services.nextcloud.loadbalancer.server.port=80"
 #        # Ensure Traefik uses the correct network for routing
         - "traefik.docker.network=proxy_private"
       placement:
