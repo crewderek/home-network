@@ -13,11 +13,11 @@ services:
       - redis
     ports:
       - 8081:80
-    # volumes:
-      # - ./html:/var/www/html
-      # - ./custom_apps:/var/www/html/custom_apps
-      # - ./config:/var/www/html/config
-      # - ./data:/var/www/html/data
+    volumes:
+      - /mnt/docker/next-cloud/core:/var/www/html
+      - /mnt/docker/next-cloud/custom_apps:/var/www/html/custom_apps
+      - /mnt/docker/next-cloud/config:/var/www/html/config
+      - /mnt/docker/next-cloud/data:/var/www/html/data
     environment:
       - PUID=1000
       - PGID=1000
@@ -28,6 +28,16 @@ services:
       - MYSQL_HOST=nextclouddb
       - REDIS_HOST=redis
     deploy:
+      labels:
+        - "traefik.enable=true"
+        # The URL you will use to access Nextcloud
+        - "traefik.http.routers.nextcloud.rule=Host(`cloud.example.com`)"
+        - "traefik.http.routers.nextcloud.entrypoints=websecure"
+        - "traefik.http.routers.nextcloud.tls.certresolver=myresolver"
+        # Critical for Swarm: Specify the internal container port
+        - "traefik.http.services.nextcloud.loadbalancer.server.port=80"
+        # Ensure Traefik uses the correct network for routing
+        - "traefik.docker.network=traefik-public"
       placement:
         constraints:
           - node.labels.docker_mount == true
