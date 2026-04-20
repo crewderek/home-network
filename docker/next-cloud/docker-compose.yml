@@ -24,7 +24,7 @@ services:
       - TZ=${TZ}
       - MYSQL_DATABASE=nextcloud
       - MYSQL_USER=nextcloud
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
       - MYSQL_HOST=nextclouddb
       - REDIS_HOST=redis
     deploy:
