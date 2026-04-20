@@ -53,10 +53,10 @@ services:
         constraints: [node.role == manager]
 
   traefik:
-    image: traefik:v3.0
+    image: traefik:v3.6.13
     command:
       # Enable Docker Swarm mode
-      - "--providers.docker.swarmMode=true"
+      - "--providers.swarm.endpoint=tcp://127.0.0.1:2377"
       - "--providers.docker.exposedbydefault=false"
       - "--providers.docker.network=traefik-public"
       # Entrypoints for HTTP and HTTPS
