@@ -24,6 +24,9 @@ services:
 #    ports:
 #      - 2283:2283
     deploy:
+      placement:
+        constraints:
+          - node.labels.photo_mount == true
       replicas: 1
       restart_policy:
         condition: on-failure
@@ -37,6 +40,9 @@ services:
 #    env_file:
 #      - immich.env
     deploy:
+      placement:
+        constraints:
+          - node.labels.type != restricted
       replicas: 1
       restart_policy:
         condition: on-failure
@@ -46,6 +52,9 @@ services:
   redis:
     image: docker.io/valkey/valkey:${REDIS_VERSION}
     deploy:
+      placement:
+        constraints:
+          - node.labels.type != restricted
       restart_policy:
         condition: on-failure
     networks:
