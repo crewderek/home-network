@@ -81,7 +81,7 @@ services:
       - "9883:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-#      - nginx_nfs:/letsencrypt:subpath=letsencrypt
+      - lets-encrypt-data:/letsencrypt
     networks:
       - proxy_private
       - proxy_public
@@ -123,3 +123,5 @@ volumes:
       type: nfs
       o: "addr=${NFS_ADDRESS},nfsvers=3,nolock,soft,rw"
       device: ":${PROXY_DATA_NFS_DIRECTORY}"
+  lets-encrypt-data:
+    driver: local
