@@ -27,6 +27,8 @@ services:
       placement:
         constraints:
           - node.labels.photo_mount == true
+          - node.labels.docker_mount == true
+          - node.labels.type != restricted
       replicas: 1
       restart_policy:
         condition: on-failure
