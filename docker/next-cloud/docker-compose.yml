@@ -1,79 +1,126 @@
 version: '3.8'
 
 services:
+  nextcloud:
+    image: nextcloud
+#    container_name: nextcloud
+    restart: unless-stopped
+    networks:
+      - next-cloud-network
+      - proxy-private
+    depends_on:
+      - nextclouddb
+      - redis
+#    ports:
+#      - 8081:80
+    # volumes:
+      # - ./html:/var/www/html
+      # - ./custom_apps:/var/www/html/custom_apps
+      # - ./config:/var/www/html/config
+      # - ./data:/var/www/html/data
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TZ}
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_HOST=nextclouddb
+      - REDIS_HOST=redis
+    deploy:
+      placement:
+        constraints:
+          - node.labels.docker_mount == true
+          - node.labels.type != restricted
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  nextclouddb:
+    image: mariadb
+#    container_name: nextcloud-db
+    restart: unless-stopped
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    networks:
+      - next-cloud-network
+    # volumes:
+      # - ./nextclouddb:/var/lib/mysql
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TZ}
+      - MYSQL_RANDOM_ROOT_PASSWORD=true
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+    deploy:
+      placement:
+        constraints:
+          - node.labels.database_node == true
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  collabora:
+    image: collabora/code
+#    container_name: collabora
+    restart: unless-stopped
+    networks:
+      - next-cloud-network
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles
+      - password=password
+      - username=nextcloud
+      - domain=example.com
+      - extra_params=--o:ssl.enable=true
+#    ports:
+#      - 9980:9980
+    deploy:
+      placement:
+        constraints:
+          - node.labels.docker_mount == true
+          - node.labels.type != restricted
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
   redis:
     image: redis:alpine
+#    container_name: redis
+    # volumes:
+    #   - ./redis:/data
     networks:
-      - next-cloud
+      - next-cloud-network
     deploy:
+      placement:
+        constraints:
+          - node.labels.type != restricted
       replicas: 1
+      restart_policy:
+        condition: on-failure
 
-  app:
-    image: nextcloud:${NEXTCLOUD_VERSION}
-    ports:
-      - 8888:80
-    volumes:
-      - next-cloud-nfs:/var/www/html
-      - next-cloud-nfs:/var/www/html/custom_apps:subpath=custom_apps
-      - next-cloud-nfs:/var/www/html/config:subpath=config
-      - next-cloud-nfs:/var/www/html/data:subpath=data
-#      - next-cloud-nfs:/var/www/html/theme:subpath=theme
-#      - /mnt/docker/next-cloud:/var/www/html
-#      - /mnt/docker/next-cloud/custom_apps:/var/www/html/custom_apps
-#      - /mnt/docker/next-cloud/config:/var/www/html/config
-#      - /mnt/docker/next-cloud/data:/var/www/html/data
-#      - /mnt/docker/next-cloud/themes:/var/www/html/themes
-    environment:
-      - POSTGRES_HOST=${DB_HOST}
-      - POSTGRES_DB=next_cloud
-      - POSTGRES_USER=next_cloud
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-#      - POSTGRES_PASSWORD_FILE=/run/secrets/db_password
-      - REDIS_HOST=redis
-      - NEXTCLOUD_ADMIN_USER=admin
-#      - NEXTCLOUD_ADMIN_PASSWORD_FILE=/run/secrets/nextcloud_admin_password
-      - NEXTCLOUD_ADMIN_PASSWORD=${ADMIN_PASSWORD}
-      - NEXTCLOUD_TRUSTED_DOMAINS=${TRUSTED_DOMAINS}
-#      - APACHE_SERVERNAME=${TRUSTED_DOMAINS}
-      - POSTGRES_SSLMODE=prefer
-      - OVERWRITEPROTOCOL=http
-      - PUID=33
-      - PGID=33
-      - TZ=America/Denver
-    secrets:
-      - db_password
-      - nextcloud_admin_password
-    networks:
-      - proxy-private
-      - next-cloud
-    depends_on:
-      - redis
-    deploy:
-      replicas: 1 # Scale horizontally across the swarm
-#      update_config:
-#        parallelism: 1
-#        delay: 10s
+  # nginx-proxy:
+  #   image: 'jc21/nginx-proxy-manager:latest'
+  #   container_name: nginx-proxy
+  #   environment:
+  #     - PUID=1000
+  #     - PGID=1000
+  #     - TZ=America/Los_Angeles
+  #   restart: unless-stopped
+  #   ports:
+  #     - '80:80'
+  #     - '81:81'
+  #     - '443:443'
+  #   volumes:
+  #     - ./data:/data
+  #     - ./letsencrypt:/etc/letsencrypt
 
 networks:
-  next-cloud:
+  next-cloud-network:
     driver: overlay
     name: next-cloud-network
   proxy-private:
     external: true
     name: proxy_private
-
-secrets:
-  db_password:
-    external: true
-    name: next-cloud-db-password
-  nextcloud_admin_password:
-    external: true
-    name: next-cloud-admin-password
-
-volumes:
-  next-cloud-nfs:
-    driver: local
-    driver_opts:
-      type: nfs
-      o: "addr=${NFS_ADDRESS},nfsvers=3,nolock,soft,rw"
-      device: ":${NEXT_CLOUD_NFS_DIRECTORY}"
