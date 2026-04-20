@@ -14,10 +14,14 @@ services:
     ports:
       - 8081:80
     volumes:
-      - /mnt/docker/next-cloud/core:/var/www/html
-      - /mnt/docker/next-cloud/custom_apps:/var/www/html/custom_apps
-      - /mnt/docker/next-cloud/config:/var/www/html/config
-      - /mnt/docker/next-cloud/data:/var/www/html/data
+#      - /mnt/docker/next-cloud/core:/var/www/html
+#      - /mnt/docker/next-cloud/custom_apps:/var/www/html/custom_apps
+#      - /mnt/docker/next-cloud/config:/var/www/html/config
+#      - /mnt/docker/next-cloud/data:/var/www/html/data
+      - next-cloud-data:/var/www/html
+      - next-cloud-data:/var/www/html/custom_apps:subpath=custom_apps
+      - next-cloud-data:/var/www/html/config:subpath=config
+      - next-cloud-data:/var/www/html/data:subpath=data
     environment:
       - PUID=1000
       - PGID=1000
@@ -134,3 +138,12 @@ networks:
   proxy-private:
     external: true
     name: proxy_private
+
+volumes:
+  next-cloud-data:
+    driver: local
+    name: next_cloud_nfs_data
+    driver_opts:
+      type: nfs
+      o: "addr=${NFS_ADDRESS},nfsvers=4,nolock,soft,rw" # Replace with your NFS Server IP
+      device: ":${NEXT_CLOUD_NFS_DIRECTORY}"
