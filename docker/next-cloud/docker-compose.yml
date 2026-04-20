@@ -11,8 +11,8 @@ services:
     depends_on:
       - nextclouddb
       - redis
-#    ports:
-#      - 8081:80
+    ports:
+      - 8081:80
     # volumes:
       # - ./html:/var/www/html
       # - ./custom_apps:/var/www/html/custom_apps
