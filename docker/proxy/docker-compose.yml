@@ -11,27 +11,27 @@ services:
       - vpn_network
       - business_network
       - immich_network
-#    ports:
-##      - target: 80
-##        published: 80
-##        protocol: tcp
-##        mode: ingress
-#      - target: 443
-#        published: 443
+    ports:
+#      - target: 80
+#        published: 80
 #        protocol: tcp
 #        mode: ingress
-#      - target: 81
-#        published: 81
-#        protocol: tcp
-#        mode: ingress
-#      - target: 1883
-#        published: 1883
-#        protocol: tcp
-#        mode: ingress
-#      - target: 5683
-#        published: 5683
-#        protocol: udp
-#        mode: ingress
+      - target: 443
+        published: 443
+        protocol: tcp
+        mode: ingress
+      - target: 81
+        published: 81
+        protocol: tcp
+        mode: ingress
+      - target: 1883
+        published: 1883
+        protocol: tcp
+        mode: ingress
+      - target: 5683
+        published: 5683
+        protocol: udp
+        mode: ingress
 #      - target: 51820
 #        published: 51820
 #        protocol: udp
@@ -56,6 +56,7 @@ services:
     image: traefik:v3.6.13
     command:
       # Enable Docker Swarm mode
+      - "--log.level=DEBUG"
       - "--providers.swarm.endpoint=unix:///var/run/docker.sock"
       - "--providers.swarm.watch=true"
       - "--providers.docker.exposedbydefault=false"
@@ -77,8 +78,8 @@ services:
       - AWS_REGION=${AWS_REGION} # Or your specific region
       - AWS_HOSTED_ZONE_ID=${HOSTED_ZONE_ID}
     ports:
-      - "80:80"
-      - "443:443"
+      - "9888:80"
+      - "9883:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - lets-encrypt-data:/letsencrypt
