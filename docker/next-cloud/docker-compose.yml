@@ -145,5 +145,5 @@ volumes:
     name: next_cloud_nfs_data
     driver_opts:
       type: nfs
-      o: "addr=${NFS_ADDRESS},nfsvers=4,nolock,soft,rw" # Replace with your NFS Server IP
+      o: "addr=${NFS_ADDRESS},nfsvers=3,nolock,soft,rw" # Replace with your NFS Server IP
       device: ":${NEXT_CLOUD_NFS_DIRECTORY}"
