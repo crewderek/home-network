@@ -56,9 +56,11 @@ services:
     image: traefik:v3.6.13
     command:
       # Enable Docker Swarm mode
-      - "--providers.swarm.endpoint=tcp://127.0.0.1:2377"
+      - "--providers.swarm.endpoint=unix:///var/run/docker.sock"
+      - "--providers.swarm.watch=true"
       - "--providers.docker.exposedbydefault=false"
-      - "--providers.docker.network=traefik-public"
+      - "--providers.docker.network=proxy-private"
+      - "--api.dashboard=true"
       # Entrypoints for HTTP and HTTPS
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
@@ -71,7 +73,7 @@ services:
       - "9888:80"
       - "9883:443"
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       - nginx_nfs:/letsencrypt:subpath=letsencrypt
     networks:
       - proxy_private
