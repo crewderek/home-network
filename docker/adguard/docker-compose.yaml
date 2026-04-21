@@ -11,6 +11,7 @@ services:
       - TZ=America/Denver # Replace with your timezone
     networks:
       - dns_net
+      - proxy_private
     volumes:
       - /mnt/docker/adguard/config:/opt/adguardhome/conf
       - /mnt/docker/adguard/work:/opt/adguardhome/work
@@ -32,6 +33,20 @@ services:
 #        published: 80
 #        protocol: tcp
     deploy:
+      labels:
+        - "traefik.enable=true"
+        #        # The URL you will use to access Nextcloud
+        - "traefik.http.routers.adguard1.rule=Host(`${SUBDOMAIN_ONE}.${BASE_DOMAIN}`)"
+        - "traefik.http.routers.adguard1.entrypoints=websecure"
+        - "traefik.http.routers.adguard1.tls=true"
+        - "traefik.http.routers.adguard1.tls.certresolver=mydnschallenge"
+        #        # Critical for Swarm: Specify the internal container port
+        - "traefik.http.services.adguard1.loadbalancer.server.port=80"
+        #        # Ensure Traefik uses the correct network for routing
+        - "traefik.docker.network=proxy_private"
+        # This line is key: it tells Traefik to look for the cert containing these domains
+        - "traefik.http.routers.adguard1.tls.domains[0].main=${BASE_DOMAIN}"
+        - "traefik.http.routers.adguard1.tls.domains[0].sans=*.${BASE_DOMAIN}"
       mode: replicated
       replicas: 1
       placement:
@@ -51,6 +66,7 @@ services:
       - TZ=America/Denver # Replace with your timezone
     networks:
       - dns_net
+      - proxy_private
     volumes:
       - /mnt/docker/adguard/config:/opt/adguardhome/conf
       - /mnt/docker/adguard/work-secondary:/opt/adguardhome/work
@@ -72,6 +88,20 @@ services:
 #        published: 80
 #        protocol: tcp
     deploy:
+      labels:
+        - "traefik.enable=true"
+        #        # The URL you will use to access Nextcloud
+        - "traefik.http.routers.adguard2.rule=Host(`${SUBDOMAIN_TWO}.${BASE_DOMAIN}`)"
+        - "traefik.http.routers.adguard2.entrypoints=websecure"
+        - "traefik.http.routers.adguard2.tls=true"
+        - "traefik.http.routers.adguard2.tls.certresolver=mydnschallenge"
+        #        # Critical for Swarm: Specify the internal container port
+        - "traefik.http.services.adguard2.loadbalancer.server.port=80"
+        #        # Ensure Traefik uses the correct network for routing
+        - "traefik.docker.network=proxy_private"
+        # This line is key: it tells Traefik to look for the cert containing these domains
+        - "traefik.http.routers.adguard2.tls.domains[0].main=${BASE_DOMAIN}"
+        - "traefik.http.routers.adguard2.tls.domains[0].sans=*.${BASE_DOMAIN}"
       mode: replicated
       replicas: 1
       placement:
@@ -85,3 +115,6 @@ networks:
   dns_net:
     driver: overlay
     attachable: true
+  proxy_private:
+    external: true
+    name: proxy_private
