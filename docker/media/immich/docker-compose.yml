@@ -24,6 +24,20 @@ services:
 #    ports:
 #      - 2283:2283
     deploy:
+      labels:
+        - "traefik.enable=true"
+        #        # The URL you will use to access Nextcloud
+        - "traefik.http.routers.immich-server.rule=Host(`${IMMICH_SUBDOMAIN}.${BASE_DOMAIN}`)"
+        - "traefik.http.routers.immich-server.entrypoints=websecure"
+        - "traefik.http.routers.immich-server.tls=true"
+        - "traefik.http.routers.immich-server.tls.certresolver=mydnschallenge"
+        #        # Critical for Swarm: Specify the internal container port
+        - "traefik.http.services.immich-server.loadbalancer.server.port=5678"
+        #        # Ensure Traefik uses the correct network for routing
+        - "traefik.docker.network=proxy_private"
+        # This line is key: it tells Traefik to look for the cert containing these domains
+        - "traefik.http.routers.immich-server.tls.domains[0].main=${BASE_DOMAIN}"
+        - "traefik.http.routers.immich-server.tls.domains[0].sans=*.${BASE_DOMAIN}"
       placement:
         constraints:
           - node.labels.photo_mount == true
@@ -34,6 +48,7 @@ services:
         condition: on-failure
     networks:
       - immich-network
+      - proxy_private
 
   immich-machine-learning:
     image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION}
@@ -90,6 +105,8 @@ networks:
   immich-network:
     driver: overlay
     name: immich-network
+  proxy_private:
+    external: true
 
 secrets:
   db_password:
