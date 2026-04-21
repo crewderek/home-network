@@ -139,6 +139,40 @@ services:
         condition: on-failure
 
 
+############################### BentoPDF ###########################
+  bento-pdf:
+    image: ghcr.io/bentopdf/bento-pdf:latest
+    networks:
+      - proxy_private
+#    ports:
+#      - "8080:8080"
+    environment:
+      - NODE_ENV=production
+    # Uncomment the volumes line if you need to persist custom templates or assets
+    # volumes:
+    #   - ./templates:/app/templates
+    restart: unless-stopped
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        #        # The URL you will use to access Nextcloud
+        - "traefik.http.routers.bento-pdf.rule=Host(`${BENTOPDF_SUBDOMAIN}.${BASE_DOMAIN}`)"
+        - "traefik.http.routers.bento-pdf.entrypoints=websecure"
+        - "traefik.http.routers.bento-pdf.tls=true"
+        - "traefik.http.routers.bento-pdf.tls.certresolver=mydnschallenge"
+        #        # Critical for Swarm: Specify the internal container port
+        - "traefik.http.services.bento-pdf.loadbalancer.server.port=8080"
+        #        # Ensure Traefik uses the correct network for routing
+        - "traefik.docker.network=proxy_private"
+        # This line is key: it tells Traefik to look for the cert containing these domains
+        - "traefik.http.routers.bento-pdf.tls.domains[0].main=${BASE_DOMAIN}"
+        - "traefik.http.routers.bento-pdf.tls.domains[0].sans=*.${BASE_DOMAIN}"
+      placement:
+        constraints:
+          - node.labels.type != restricted
+      replicas: 1
+
+
 networks:
     proxy_private:
       external: true
