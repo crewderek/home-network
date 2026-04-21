@@ -12,6 +12,23 @@ services:
 #        protocol: tcp
 #        mode: host
     deploy:
+      labels:
+        - "traefik.enable=true"
+        #        # The URL you will use to access Nextcloud
+        - "traefik.http.routers.it-tools.rule=Host(`${IT-TOOLS_SUBDOMAIN}.${BASE_DOMAIN}`)"
+        - "traefik.http.routers.it-tools.entrypoints=websecure"
+        - "traefik.http.routers.it-tools.tls=true"
+        - "traefik.http.routers.it-tools.tls.certresolver=mydnschallenge"
+        #        # Critical for Swarm: Specify the internal container port
+        - "traefik.http.services.it-tools.loadbalancer.server.port=80"
+        #        # Ensure Traefik uses the correct network for routing
+        - "traefik.docker.network=proxy_private"
+        # This line is key: it tells Traefik to look for the cert containing these domains
+        - "traefik.http.routers.it-tools.tls.domains[0].main=${BASE_DOMAIN}"
+        - "traefik.http.routers.it-tools.tls.domains[0].sans=*.${BASE_DOMAIN}"
+      placement:
+        constraints:
+          - node.labels.type != restricted
       mode: replicated
       replicas: 1
 #      placement:
@@ -36,11 +53,25 @@ services:
 #      - "8080:80"
 #      - "8443:443"
     deploy:
+      labels:
+        - "traefik.enable=true"
+        #        # The URL you will use to access Nextcloud
+        - "traefik.http.routers.heimdall.rule=Host(`${HEIMDALL_SUBDOMAIN}.${BASE_DOMAIN}`)"
+        - "traefik.http.routers.heimdall.entrypoints=websecure"
+        - "traefik.http.routers.heimdall.tls=true"
+        - "traefik.http.routers.heimdall.tls.certresolver=mydnschallenge"
+        #        # Critical for Swarm: Specify the internal container port
+        - "traefik.http.services.heimdall.loadbalancer.server.port=80"
+        #        # Ensure Traefik uses the correct network for routing
+        - "traefik.docker.network=proxy_private"
+        # This line is key: it tells Traefik to look for the cert containing these domains
+        - "traefik.http.routers.heimdall.tls.domains[0].main=${BASE_DOMAIN}"
+        - "traefik.http.routers.heimdall.tls.domains[0].sans=*.${BASE_DOMAIN}"
+      placement:
+        constraints:
+          - node.labels.type != restricted
       mode: replicated
       replicas: 1
-#      placement:
-#        constraints:
-#          - node.role == manager # Often best to keep dashboards on managers
       restart_policy:
         condition: on-failure
         delay: 5s
@@ -67,6 +98,23 @@ services:
       # Replace 'excalidraw.yourdomain.com' with your actual IP or Domain
       - VITE_APP_WS_SERVER_URL=http://tools_excalidraw-room
     deploy:
+      labels:
+        - "traefik.enable=true"
+        #        # The URL you will use to access Nextcloud
+        - "traefik.http.routers.excalidraw.rule=Host(`${EXCALIDRAW_SUBDOMAIN}.${BASE_DOMAIN}`)"
+        - "traefik.http.routers.excalidraw.entrypoints=websecure"
+        - "traefik.http.routers.excalidraw.tls=true"
+        - "traefik.http.routers.excalidraw.tls.certresolver=mydnschallenge"
+        #        # Critical for Swarm: Specify the internal container port
+        - "traefik.http.services.excalidraw.loadbalancer.server.port=8123"
+        #        # Ensure Traefik uses the correct network for routing
+        - "traefik.docker.network=proxy_private"
+        # This line is key: it tells Traefik to look for the cert containing these domains
+        - "traefik.http.routers.excalidraw.tls.domains[0].main=${BASE_DOMAIN}"
+        - "traefik.http.routers.excalidraw.tls.domains[0].sans=*.${BASE_DOMAIN}"
+      placement:
+        constraints:
+          - node.labels.type != restricted
       replicas: 1
       update_config:
         parallelism: 1
