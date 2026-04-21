@@ -36,6 +36,10 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
+      placement:
+        constraints:
+          - node.labels.docker_mount == true
+          - node.labels.type != restricted
 
 
   uptime-kuma:
@@ -69,6 +73,10 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
+      placement:
+        constraints:
+          - node.labels.docker_mount == true
+          - node.labels.type != restricted
 
 
   ntfy:
@@ -117,6 +125,10 @@ services:
         reservations:
           cpus: '0.10'
           memory: 64M
+      placement:
+        constraints:
+          - node.labels.docker_mount == true
+          - node.labels.type != restricted
 
 #volumes:
 #  n8n_data:
