@@ -38,6 +38,10 @@ services:
         limits:
           cpus: '0.5'
           memory: 512M
+      placement:
+        constraints:
+          - node.labels.docker_mount == true
+          - node.labels.type != restricted
 #volumes:
 #  n8n_data:
 #    driver: local
