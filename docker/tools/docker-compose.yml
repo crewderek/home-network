@@ -141,7 +141,7 @@ services:
 
 ############################### BentoPDF ###########################
   bento-pdf:
-    image: ghcr.io/bentopdf/bento-pdf:latest
+    image: ghcr.io/alam00000/bentopdf:latest
     networks:
       - proxy_private
 #    ports:
