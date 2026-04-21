@@ -91,17 +91,17 @@ services:
       labels:
         - "traefik.enable=true"
         #        # The URL you will use to access Nextcloud
-        - "traefik.http.routers.adguard2.rule=Host(`${SUBDOMAIN_TWO}.${BASE_DOMAIN}`)"
-        - "traefik.http.routers.adguard2.entrypoints=websecure"
-        - "traefik.http.routers.adguard2.tls=true"
-        - "traefik.http.routers.adguard2.tls.certresolver=mydnschallenge"
+        - "traefik.http.routers.adguard-secondary.rule=Host(`${SUBDOMAIN_TWO}.${BASE_DOMAIN}`)"
+        - "traefik.http.routers.adguard-secondary.entrypoints=websecure"
+        - "traefik.http.routers.adguard-secondary.tls=true"
+        - "traefik.http.routers.adguard-secondary.tls.certresolver=mydnschallenge"
         #        # Critical for Swarm: Specify the internal container port
-        - "traefik.http.services.adguard2.loadbalancer.server.port=80"
+        - "traefik.http.services.adguard-secondary.loadbalancer.server.port=80"
         #        # Ensure Traefik uses the correct network for routing
         - "traefik.docker.network=proxy_private"
         # This line is key: it tells Traefik to look for the cert containing these domains
-        - "traefik.http.routers.adguard2.tls.domains[0].main=${BASE_DOMAIN}"
-        - "traefik.http.routers.adguard2.tls.domains[0].sans=*.${BASE_DOMAIN}"
+        - "traefik.http.routers.adguard-secondary.tls.domains[0].main=${BASE_DOMAIN}"
+        - "traefik.http.routers.adguard-secondary.tls.domains[0].sans=*.${BASE_DOMAIN}"
       mode: replicated
       replicas: 1
       placement:
