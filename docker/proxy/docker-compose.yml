@@ -94,6 +94,7 @@ services:
       placement:
         constraints:
           - node.role == manager
+          - node.labels.type != restricted
 
 networks:
   proxy_public:
