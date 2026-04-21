@@ -40,8 +40,8 @@ services:
           - node.labels.type != restricted
       resources:
         reservations:
-          cpus: '2.0'
-          memory: 8192M
+#          cpus: '2.0'
+#          memory: 8192M
           generic_resources:
             - discrete_resource_spec:
                 kind: 'NVIDIA-GPU'
