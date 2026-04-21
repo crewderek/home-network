@@ -141,14 +141,14 @@ services:
 
 ############################### BentoPDF ###########################
   bento-pdf:
-    image: ghcr.io/alam00000/bentopdf:latest
+    image: ghcr.io/alam00000/bentopdf-simple:latest
     networks:
       - proxy_private
 #    ports:
 #      - "8080:8080"
     environment:
       - NODE_ENV=production
-      - SIMPLE_MODE=true
+#      - SIMPLE_MODE=true
     # Uncomment the volumes line if you need to persist custom templates or assets
     # volumes:
     #   - ./templates:/app/templates
