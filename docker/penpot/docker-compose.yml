@@ -1,0 +1,119 @@
+version: '3.8'
+
+services:
+  penpot-frontend:
+    image: penpotapp/frontend:2.14.3
+#    ports:
+#      - "9001:80"
+    networks:
+      - penpot-net
+      - proxy_private
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        #        # The URL you will use to access Nextcloud
+        - "traefik.http.routers.penpot-frontend.rule=Host(`${SUBDOMAIN}.${BASE_DOMAIN}`)"
+        - "traefik.http.routers.penpot-frontend.entrypoints=websecure"
+        - "traefik.http.routers.penpot-frontend.tls=true"
+        - "traefik.http.routers.penpot-frontend.tls.certresolver=mydnschallenge"
+        #        # Critical for Swarm: Specify the internal container port
+        - "traefik.http.services.penpot-frontend.loadbalancer.server.port=80"
+        #        # Ensure Traefik uses the correct network for routing
+        - "traefik.docker.network=proxy_private"
+        # This line is key: it tells Traefik to look for the cert containing these domains
+        - "traefik.http.routers.penpot-frontend.tls.domains[0].main=${BASE_DOMAIN}"
+        - "traefik.http.routers.penpot-frontend.tls.domains[0].sans=*.${BASE_DOMAIN}"
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.type != restricted
+
+  backend:
+    image: penpotapp/backend:2.14.3
+    volumes:
+      - /mnt/docker/penpot/assets:/opt/data/assets
+    environment:
+      - PENPOT_FLAGS=enable-registration enable-login-with-password
+      - PENPOT_PUBLIC_URI=https://${SUBDOMAIN}.${BASE_DOMAIN}
+      - PENPOT_DATABASE_URI=postgresql://db/penpot
+      - PENPOT_DATABASE_USERNAME=penpot
+      - PENPOT_DATABASE_PASSWORD_FILE=/run/secrets/postgres_password
+      - PENPOT_REDIS_URI=redis://redis:6379/0
+    secrets:
+      - db_password
+    networks:
+      - penpot-net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.docker_mount == true
+          - node.labels.type != restricted
+
+  exporter:
+    image: penpotapp/exporter:2.14.3
+    networks:
+      - penpot-net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.type != restricted
+
+  redis:
+    image: redis:7-alpine
+    networks:
+      - penpot-net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.type != restricted
+
+  db:
+    image: postgres:18.3-alpine
+    volumes:
+      - /opt/postgres/penpot:/var/lib/postgresql
+    environment:
+      - POSTGRES_DB=penpot
+      - POSTGRES_USER=penpot
+      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password
+    secrets:
+      - db_password
+    networks:
+      - penpot-net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.database_node == true
+
+networks:
+  penpot-network:
+    driver: overlay
+  proxy_private:
+    external: true
+
+#volumes:
+#  penpot-data:
+#    driver: local
+#    name: penpot-data-nfs
+#    driver_opts:
+#      type: nfs
+#      o: "addr=${NFS_ADDRESS},nfsvers=3,nolock,soft,rw" # Replace with your NFS Server IP
+#      device: ":${PENPOT_NFS_DIRECTORY}"
+
+secrets:
+  db_password:
+    external: true
+    name: penpot_postgres_password
