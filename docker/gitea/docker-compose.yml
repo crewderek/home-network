@@ -16,6 +16,7 @@ services:
       - db
     networks:
       - gitea-network
+      - proxy_private
     volumes:
       - /mnt/docker/gitea/data:/data
       - /etc/timezone:/etc/timezone:ro
