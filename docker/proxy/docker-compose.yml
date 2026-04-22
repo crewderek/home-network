@@ -51,6 +51,7 @@ services:
         - "traefik.http.routers.traefik-dashboard.tls=true"
         # This is the "magic" service name Traefik uses for itself
         - "traefik.http.routers.traefik-dashboard.service=api@internal"
+        - "traefik.http.services.traefik.loadbalancer.server.port=8080"
       placement:
         constraints:
           - node.role == manager
