@@ -8,6 +8,8 @@ services:
     networks:
       - penpot-network
       - proxy_private
+    depends_on:
+      - backend
     deploy:
       labels:
         - "traefik.enable=true"
@@ -34,6 +36,9 @@ services:
     image: penpotapp/backend:2.14.3
     volumes:
       - /mnt/docker/penpot/assets:/opt/data/assets
+    depends_on:
+      - db
+      - redis
     environment:
       - PENPOT_FLAGS=enable-registration enable-login-with-password
       - PENPOT_PUBLIC_URI=https://${SUBDOMAIN}.${BASE_DOMAIN}
