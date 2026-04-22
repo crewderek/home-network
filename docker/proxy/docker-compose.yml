@@ -62,10 +62,10 @@ services:
         - "traefik.docker.network=proxy_private"
 
         # --- ROUTER 1: Standard Traffic (Port 80) ---
-        - # 1. The Catch-All Rule (Matches any Host)
+#        - # 1. The Catch-All Rule (Matches any Host)
         - "traefik.http.routers.npm-catchall.rule=HostRegexp(`{host:.+}`)"
 
-        - # 2. Set the lowest priority (1)
+#        - # 2. Set the lowest priority (1)
         - "traefik.http.routers.npm-catchall.priority=1"
 #        - "traefik.http.routers.npm-standard.rule=Host(${NPM_HOST_DEFINITIONS})"
 #        - "traefik.http.routers.npm-standard.rule=Host(${DOMAIN_LIST})"
