@@ -107,10 +107,10 @@ services:
     image: jc21/mariadb-aria:10.11.5
     restart: always
     environment:
-      MARIADB_ROOT_PASSWORD: ${NPM_DB_ROOT_PASSWORD}
-      MARIADB_DATABASE: 'npm'
-      MARIADB_USER: 'npm'
-      MARIADB_PASSWORD: ${NPM_DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${NPM_DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: 'npm'
+      MYSQL_USER: 'npm'
+      MYSQL_PASSWORD: ${NPM_DB_PASSWORD}
     volumes:
       - /opt/mysql/nginx-proxy-manager:/var/lib/mysql
     networks:
