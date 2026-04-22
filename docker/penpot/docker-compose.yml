@@ -6,7 +6,7 @@ services:
 #    ports:
 #      - "9001:80"
     networks:
-      - penpot-net
+      - penpot-network
       - proxy_private
     deploy:
       labels:
@@ -44,7 +44,7 @@ services:
     secrets:
       - db_password
     networks:
-      - penpot-net
+      - penpot-network
     deploy:
       replicas: 1
       restart_policy:
@@ -57,7 +57,7 @@ services:
   exporter:
     image: penpotapp/exporter:2.14.3
     networks:
-      - penpot-net
+      - penpot-network
     deploy:
       replicas: 1
       restart_policy:
@@ -69,7 +69,7 @@ services:
   redis:
     image: redis:7-alpine
     networks:
-      - penpot-net
+      - penpot-network
     deploy:
       replicas: 1
       restart_policy:
@@ -89,7 +89,7 @@ services:
     secrets:
       - db_password
     networks:
-      - penpot-net
+      - penpot-network
     deploy:
       replicas: 1
       restart_policy:
