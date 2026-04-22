@@ -20,9 +20,9 @@ services:
       - /mnt/docker/gitea/data:/data
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-#    ports:
-#      - "3000:3000"
-#      - "2222:22"
+    ports:
+      - "3000:3000"
+      - "2222:22"
     secrets:
       - db_password
     deploy:
