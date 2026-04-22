@@ -155,8 +155,10 @@ networks:
 secrets:
   npm_db_root_password:
     external: true
+    name: npm_db_root_password
   npm_db_password:
     external: true
+    name: npm_db_password
 
 
 volumes:
