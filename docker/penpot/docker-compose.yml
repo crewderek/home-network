@@ -45,10 +45,10 @@ services:
       - PENPOT_PUBLIC_URI=https://${SUBDOMAIN}.${BASE_DOMAIN}
       - PENPOT_DATABASE_URI=postgresql://db/penpot
       - PENPOT_DATABASE_USERNAME=penpot
-      - PENPOT_DATABASE_PASSWORD_FILE=/run/secrets/db_password
+      - PENPOT_DATABASE_PASSWORD_FILE=/run/secrets/penpot_postgres_password
       - PENPOT_REDIS_URI=redis://redis:6379/0
     secrets:
-      - db_password
+      - penpot_postgres_password
     networks:
       - penpot-network
     deploy:
@@ -91,9 +91,9 @@ services:
     environment:
       - POSTGRES_DB=penpot
       - POSTGRES_USER=penpot
-      - POSTGRES_PASSWORD_FILE=/run/secrets/db_password
+      - POSTGRES_PASSWORD_FILE=/run/secrets/penpot_postgres_password
     secrets:
-      - db_password
+      - penpot_postgres_password
     networks:
       - penpot-network
     deploy:
@@ -120,6 +120,6 @@ networks:
 #      device: ":${PENPOT_NFS_DIRECTORY}"
 
 secrets:
-  db_password:
+  penpot_postgres_password:
     external: true
     name: penpot_postgres_password
