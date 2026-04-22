@@ -44,6 +44,13 @@ services:
       - proxy_private
       - proxy_public
     deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.derek-crew.com`)"
+        - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
+        - "traefik.http.routers.traefik-dashboard.tls=true"
+        # This is the "magic" service name Traefik uses for itself
+        - "traefik.http.routers.traefik-dashboard.service=api@internal"
       placement:
         constraints:
           - node.role == manager
@@ -60,20 +67,16 @@ services:
       labels:
         - "traefik.enable=true"
         - "traefik.docker.network=proxy_private"
-
         # --- ROUTER 1: Standard Traffic (Port 80) ---
 #        - # 1. The Catch-All Rule (Matches any Host)
         - "traefik.http.routers.npm-catchall.rule=HostRegexp(`{host:.+}`)"
-
-#        - # 2. Set the lowest priority (1)
         - "traefik.http.routers.npm-catchall.priority=1"
-#        - "traefik.http.routers.npm-standard.rule=Host(${NPM_HOST_DEFINITIONS})"
-#        - "traefik.http.routers.npm-standard.rule=Host(${DOMAIN_LIST})"
         - "traefik.http.routers.npm-catchall.entrypoints=websecure"
         - "traefik.http.routers.npm-catchall.tls=true"
         - "traefik.http.routers.npm-catchall.service=npm-svc-80" # Link to Service 1
         - "traefik.http.routers.npm-catchall.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.npm-catchall.tls.domains[0].sans=*.${BASE_DOMAIN}"
+        - "traefik.http.services.npm-svc-80.loadbalancer.server.port=80"
 
         # --- ROUTER 2: Special Traffic (Port 81) ---
         - "traefik.http.routers.npm-special.rule=Host(`${NPM_SUBDOMAIN}.${BASE_DOMAIN}`)"
@@ -82,11 +85,6 @@ services:
         - "traefik.http.routers.npm-special.service=npm-svc-81" # Link to Service 2
         - "traefik.http.routers.npm-special.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.npm-special.tls.domains[0].sans=*.${BASE_DOMAIN}"
-        # --- SERVICE DEFINITIONS ---
-        # Service 1 points to NPM's internal port 80
-        - "traefik.http.services.npm-svc-80.loadbalancer.server.port=80"
-
-        # Service 2 points to NPM's internal port 81
         - "traefik.http.services.npm-svc-81.loadbalancer.server.port=81"
       replicas: 1
       placement:
