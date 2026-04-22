@@ -59,6 +59,7 @@ services:
     deploy:
       labels:
         - "traefik.enable=true"
+        - "traefik.docker.network=proxy_private"
 
         # --- ROUTER 1: Standard Traffic (Port 80) ---
 #        - "traefik.http.routers.npm-standard.rule=Host(`site1.com`, `site2.com`)"
