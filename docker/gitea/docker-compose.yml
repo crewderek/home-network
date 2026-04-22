@@ -54,7 +54,7 @@ services:
       - POSTGRES_PASSWORD_FILE=/run/secrets/db_password
       - POSTGRES_DB=gitea
     networks:
-      - gitea_net
+      - gitea-network
     volumes:
       - /opt/postgres/gitea:/var/lib/postgresql/data
     secrets:
