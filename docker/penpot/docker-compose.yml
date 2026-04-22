@@ -32,7 +32,7 @@ services:
         constraints:
           - node.labels.type != restricted
 
-  backend:
+  penpot-backend:
     image: penpotapp/backend:2.14.3
     volumes:
       - /mnt/docker/penpot/assets:/opt/data/assets
@@ -59,7 +59,7 @@ services:
           - node.labels.docker_mount == true
           - node.labels.type != restricted
 
-  exporter:
+  penpot-exporter:
     image: penpotapp/exporter:2.14.3
     networks:
       - penpot-network
