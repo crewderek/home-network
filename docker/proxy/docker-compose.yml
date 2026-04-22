@@ -82,8 +82,8 @@ services:
         - "traefik.http.services.svc-81.loadbalancer.server.port=81"
 
         # Everything else that doesn't match
-        - "traefik.http.routers.npm-catchall.rule=HostRegexp(`{subdomain:.+}.${BASE_DOMAIN}`)"
-        - "traefik.http.routers.npm-catchall.priority=1000"
+        - "traefik.http.routers.npm-catchall.rule=HostRegexp(`^.+\.derek-crew\.com$`)"
+        - "traefik.http.routers.npm-catchall.priority=1"
         - "traefik.http.routers.npm-catchall.entrypoints=websecure"
         - "traefik.http.routers.npm-catchall.tls=true"
         - "traefik.http.routers.npm-catchall.service=svc-80" # Link to Service 1
