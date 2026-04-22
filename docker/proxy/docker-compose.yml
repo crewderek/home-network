@@ -85,7 +85,7 @@ services:
           - node.labels.type != restricted
     volumes:
       - nginx_nfs:/data:subpath=data
-#      - nginx_nfs:/etc/letsencrypt:subpath=letsencrypt
+      - nginx_nfs:/etc/letsencrypt:subpath=letsencrypt
     secrets:
       - npm_db_password
     depends_on:
