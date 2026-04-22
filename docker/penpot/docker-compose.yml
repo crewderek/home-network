@@ -3,13 +3,14 @@ version: '3.8'
 services:
   penpot-frontend:
     image: penpotapp/frontend:2.14.3
-#    ports:
-#      - "9001:80"
+    ports:
+      - "9001:80"
     networks:
       - penpot-network
       - proxy_private
     depends_on:
-      - backend
+      - penpot-exporter
+      - penpot-backend
     deploy:
       labels:
         - "traefik.enable=true"
