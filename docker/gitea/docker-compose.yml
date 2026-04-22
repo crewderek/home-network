@@ -18,7 +18,7 @@ services:
       - gitea-network
       - proxy_private
     volumes:
-      - gitea-data:/data
+      - gitea-data:/data:subpath=data
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
 #    ports:
