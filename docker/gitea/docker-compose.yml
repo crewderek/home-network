@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  server:
+    image: gitea/gitea:1.26
+    container_name: gitea
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+      - GITEA__database__DB_TYPE=postgres
+      - GITEA__database__HOST=db:5432
+      - GITEA__database__NAME=gitea
+      - GITEA__database__USER=gitea
+      - GITEA__database__PASSWD_FILE=/run/secrets/db_password
+    restart: always
+    networks:
+      - gitea-network
+    volumes:
+      - /mnt/docker/gitea/data:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "3000:3000"
+      - "2222:22"
+    secrets:
+      - db_password
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        #        # The URL you will use to access Nextcloud
+        - "traefik.http.routers.gitea.rule=Host(`${SUBDOMAIN}.${BASE_DOMAIN}`)"
+        - "traefik.http.routers.gitea.entrypoints=websecure"
+        - "traefik.http.routers.gitea.tls=true"
+        - "traefik.http.routers.gitea.tls.certresolver=mydnschallenge"
+        #        # Critical for Swarm: Specify the internal container port
+        - "traefik.http.services.nextcloud.loadbalancer.server.port=3000"
+        #        # Ensure Traefik uses the correct network for routing
+        - "traefik.docker.network=proxy_private"
+        # This line is key: it tells Traefik to look for the cert containing these domains
+        - "traefik.http.routers.gitea.tls.domains[0].main=${BASE_DOMAIN}"
+        - "traefik.http.routers.gitea.tls.domains[0].sans=*.${BASE_DOMAIN}"
+      placement:
+        constraints:
+          - node.labels.docker_mount == true
+          - node.labels.type != restricted
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  db:
+    image: postgres:18.3-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=gitea
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db_password
+      - POSTGRES_DB=gitea
+    networks:
+      - gitea_net
+    volumes:
+      - /opt/postgres/gitea:/var/lib/postgresql/data
+    secrets:
+      - db_password
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.database_node == true
+
+networks:
+  gitea-network:
+    driver: overlay
+  proxy_private:
+    external: true
+
+#volumes:
+#  gitea_data:
+#    driver: local
+#  gitea_db:
+#    driver: local
+
+secrets:
+  db_password:
+    external: true
+    name: gitea_db_password
