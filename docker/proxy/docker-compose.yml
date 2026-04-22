@@ -98,7 +98,7 @@ services:
       DB_MYSQL_PORT: 3306
       DB_MYSQL_USER: "npm"
 #      DB_MYSQL_PASSWORD_FILE: ${NPM_DB_PASSWORD}
-      DB_MYSQL_PASSWORD_FILE: "/run/secrets/npm_db_password"
+      DB_MYSQL_PASSWORD_FILE: /run/secrets/npm_db_password
       DB_MYSQL_NAME: "npm"
       PUID: 1000
       PGID: 1000
@@ -109,12 +109,12 @@ services:
     image: jc21/mariadb-aria:10.11.5
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD_FILE: "/run/secrets/npm_db_password"
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/npm_db_password
 #      MYSQL_ROOT_PASSWORD: ${NPM_DB_ROOT_PASSWORD}
       MYSQL_DATABASE: 'npm'
       MYSQL_USER: 'npm'
 #      MYSQL_PASSWORD: ${NPM_DB_PASSWORD}
-      MYSQL_PASSWORD_FILE: "/run/secrets/npm_db_root_password"
+      MYSQL_PASSWORD_FILE: /run/secrets/npm_db_root_password
     volumes:
       - /opt/mysql/nginx-proxy-manager:/var/lib/mysql
     networks:
