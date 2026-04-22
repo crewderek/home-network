@@ -95,7 +95,8 @@ services:
       DB_MYSQL_HOST: "npm-db"
       DB_MYSQL_PORT: 3306
       DB_MYSQL_USER: "npm"
-      DB_MYSQL_PASSWORD_FILE: "/run/secrets/npm_db_password"
+      DB_MYSQL_PASSWORD: ${NPM_DB_PASSWORD}
+#      DB_MYSQL_PASSWORD_FILE: "/run/secrets/npm_db_password"
       DB_MYSQL_NAME: "npm"
       PUID: 1000
       PGID: 1000
