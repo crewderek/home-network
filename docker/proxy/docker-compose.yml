@@ -111,7 +111,7 @@ services:
       MARIADB_USER: 'npm'
       MARIADB_PASSWORD_FILE: /run/secrets/npm_db_password
     volumes:
-      - /opt/postgres/nginx_proxy_manager:/var/lib/mysql
+      - /opt/mysql/nginx-proxy-manager:/var/lib/mysql
     networks:
       - npm_network
     secrets:
