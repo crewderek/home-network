@@ -11,6 +11,9 @@ services:
       - "--providers.docker.exposedbydefault=false"
       - "--providers.docker.network=proxy-private"
       - "--api.dashboard=true"
+      # Enable the File Provider
+#      - "--providers.file.directory=/etc/traefik/dynamic"
+#      - "--providers.file.watch=true"
       # Entrypoints for HTTP and HTTPS
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
@@ -68,25 +71,25 @@ services:
       labels:
         - "traefik.enable=true"
         - "traefik.docker.network=proxy_private"
-        # --- ROUTER 1: Standard Traffic (Port 80) ---
-#        - # 1. The Catch-All Rule (Matches any Host)
-        - "traefik.http.routers.npm-catchall.rule=HostRegexp(`{host:.+}`)"
+
+        # NPM UI
+        - "traefik.http.routers.npm-ui.rule=Host(`${NPM_SUBDOMAIN}.${BASE_DOMAIN}`)"
+        - "traefik.http.routers.npm-ui.entrypoints=websecure"
+        - "traefik.http.routers.npm-ui.tls=true"
+#        - "traefik.http.routers.npm-ui.service=npm-svc-81" # Link to Service 2
+        - "traefik.http.routers.npm-ui.tls.domains[0].main=${BASE_DOMAIN}"
+        - "traefik.http.routers.npm-ui.tls.domains[0].sans=*.${BASE_DOMAIN}"
+        - "traefik.http.services.npm-ui.loadbalancer.server.port=81"
+
+        # Everything else that doesn't match
+        - "traefik.http.routers.npm-catchall.rule=HostRegexp(`{subdomain:.+}.${BASE_DOMAIN}`)"
         - "traefik.http.routers.npm-catchall.priority=1"
         - "traefik.http.routers.npm-catchall.entrypoints=websecure"
         - "traefik.http.routers.npm-catchall.tls=true"
-        - "traefik.http.routers.npm-catchall.service=npm-svc-80" # Link to Service 1
+#        - "traefik.http.routers.npm-catchall.service=npm-svc-80" # Link to Service 1
         - "traefik.http.routers.npm-catchall.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.npm-catchall.tls.domains[0].sans=*.${BASE_DOMAIN}"
-        - "traefik.http.services.npm-svc-80.loadbalancer.server.port=80"
-
-        # --- ROUTER 2: Special Traffic (Port 81) ---
-        - "traefik.http.routers.npm-special.rule=Host(`${NPM_SUBDOMAIN}.${BASE_DOMAIN}`)"
-        - "traefik.http.routers.npm-special.entrypoints=websecure"
-        - "traefik.http.routers.npm-special.tls=true"
-        - "traefik.http.routers.npm-special.service=npm-svc-81" # Link to Service 2
-        - "traefik.http.routers.npm-special.tls.domains[0].main=${BASE_DOMAIN}"
-        - "traefik.http.routers.npm-special.tls.domains[0].sans=*.${BASE_DOMAIN}"
-        - "traefik.http.services.npm-svc-81.loadbalancer.server.port=81"
+        - "traefik.http.services.npm-catchall.loadbalancer.server.port=80"
       replicas: 1
       placement:
         constraints:
