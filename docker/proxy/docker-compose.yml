@@ -54,6 +54,8 @@ services:
     networks:
         - proxy_private
         - npm_network
+    ports:
+      - "81:81"
     deploy:
       labels:
         - "traefik.enable=true"
