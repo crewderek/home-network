@@ -18,7 +18,7 @@ services:
       - gitea-network
       - proxy_private
     volumes:
-      - /mnt/docker/gitea/data:/data
+      - gitea-data:/data
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
 #    ports:
@@ -76,11 +76,14 @@ networks:
   proxy_private:
     external: true
 
-#volumes:
-#  gitea_data:
-#    driver: local
-#  gitea_db:
-#    driver: local
+volumes:
+  gitea-data:
+    driver: local
+    name: gitea-data-nfs
+    driver_opts:
+      type: nfs
+      o: "addr=${NFS_ADDRESS},nfsvers=3,nolock,soft,rw" # Replace with your NFS Server IP
+      device: ":${GITEA_NFS_DIRECTORY}"
 
 secrets:
   db_password:
