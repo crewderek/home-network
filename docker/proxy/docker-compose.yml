@@ -70,7 +70,7 @@ services:
         - proxy_private
         - npm_network
     ports:
-      - "8880:80"
+      - "8880:8880"
 #      - "81:81"
     deploy:
       labels:
