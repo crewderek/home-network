@@ -71,7 +71,7 @@ services:
         - npm_network
     ports:
       - "8880:8880"
-#      - "81:81"
+      - "51280:51280"
     deploy:
       labels:
         - "traefik.enable=true"
