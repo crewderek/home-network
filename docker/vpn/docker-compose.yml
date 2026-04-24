@@ -11,9 +11,9 @@ services:
 
     image: ghcr.io/wg-easy/wg-easy:15
     environment:
-          - HOST=${WG_HOST}
-          - PASSWORD=${WG_PASSWORD}
-          - WG_PORT=51820
+#          - HOST=${WG_HOST}
+#          - PASSWORD=${WG_PASSWORD}
+          - PORT=51820
     networks:
       - vpn-internal-network
     volumes:
