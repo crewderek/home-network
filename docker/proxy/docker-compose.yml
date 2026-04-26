@@ -13,6 +13,7 @@ services:
       - "--api.dashboard=true"
       - "--providers.file.filename=/etc/traefik/dynamic/dynamic.yml" # Point to the file
       - "--providers.file.watch=true"
+      - "--serverstransport.insecureskipverify=true"
       # Enable the File Provider
 #      - "--providers.file.directory=/etc/traefik/dynamic"
 #      - "--providers.file.watch=true"
