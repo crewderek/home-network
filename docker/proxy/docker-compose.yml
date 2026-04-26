@@ -11,7 +11,7 @@ services:
       - "--providers.docker.exposedbydefault=false"
       - "--providers.docker.network=proxy-private"
       - "--api.dashboard=true"
-      - "--providers.file.directory=/etc/traefik" # Point to the file
+      - "--providers.file.directory=/etc/traefik/dynamic" # Point to the file
       - "--providers.file.watch=true"
       # Enable the File Provider
 #      - "--providers.file.directory=/etc/traefik/dynamic"
@@ -48,7 +48,7 @@ services:
         mode: ingress
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /mnt/docker/traefik/dynamic.yml:/etc/traefik/dynamic.yml:ro
+      - /mnt/docker/traefik/dynamic:/etc/traefik/dynamic:ro
       - /mnt/docker/traefik/lets-encrypt:/letsencrypt
 #      - lets-encrypt-data:/letsencrypt
     networks:
