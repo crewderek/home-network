@@ -11,6 +11,8 @@ services:
       - "--providers.docker.exposedbydefault=false"
       - "--providers.docker.network=proxy-private"
       - "--api.dashboard=true"
+      - "--providers.file.filename=/etc/traefik/dynamic.yml" # Point to the file
+      - "--providers.file.watch=true"
       # Enable the File Provider
 #      - "--providers.file.directory=/etc/traefik/dynamic"
 #      - "--providers.file.watch=true"
@@ -61,8 +63,6 @@ services:
         # This is the "magic" service name Traefik uses for itself
         - "traefik.http.routers.traefik-dashboard.service=api@internal"
         - "traefik.http.services.traefik.loadbalancer.server.port=8080"
-        - "--providers.file.filename=/etc/traefik/dynamic.yml" # Point to the file
-        - "--providers.file.watch=true"
       placement:
         constraints:
           - node.labels.docker_mount == true
