@@ -62,7 +62,7 @@ services:
         - "traefik.http.services.traefik.loadbalancer.server.port=8080"
       placement:
         constraints:
-          - node.labels.docker_mount = true
+          - node.labels.docker_mount == true
           - node.role == manager
           - node.labels.type != restricted
 
