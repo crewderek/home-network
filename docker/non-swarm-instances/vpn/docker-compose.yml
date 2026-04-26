@@ -52,6 +52,7 @@ services:
 networks:
   vpn-internal-network:
     driver: overlay
+
     ipam:
       driver: default
       config:
