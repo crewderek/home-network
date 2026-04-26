@@ -46,6 +46,7 @@ services:
         mode: ingress
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /mnt/docker/traefik/dynamic.yml:/etc/traefik/dynamic.yml:ro
       - lets-encrypt-data:/letsencrypt
     networks:
       - proxy_private
@@ -61,86 +62,87 @@ services:
         - "traefik.http.services.traefik.loadbalancer.server.port=8080"
       placement:
         constraints:
+          - node.labels.docker_mount = true
           - node.role == manager
           - node.labels.type != restricted
 
-  nginx_proxy_manager:
-    image: 'jc21/nginx-proxy-manager:2.14.0'
-    networks:
-        - proxy_private
-        - npm_network
-    ports:
-      - "8880:8880"
-#      - "51280:51280"
-    deploy:
-      labels:
-        - "traefik.enable=true"
-        - "traefik.docker.network=proxy_private"
-
-        # NPM UI
-        - "traefik.http.routers.npm-ui.rule=Host(`${NPM_SUBDOMAIN}.${BASE_DOMAIN}`)"
-        - "traefik.http.routers.npm-ui.entrypoints=websecure"
-        - "traefik.http.routers.npm-ui.tls=true"
-        - "traefik.http.routers.npm-ui.service=svc-81" # Link to Service 2
-        - "traefik.http.routers.npm-ui.tls.domains[0].main=${BASE_DOMAIN}"
-        - "traefik.http.routers.npm-ui.tls.domains[0].sans=*.${BASE_DOMAIN}"
-        - "traefik.http.services.svc-81.loadbalancer.server.port=81"
-
-        # Everything else that doesn't match
-        - "traefik.http.routers.npm-catchall.rule=HostRegexp(`${HOST_REGEX}`)"
-        - "traefik.http.routers.npm-catchall.priority=1"
-        - "traefik.http.routers.npm-catchall.entrypoints=websecure"
-        - "traefik.http.routers.npm-catchall.tls=true"
-        - "traefik.http.routers.npm-catchall.service=svc-80" # Link to Service 1
-        - "traefik.http.routers.npm-catchall.tls.domains[0].main=${BASE_DOMAIN}"
-        - "traefik.http.routers.npm-catchall.tls.domains[0].sans=*.${BASE_DOMAIN}"
-        - "traefik.http.services.svc-80.loadbalancer.server.port=80"
-      replicas: 1
-      placement:
-        constraints:
-#          - node.labels.docker_mount == true
-          - node.labels.type != restricted
-    volumes:
-      - nginx_nfs:/data:subpath=data
-      - nginx_nfs:/etc/letsencrypt:subpath=letsencrypt
-    secrets:
-      - npm_db_password
-    depends_on:
-      - npm-db
-    environment:
-      # Database configuration
-      DB_MYSQL_HOST: "npm-db"
-      DB_MYSQL_PORT: 3306
-      DB_MYSQL_USER: "npm"
-      DB_MYSQL_PASSWORD: ${NPM_DB_PASSWORD}
-#      DB_MYSQL_PASSWORD_FILE: /run/secrets/npm_db_password
-      DB_MYSQL_NAME: "npm"
-      PUID: 1000
-      PGID: 1000
-      TZ: America/Denver
-
-
-  npm-db:
-    image: jc21/mariadb-aria:10.11.5
-    restart: always
-    environment:
-#      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/npm_db_password
-      MYSQL_ROOT_PASSWORD: ${NPM_DB_ROOT_PASSWORD}
-      MYSQL_DATABASE: 'npm'
-      MYSQL_USER: 'npm'
-      MYSQL_PASSWORD: ${NPM_DB_PASSWORD}
-#      MYSQL_PASSWORD_FILE: /run/secrets/npm_db_root_password
-    volumes:
-      - /opt/mysql/nginx-proxy-manager:/var/lib/mysql
-    networks:
-      - npm_network
-    secrets:
-      - npm_db_root_password
-      - npm_db_password
-    deploy:
-      placement:
-        constraints:
-          - node.labels.database_node == true
+#  nginx_proxy_manager:
+#    image: 'jc21/nginx-proxy-manager:2.14.0'
+#    networks:
+#        - proxy_private
+#        - npm_network
+#    ports:
+#      - "8880:8880"
+##      - "51280:51280"
+#    deploy:
+#      labels:
+#        - "traefik.enable=true"
+#        - "traefik.docker.network=proxy_private"
+#
+#        # NPM UI
+#        - "traefik.http.routers.npm-ui.rule=Host(`${NPM_SUBDOMAIN}.${BASE_DOMAIN}`)"
+#        - "traefik.http.routers.npm-ui.entrypoints=websecure"
+#        - "traefik.http.routers.npm-ui.tls=true"
+#        - "traefik.http.routers.npm-ui.service=svc-81" # Link to Service 2
+#        - "traefik.http.routers.npm-ui.tls.domains[0].main=${BASE_DOMAIN}"
+#        - "traefik.http.routers.npm-ui.tls.domains[0].sans=*.${BASE_DOMAIN}"
+#        - "traefik.http.services.svc-81.loadbalancer.server.port=81"
+#
+#        # Everything else that doesn't match
+#        - "traefik.http.routers.npm-catchall.rule=HostRegexp(`${HOST_REGEX}`)"
+#        - "traefik.http.routers.npm-catchall.priority=1"
+#        - "traefik.http.routers.npm-catchall.entrypoints=websecure"
+#        - "traefik.http.routers.npm-catchall.tls=true"
+#        - "traefik.http.routers.npm-catchall.service=svc-80" # Link to Service 1
+#        - "traefik.http.routers.npm-catchall.tls.domains[0].main=${BASE_DOMAIN}"
+#        - "traefik.http.routers.npm-catchall.tls.domains[0].sans=*.${BASE_DOMAIN}"
+#        - "traefik.http.services.svc-80.loadbalancer.server.port=80"
+#      replicas: 1
+#      placement:
+#        constraints:
+##          - node.labels.docker_mount == true
+#          - node.labels.type != restricted
+#    volumes:
+#      - nginx_nfs:/data:subpath=data
+#      - nginx_nfs:/etc/letsencrypt:subpath=letsencrypt
+#    secrets:
+#      - npm_db_password
+#    depends_on:
+#      - npm-db
+#    environment:
+#      # Database configuration
+#      DB_MYSQL_HOST: "npm-db"
+#      DB_MYSQL_PORT: 3306
+#      DB_MYSQL_USER: "npm"
+#      DB_MYSQL_PASSWORD: ${NPM_DB_PASSWORD}
+##      DB_MYSQL_PASSWORD_FILE: /run/secrets/npm_db_password
+#      DB_MYSQL_NAME: "npm"
+#      PUID: 1000
+#      PGID: 1000
+#      TZ: America/Denver
+#
+#
+#  npm-db:
+#    image: jc21/mariadb-aria:10.11.5
+#    restart: always
+#    environment:
+##      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/npm_db_password
+#      MYSQL_ROOT_PASSWORD: ${NPM_DB_ROOT_PASSWORD}
+#      MYSQL_DATABASE: 'npm'
+#      MYSQL_USER: 'npm'
+#      MYSQL_PASSWORD: ${NPM_DB_PASSWORD}
+##      MYSQL_PASSWORD_FILE: /run/secrets/npm_db_root_password
+#    volumes:
+#      - /opt/mysql/nginx-proxy-manager:/var/lib/mysql
+#    networks:
+#      - npm_network
+#    secrets:
+#      - npm_db_root_password
+#      - npm_db_password
+#    deploy:
+#      placement:
+#        constraints:
+#          - node.labels.database_node == true
 
 networks:
   proxy_public:
@@ -154,9 +156,9 @@ networks:
   npm_network:
     driver: overlay
     attachable: true
-  maria_db_net:
-    external: true
-    name: database_maria_db_net
+#  maria_db_net:
+#    external: true
+#    name: database_maria_db_net
   dns_network:
     external: true
     name: dns_dns_net
@@ -171,21 +173,21 @@ networks:
     external: true
     name: immich-network
 
-secrets:
-  npm_db_root_password:
-    external: true
-    name: npm_db_root_password
-  npm_db_password:
-    external: true
-    name: npm_db_password
+#secrets:
+#  npm_db_root_password:
+#    external: true
+#    name: npm_db_root_password
+#  npm_db_password:
+#    external: true
+#    name: npm_db_password
 
 
 volumes:
-  nginx_nfs:
-    driver: local
-    driver_opts:
-      type: nfs
-      o: "addr=${NFS_ADDRESS},nfsvers=3,nolock,soft,rw"
-      device: ":${PROXY_DATA_NFS_DIRECTORY}"
+#  nginx_nfs:
+#    driver: local
+#    driver_opts:
+#      type: nfs
+#      o: "addr=${NFS_ADDRESS},nfsvers=3,nolock,soft,rw"
+#      device: ":${PROXY_DATA_NFS_DIRECTORY}"
   lets-encrypt-data:
     driver: local
