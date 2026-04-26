@@ -47,7 +47,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /mnt/docker/traefik/dynamic.yml:/etc/traefik/dynamic.yml:ro
-      - lets-encrypt-data:/letsencrypt
+      - /mnt/docker/traefik/lets-encrypt:/letsencrypt
+#      - lets-encrypt-data:/letsencrypt
     networks:
       - proxy_private
       - proxy_public
@@ -60,6 +61,8 @@ services:
         # This is the "magic" service name Traefik uses for itself
         - "traefik.http.routers.traefik-dashboard.service=api@internal"
         - "traefik.http.services.traefik.loadbalancer.server.port=8080"
+        - "--providers.file.filename=/etc/traefik/dynamic.yml" # Point to the file
+        - "--providers.file.watch=true"
       placement:
         constraints:
           - node.labels.docker_mount == true
