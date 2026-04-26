@@ -11,7 +11,7 @@ services:
       - "--providers.docker.exposedbydefault=false"
       - "--providers.docker.network=proxy-private"
       - "--api.dashboard=true"
-      - "--providers.file.directory=/etc/traefik/dynamic/" # Point to the directory
+      - "--providers.file.filename=/etc/traefik/dynamic/dynamic.yml" # Point to the file
       - "--providers.file.watch=true"
       # Enable the File Provider
 #      - "--providers.file.directory=/etc/traefik/dynamic"
