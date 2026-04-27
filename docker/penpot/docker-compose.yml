@@ -44,7 +44,9 @@ services:
       - db
       - redis
     environment:
-      - PENPOT_FLAGS=enable-registration enable-login-with-password enable-prepl-server disable-email-verification
+      - PENPOT_FLAGS=enable-login-with-password
+      #Initial setup
+#      - PENPOT_FLAGS=enable-registration enable-login-with-password enable-prepl-server disable-email-verification
       - PENPOT_PUBLIC_URI=https://${SUBDOMAIN}.${BASE_DOMAIN}
       - PENPOT_DATABASE_URI=postgresql://db/penpot
       - PENPOT_DATABASE_USERNAME=penpot
