@@ -85,30 +85,85 @@ services:
           - node.labels.docker_mount == true
           - node.labels.type != restricted
   # MOVIES
-#  radarr:
-#    image: lscr.io/linuxserver/radarr:latest
-#    networks:
-#      - arr_network
-##    ports:
-##      - 7878:7878
-#    volumes:
-#      - /mnt/shared/config/radarr:/config
-#      - /mnt/shared/data:/data
-#    deploy:
-#      replicas: 1
+  radarr:
+    image: lscr.io/linuxserver/radarr:6.1.1
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    networks:
+      - arr_network
+      - proxy_private
+#    ports:
+#      - 7878:7878
+    volumes:
+      - type: volume
+        source: arr-data
+        target: /config
+        volume:
+          subpath: radarr/config
+          nocopy: true
+#  -v /path/to/movies:/movies `#optional` \
+#  -v /path/to/download-client-downloads:/downloads `#optional` \
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        #        # The URL you will use to access Nextcloud
+        - "traefik.http.routers.radarr.rule=Host(`${RADARR_SUBDOMAIN}.${BASE_DOMAIN}`)"
+        - "traefik.http.routers.radarr.entrypoints=websecure"
+        - "traefik.http.routers.radarr.tls=true"
+        - "traefik.http.routers.radarr.tls.certresolver=mydnschallenge"
+        #        # Critical for Swarm: Specify the internal container port
+        - "traefik.http.services.radarr.loadbalancer.server.port=7878"
+        #        # Ensure Traefik uses the correct network for routing
+        - "traefik.docker.network=proxy_private"
+        # This line is key: it tells Traefik to look for the cert containing these domains
+        - "traefik.http.routers.radarr.tls.domains[0].main=${BASE_DOMAIN}"
+        - "traefik.http.routers.radarr.tls.domains[0].sans=*.${BASE_DOMAIN}"
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.docker_mount == true
+          - node.labels.type != restricted
 #
-#  # TV SHOWS
-#  sonarr:
-#    image: lscr.io/linuxserver/sonarr:latest
-#    networks:
-#      - arr_network
-##    ports:
-##      - 8989:8989
-#    volumes:
-#      - /mnt/shared/config/sonarr:/config
-#      - /mnt/shared/data:/data
-#    deploy:
-#      replicas: 1
+  # TV SHOWS
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:4.0.17
+    networks:
+      - arr_network
+      - proxy_private
+#    ports:
+#      - 8989:8989
+    volumes:
+      - type: volume
+        source: arr-data
+        target: /config
+        volume:
+          subpath: sonarr/config
+          nocopy: true
+#     - /path/to/tvseries:/tv #optional
+#      - /path/to/downloadclient-downloads:/downloads #optional
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        #        # The URL you will use to access Nextcloud
+        - "traefik.http.routers.sonarr.rule=Host(`${SONARR_SUBDOMAIN}.${BASE_DOMAIN}`)"
+        - "traefik.http.routers.sonarr.entrypoints=websecure"
+        - "traefik.http.routers.sonarr.tls=true"
+        - "traefik.http.routers.sonarr.tls.certresolver=mydnschallenge"
+        #        # Critical for Swarm: Specify the internal container port
+        - "traefik.http.services.sonarr.loadbalancer.server.port=8989"
+        #        # Ensure Traefik uses the correct network for routing
+        - "traefik.docker.network=proxy_private"
+        # This line is key: it tells Traefik to look for the cert containing these domains
+        - "traefik.http.routers.sonarr.tls.domains[0].main=${BASE_DOMAIN}"
+        - "traefik.http.routers.sonarr.tls.domains[0].sans=*.${BASE_DOMAIN}"
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.docker_mount == true
+          - node.labels.type != restricted
+#
 #
 ## NEW: MUSIC
 #  lidarr:
