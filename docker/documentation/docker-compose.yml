@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   bookstack_db:
-    image: lscr.io/linuxserver/mariadb:latest
+    image: lscr.io/linuxserver/mariadb:11.4.10
     environment:
       - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/bookstack_mysql_root_password
       - MYSQL_DATABASE=bookstack
@@ -12,6 +12,9 @@ services:
       - /opt/mysql/bookstack:/config
     networks:
       - bookstack_network
+    secrets:
+      - bookstack_mysql_password
+      - bookstack_mysql_root_password
     deploy:
       placement:
         constraints:
@@ -20,14 +23,14 @@ services:
         condition: on-failure
 
   bookstack:
-    image: lscr.io/linuxserver/bookstack:latest
+    image: lscr.io/linuxserver/bookstack:26.03.3
     environment:
       - PUID=1000
       - PGID=1000
-      - APP_URL=https://your-bookstack-url.com
+      - APP_URL=https://${SUBDOMAIN}.${BASE_DOMAIN}
       - DB_HOST=bookstack_db
       - DB_USER=bookstack
-      - DB_PASS=your_db_password
+      - DB_PASS=${BOOKSTACK_DB_PASSWORD}
       - DB_DATABASE=bookstack
     volumes:
       - bookstack_data:/config
@@ -58,6 +61,12 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
+
+secrets:
+  bookstack_mysql_root_password:
+    external: true
+  bookstack_mysql_password:
+    external: true
 
 networks:
   bookstack_network:
