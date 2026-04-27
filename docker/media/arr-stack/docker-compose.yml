@@ -57,7 +57,11 @@ services:
       - PGID=1000
       - TZ=Etc/UTC
     volumes:
-      - arr-data:/config:subpath=/prowlarr/config
+      - type: volume
+        source: arr-data
+        target: /config
+        volume:
+          subpath: /prowlarr/config
     deploy:
       labels:
         - "traefik.enable=true"
