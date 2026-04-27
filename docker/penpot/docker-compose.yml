@@ -11,6 +11,8 @@ services:
     depends_on:
       - penpot-exporter
       - penpot-backend
+    environment:
+      PENPOT_EXPORTER_ADDRESS: http://penpot-exporter:9001
     deploy:
       labels:
         - "traefik.enable=true"
@@ -60,17 +62,17 @@ services:
           - node.labels.docker_mount == true
           - node.labels.type != restricted
 
-#  penpot-exporter:
-#    image: penpotapp/exporter:2.14.3
-#    networks:
-#      - penpot-network
-#    deploy:
-#      replicas: 1
-#      restart_policy:
-#        condition: on-failure
-#      placement:
-#        constraints:
-#          - node.labels.type != restricted
+  penpot-exporter:
+    image: penpotapp/exporter:2.14.3
+    networks:
+      - penpot-network
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.type != restricted
 
   redis:
     image: redis:7-alpine
