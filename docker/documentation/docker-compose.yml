@@ -4,10 +4,10 @@ services:
   bookstack_db:
     image: lscr.io/linuxserver/mariadb:11.4.10
     environment:
-      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/bookstack_mysql_root_password
+      - MYSQL_ROOT_PASSWORD=${BOOKSTACK_DB_PASSWORD}
       - MYSQL_DATABASE=bookstack
       - MYSQL_USER=bookstack
-      - MYSQL_PASSWORD_FILE=/run/secrets/bookstack_mysql_password
+      - MYSQL_PASSWORD=${BOOKSTACK_DB_PASSWORD}
     volumes:
       - /opt/mysql/bookstack:/config
     networks:
@@ -35,8 +35,8 @@ services:
       - APP_KEY=${BOOKSTACK_APP_KEY}
     volumes:
       - bookstack_data:/config:subpath=config
-    ports:
-      - "6875:80"
+#    ports:
+#      - "6875:80"
     networks:
       - bookstack_network
       - proxy_private
