@@ -39,11 +39,13 @@ services:
     networks:
       - bookstack_network
       - proxy_private
+    depends_on:
+      - bookstack_db
     deploy:
       labels:
         - "traefik.enable=true"
         #        # The URL you will use to access Nextcloud
-        - "traefik.http.routers.penpot-frontend.rule=Host(`${SUBDOMAIN}.${BASE_DOMAIN}`)"
+        - "traefik.http.routers.penpot-frontend.rule=Host(`${BOOKSTACK_SUBDOMAIN}.${BASE_DOMAIN}`)"
         - "traefik.http.routers.penpot-frontend.entrypoints=websecure"
         - "traefik.http.routers.penpot-frontend.tls=true"
         - "traefik.http.routers.penpot-frontend.tls.certresolver=mydnschallenge"
