@@ -145,6 +145,8 @@ networks:
   arr_network:
     driver: overlay
     attachable: true
+  proxy_private:
+    external: true
 
 volumes:
   arr-data:
