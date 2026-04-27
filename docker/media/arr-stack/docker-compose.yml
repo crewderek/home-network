@@ -52,8 +52,12 @@ services:
       - arr_network
 #    ports:
 #      - 9696:9696
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
     volumes:
-      - /mnt/docker/prowlarr/config:/config
+      - arr-data:/config:subpath=/prowlarr/config
     deploy:
       labels:
         - "traefik.enable=true"
@@ -136,3 +140,11 @@ networks:
   arr_network:
     driver: overlay
     attachable: true
+
+volumes:
+  arr-data:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${NFS_ADDRESS},nfsvers=3,nolock,soft,rw" # Replace with your NFS Server IP
+      device: ":${ARR_NFS_DIRECTORY}"
