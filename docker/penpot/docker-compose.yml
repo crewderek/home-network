@@ -49,6 +49,7 @@ services:
       - PENPOT_DATABASE_USERNAME=penpot
       - PENPOT_DATABASE_PASSWORD=/run/secrets/penpot_postgres_password
       - PENPOT_REDIS_URI=redis://redis:6379/0
+      - PENPOT_SECRET_KEY=${PENPOT_SECRET_KEY}
     secrets:
       - penpot_postgres_password
     networks:
@@ -67,7 +68,8 @@ services:
     networks:
       - penpot-network
     environment:
-      PENPOT_PUBLIC_URI: http://penpot-frontend:8080
+      - PENPOT_PUBLIC_URI=http://penpot-frontend:8080
+      - PENPOT_SECRET_KEY=${PENPOT_SECRET_KEY}
     deploy:
       replicas: 1
       restart_policy:
