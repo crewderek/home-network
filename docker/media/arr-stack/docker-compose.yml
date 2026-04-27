@@ -211,7 +211,7 @@ services:
           - node.labels.type != restricted
 #
 #  # NEW: BOOKS
-  readarr:
+  lazy-librarian:
     image: lscr.io/linuxserver/lazylibrarian:latest # Develop branch is often preferred for Readarr
     networks:
       - arr_network
