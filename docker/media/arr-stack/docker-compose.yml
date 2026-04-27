@@ -61,7 +61,8 @@ services:
         source: arr-data
         target: /config
         volume:
-          subpath: /prowlarr/config
+          subpath: prowlarr/config
+          nocopy: true
     deploy:
       labels:
         - "traefik.enable=true"
@@ -150,5 +151,5 @@ volumes:
     driver: local
     driver_opts:
       type: nfs
-      o: "addr=${NFS_ADDRESS},nfsvers=3,nolock,soft,rw" # Replace with your NFS Server IP
+      o: "addr=${NFS_ADDRESS},nfsvers=4,nolock,soft,rw" # Replace with your NFS Server IP
       device: ":${ARR_NFS_DIRECTORY}"
