@@ -210,21 +210,47 @@ services:
           - node.labels.docker_mount == true
           - node.labels.type != restricted
 #
-#  # NEW: BOOKS --- DEPRECATED, NO LONGER MAINTAINED
-#  readarr:
-#    image: lscr.io/linuxserver/readarr:develop # Develop branch is often preferred for Readarr
-#    networks:
-#      - arr_network
-##    ports:
-##      - 8787:8787
-#    environment:
-#      - PUID=1000
-#      - PGID=1000
-#    volumes:
-#      - /mnt/shared/config/readarr:/config
-#      - /mnt/shared/data:/data
-#    deploy:
-#      replicas: 1
+#  # NEW: BOOKS
+  readarr:
+    image: lscr.io/linuxserver/lazylibrarian:latest # Develop branch is often preferred for Readarr
+    networks:
+      - arr_network
+      - proxy_private
+#    ports:
+#      - 5299:5299
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Denver
+    volumes:
+      - type: volume
+        source: arr-data
+        target: /config
+        volume:
+          subpath: lazylibrarian/config
+          nocopy: true
+#      - /path/to/downloads/:/downloads
+#      - /path/to/data/:/books #optional
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        #        # The URL you will use to access Nextcloud
+        - "traefik.http.routers.lazylibrarian.rule=Host(`${LAZYLIBRARIAN_SUBDOMAIN}.${BASE_DOMAIN}`)"
+        - "traefik.http.routers.lazylibrarian.entrypoints=websecure"
+        - "traefik.http.routers.lazylibrarian.tls=true"
+        - "traefik.http.routers.lazylibrarian.tls.certresolver=mydnschallenge"
+        #        # Critical for Swarm: Specify the internal container port
+        - "traefik.http.services.lazylibrarian.loadbalancer.server.port=5299"
+        #        # Ensure Traefik uses the correct network for routing
+        - "traefik.docker.network=proxy_private"
+        # This line is key: it tells Traefik to look for the cert containing these domains
+        - "traefik.http.routers.lazylibrarian.tls.domains[0].main=${BASE_DOMAIN}"
+        - "traefik.http.routers.lazylibrarian.tls.domains[0].sans=*.${BASE_DOMAIN}"
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.docker_mount == true
+          - node.labels.type != restricted
 
 networks:
   arr_network:
