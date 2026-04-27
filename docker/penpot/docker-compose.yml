@@ -12,7 +12,7 @@ services:
       - penpot-exporter
       - penpot-backend
     environment:
-      PENPOT_EXPORTER_ADDRESS: http://penpot-exporter:9001
+      PENPOT_PUBLIC_URI: https://${SUBDOMAIN}.${BASE_DOMAIN}
     deploy:
       labels:
         - "traefik.enable=true"
@@ -66,6 +66,8 @@ services:
     image: penpotapp/exporter:2.14.3
     networks:
       - penpot-network
+    environment:
+      PENPOT_PUBLIC_URI: http://penpot-frontend:8080
     deploy:
       replicas: 1
       restart_policy:
