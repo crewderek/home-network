@@ -1,0 +1,138 @@
+services:
+  # VPN GATEWAY
+#  gluetun:
+#    image: qmcgaw/gluetun
+#    cap_add:
+#      - NET_ADMIN
+#    devices:
+#      - /dev/net/tun:/dev/net/tun
+#    environment:
+#      - VPN_SERVICE_PROVIDER=custom
+#      - VPN_TYPE=wireguard
+#      - WIREGUARD_PRIVATE_KEY=your_key_here
+#      - WIREGUARD_ADDRESSES=10.0.0.2/32
+#      - FIREWALL_OUTBOUND_SUBNETS=192.168.1.0/24
+#    networks:
+#      - arr_network
+#    ports:
+#      - target: 8080
+#        published: 8080
+#        mode: host # Host mode ensures we don't hit routing mesh issues
+#    deploy:
+#      placement:
+#        constraints:
+#          - node.role == worker # Or pick a specific node name
+
+  # DOWNLOADER
+  # Note: Swarm doesn't support network_mode: service:gluetun.
+  # For Swarm, it is standard practice to run the VPN and Client
+  # in a single custom image or via a sidecar pod-like structure.
+  # However, for a home lab, the most stable Swarm approach is
+  # keeping them as separate services on the same network:
+#  qbittorrent:
+#    image: lscr.io/linuxserver/qbittorrent:latest
+#    environment:
+#      - PUID=1000
+#      - PGID=1000
+#      - WEBUI_PORT=8080
+#    volumes:
+#      - /mnt/shared/config/qbittorrent:/config
+#      - /mnt/shared/data/downloads:/data/downloads
+#    networks:
+#      - arr_network
+#    deploy:
+#      placement:
+#        constraints:
+#          - node.hostname == vpn-node-01 # Keep qbit and vpn on same node
+
+  # INDEXER MANAGER
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:2.3.5
+    networks:
+      - arr_network
+#    ports:
+#      - 9696:9696
+    volumes:
+      - /mnt/docker/:/config
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        #        # The URL you will use to access Nextcloud
+        - "traefik.http.routers.prowlarr.rule=Host(`${PROWLARR_SUBDOMAIN}.${BASE_DOMAIN}`)"
+        - "traefik.http.routers.prowlarr.entrypoints=websecure"
+        - "traefik.http.routers.prowlarr.tls=true"
+        - "traefik.http.routers.prowlarr.tls.certresolver=mydnschallenge"
+        #        # Critical for Swarm: Specify the internal container port
+        - "traefik.http.services.prowlarr.loadbalancer.server.port=9696"
+        #        # Ensure Traefik uses the correct network for routing
+        - "traefik.docker.network=proxy_private"
+        # This line is key: it tells Traefik to look for the cert containing these domains
+        - "traefik.http.routers.prowlarr.tls.domains[0].main=${BASE_DOMAIN}"
+        - "traefik.http.routers.prowlarr.tls.domains[0].sans=*.${BASE_DOMAIN}"
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.docker_mount == true
+          - node.labels.type != restricted
+  # MOVIES
+#  radarr:
+#    image: lscr.io/linuxserver/radarr:latest
+#    networks:
+#      - arr_network
+##    ports:
+##      - 7878:7878
+#    volumes:
+#      - /mnt/shared/config/radarr:/config
+#      - /mnt/shared/data:/data
+#    deploy:
+#      replicas: 1
+#
+#  # TV SHOWS
+#  sonarr:
+#    image: lscr.io/linuxserver/sonarr:latest
+#    networks:
+#      - arr_network
+##    ports:
+##      - 8989:8989
+#    volumes:
+#      - /mnt/shared/config/sonarr:/config
+#      - /mnt/shared/data:/data
+#    deploy:
+#      replicas: 1
+#
+## NEW: MUSIC
+#  lidarr:
+#    image: lscr.io/linuxserver/lidarr:latest
+#    networks:
+#      - arr_network
+##    ports:
+##      - 8686:8686
+#    environment:
+#      - PUID=1000
+#      - PGID=1000
+#    volumes:
+#      - /mnt/shared/config/lidarr:/config
+#      - /mnt/shared/data:/data
+#    deploy:
+#      replicas: 1
+#
+#  # NEW: BOOKS
+#  readarr:
+#    image: lscr.io/linuxserver/readarr:develop # Develop branch is often preferred for Readarr
+#    networks:
+#      - arr_network
+##    ports:
+##      - 8787:8787
+#    environment:
+#      - PUID=1000
+#      - PGID=1000
+#    volumes:
+#      - /mnt/shared/config/readarr:/config
+#      - /mnt/shared/data:/data
+#    deploy:
+#      replicas: 1
+
+networks:
+  arr_network:
+    driver: overlay
+    attachable: true
