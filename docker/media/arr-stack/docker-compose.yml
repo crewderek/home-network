@@ -53,7 +53,7 @@ services:
 #    ports:
 #      - 9696:9696
     volumes:
-      - /mnt/docker/:/config
+      - /mnt/docker/prowlarr/config:/config
     deploy:
       labels:
         - "traefik.enable=true"
