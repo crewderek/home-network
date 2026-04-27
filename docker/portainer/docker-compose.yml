@@ -43,8 +43,8 @@ services:
       replicas: 1
       placement:
         constraints:
-          # This ensures the UI only runs on a node with the Manager role
-          - node.role == manager
+          - node.labels.docker_mount == true
+          - node.labels.type != restricted
 
 networks:
   agent_network:
