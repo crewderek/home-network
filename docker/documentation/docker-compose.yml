@@ -33,7 +33,7 @@ services:
       - DB_PASS=${BOOKSTACK_DB_PASSWORD}
       - DB_DATABASE=bookstack
     volumes:
-      - bookstack_data:/config
+      - bookstack_data:/config:subpath=config
 #    ports:
 #      - "6875:80"
     networks:
