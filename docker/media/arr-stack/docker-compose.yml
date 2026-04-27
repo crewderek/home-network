@@ -50,7 +50,8 @@ services:
     image: lscr.io/linuxserver/prowlarr:2.3.5
     networks:
       - arr_network
-#    ports:
+      - proxy_private
+#    ports:+
 #      - 9696:9696
     environment:
       - PUID=1000
