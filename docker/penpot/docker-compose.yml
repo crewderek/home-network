@@ -13,6 +13,7 @@ services:
       - penpot-backend
     environment:
       PENPOT_PUBLIC_URI: https://${SUBDOMAIN}.${BASE_DOMAIN}
+      PENPOT_FLAGS: "disable-email-verification"
     deploy:
       labels:
         - "traefik.enable=true"
