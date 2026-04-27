@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  bookstack_db:
+    image: lscr.io/linuxserver/mariadb:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/bookstack_mysql_root_password
+      - MYSQL_DATABASE=bookstack
+      - MYSQL_USER=bookstack
+      - MYSQL_PASSWORD_FILE=/run/secrets/bookstack_mysql_password
+    volumes:
+      - /opt/mysql/bookstack:/config
+    networks:
+      - bookstack_network
+    deploy:
+      placement:
+        constraints:
+          - node.labels.database_node == true
+      restart_policy:
+        condition: on-failure
+
+  bookstack:
+    image: lscr.io/linuxserver/bookstack:latest
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - APP_URL=https://your-bookstack-url.com
+      - DB_HOST=bookstack_db
+      - DB_USER=bookstack
+      - DB_PASS=your_db_password
+      - DB_DATABASE=bookstack
+    volumes:
+      - bookstack_data:/config
+#    ports:
+#      - "6875:80"
+    networks:
+      - bookstack_network
+      - proxy_private
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        #        # The URL you will use to access Nextcloud
+        - "traefik.http.routers.penpot-frontend.rule=Host(`${SUBDOMAIN}.${BASE_DOMAIN}`)"
+        - "traefik.http.routers.penpot-frontend.entrypoints=websecure"
+        - "traefik.http.routers.penpot-frontend.tls=true"
+        - "traefik.http.routers.penpot-frontend.tls.certresolver=mydnschallenge"
+        #        # Critical for Swarm: Specify the internal container port
+        - "traefik.http.services.penpot-frontend.loadbalancer.server.port=80"
+        #        # Ensure Traefik uses the correct network for routing
+        - "traefik.docker.network=proxy_private"
+        # This line is key: it tells Traefik to look for the cert containing these domains
+        - "traefik.http.routers.penpot-frontend.tls.domains[0].main=${BASE_DOMAIN}"
+        - "traefik.http.routers.penpot-frontend.tls.domains[0].sans=*.${BASE_DOMAIN}"
+      placement:
+        constraints:
+#          - node.labels.docker_mount == true
+          - node.labels.type != restricted
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+networks:
+  bookstack_network:
+    driver: overlay
+  proxy_private:
+    external: true
+
+volumes:
+  bookstack_data:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${NFS_ADDRESS},nfsvers=3,nolock,soft,rw" # Replace with your NFS Server IP
+      device: ":${BOOKSTACK_NFS_DIRECTORY}"
