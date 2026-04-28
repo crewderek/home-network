@@ -55,6 +55,7 @@ services:
     networks:
       - proxy_private
       - proxy_public
+      - internal-only-torrent-network
     deploy:
       labels:
         - "traefik.enable=true"
@@ -157,25 +158,21 @@ networks:
     driver: overlay
     attachable: true
     name: proxy_private
-  npm_network:
-    driver: overlay
-    attachable: true
-#  maria_db_net:
+  internal-only-torrent-network:
+    external: true
+#  dns_network:
 #    external: true
-#    name: database_maria_db_net
-  dns_network:
-    external: true
-    name: dns_dns_net
-  vpn_network:
-    driver: overlay
-    attachable: true
-    name: vpn_network
-  business_network:
-    external: true
-    name: business-network
-  immich_network:
-    external: true
-    name: immich-network
+#    name: dns_dns_net
+#  vpn_network:
+#    driver: overlay
+#    attachable: true
+#    name: vpn_network
+#  business_network:
+#    external: true
+#    name: business-network
+#  immich_network:
+#    external: true
+#    name: immich-network
 
 #secrets:
 #  npm_db_root_password:
@@ -186,12 +183,12 @@ networks:
 #    name: npm_db_password
 
 
-volumes:
+#volumes:
 #  nginx_nfs:
 #    driver: local
 #    driver_opts:
 #      type: nfs
 #      o: "addr=${NFS_ADDRESS},nfsvers=3,nolock,soft,rw"
 #      device: ":${PROXY_DATA_NFS_DIRECTORY}"
-  lets-encrypt-data:
-    driver: local
+#  lets-encrypt-data:
+#    driver: local
