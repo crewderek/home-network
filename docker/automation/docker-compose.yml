@@ -88,7 +88,7 @@ services:
 
       # Swarm/Docker Configuration
       - AUTOKUMA__DOCKER__HOSTS=unix:///var/run/docker.sock
-      - AUTOKUMA__DOCKER__SOURCE=Swarm  # Tell it to look at Swarm Services
+#      - AUTOKUMA__DOCKER__SOURCE=Swarm  # Tell it to look at Swarm Services
       - AUTOKUMA__DOCKER__LABEL_PREFIX=kuma
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
