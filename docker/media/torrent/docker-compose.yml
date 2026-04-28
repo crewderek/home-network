@@ -21,12 +21,20 @@ services:
           - node.labels.type != restricted
 
   qbittorrent:
-    image: lscr.io/linuxserver/qbittorrent:latest
+    image: lscr.io/linuxserver/qbittorrent:5.1.4
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=America/Denver
       - WEBUI_PORT=8080
+      - TORRENTING_PORT=6881
+    volumes:
+      - type: volume
+        source: torrent-data
+        target: /config
+        volume:
+          subpath: qbittorrent/config
+          nocopy: true
     networks:
       - internal-only-torrent-network
     depends_on:
@@ -61,3 +69,11 @@ networks:
     name: public-torrent-network
     driver: overlay
     internal: false # Standard network with internet access
+
+volumes:
+  torrent-data:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${NFS_ADDRESS},nfsvers=4,nolock,soft,rw" # Replace with your NFS Server IP
+      device: ":${QBITTORRENT_NFS_DIRECTORY}"
