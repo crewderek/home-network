@@ -14,8 +14,8 @@ services:
       - SHADOWSOCKS_LISTENING_ADDRESS=":8388"
 #      - HTTPPROXY=on # Enables the built-in HTTP proxy
 #      - HTTPPROXY_LISTENING_ADDRESS=:8888
-#      - DNS_ADDRESS=127.0.0.11
-#      - DOT=off
+      - DNS_ADDRESS=1.1.1.1
+      - DOT=off
     networks:
       - public-torrent-network
       - internal-only-torrent-network
