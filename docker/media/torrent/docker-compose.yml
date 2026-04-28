@@ -11,7 +11,8 @@ services:
       - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
       - SERVER_COUNTRIES=${GLUETUN_SERVER_COUNTRIES}
     networks:
-      - vpn_net
+      - public-torrent-network
+      - internal-only-torrent-network
     deploy:
       replicas: 1
       placement:
@@ -35,9 +36,9 @@ services:
 #      - gluetun
 
 networks:
-  internal-only-vpn-network:
+  internal-only-torrent-network:
     driver: overlay
     internal: true  # STRICTLY isolated; no external ingress/egress
-  public-vpn-network:
+  public-torrent-network:
     driver: overlay
     internal: false # Standard network with internet access
