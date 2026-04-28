@@ -146,8 +146,8 @@ services:
         volume:
           subpath: sonarr/config
           nocopy: true
-#     - /path/to/tvseries:/tv #optional
-#      - /path/to/downloadclient-downloads:/downloads #optional
+      - /mnt/video/data/movie:/tvseries
+      - /mnt/video/completed-downloads:/downloads
     deploy:
       labels:
         - "traefik.enable=true"
@@ -167,6 +167,7 @@ services:
       placement:
         constraints:
           - node.labels.docker_mount == true
+          - node.labels.video_mount == true
           - node.labels.type != restricted
 #
 #
@@ -189,6 +190,8 @@ services:
         volume:
           subpath: lidarr/config
           nocopy: true
+      - /mnt/video/data/movie:/music
+      - /mnt/video/completed-downloads:/downloads
 #      - /path/to/music:/music #optional
 #      - /path/to/downloads:/downloads #optional
     deploy:
@@ -210,6 +213,7 @@ services:
       placement:
         constraints:
           - node.labels.docker_mount == true
+          - node.labels.video_mount == true
           - node.labels.type != restricted
 #
 #  # NEW: BOOKS
@@ -231,6 +235,8 @@ services:
         volume:
           subpath: lazylibrarian/config
           nocopy: true
+      - /mnt/video/data/movie:/books
+      - /mnt/video/completed-downloads:/downloads
 #      - /path/to/downloads/:/downloads
 #      - /path/to/data/:/books #optional
     deploy:
@@ -252,6 +258,7 @@ services:
       placement:
         constraints:
           - node.labels.docker_mount == true
+          - node.labels.video_mount == true
           - node.labels.type != restricted
 
 networks:
