@@ -1,0 +1,97 @@
+version: '3.8'
+
+services:
+  gluetun:
+    image: qmcgaw/gluetun:v3.41
+    container_name: gluetun
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - VPN_SERVICE_PROVIDER=nordvpn
+      - OPENVPN_USER=${OPENVPN_USER}
+      - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
+      - SERVER_COUNTRIES=${GLUETUN_SERVER_COUNTRIES}
+#      - SHADOWSOCKS=on
+#      - SHADOWSOCKS_LOG=on
+#      - SHADOWSOCKS_LISTENING_ADDRESS=":8388"
+#      - HTTPPROXY=on # Enables the built-in HTTP proxy
+#      - HTTPPROXY_LISTENING_ADDRESS=:8888
+#      - DNS_ADDRESS=1.1.1.1
+#      - DNS_UPSTREAM_RESOLVER_TYPE=DoT
+#    networks:
+#      - public-torrent-network
+#      - internal-only-torrent-network
+    networks:
+      - proxy-private
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+#    deploy:
+#      replicas: 1
+#      placement:
+#        constraints:
+##          - node.labels.docker_mount == true
+#          - node.labels.type != restricted
+
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:5.1.4
+    container_name: qbittorrent
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Denver
+      - WEBUI_PORT=8080
+      - TORRENTING_PORT=6881
+    volumes:
+      - type: volume
+        source: torrent-data
+        target: /config
+        volume:
+          subpath: qbittorrent/config
+          nocopy: true
+    network_mode: "service:gluetun" # This routes ALL traffic through Gluetun
+    depends_on:
+      gluetun:
+        condition: service_healthy
+    restart: always
+#    deploy:
+#      labels:
+#        - "traefik.enable=true"
+#        #        # The URL you will use to access Nextcloud
+#        - "traefik.http.routers.qbittorrent.rule=Host(`${QBIT_SUBDOMAIN}.${BASE_DOMAIN}`)"
+#        - "traefik.http.routers.qbittorrent.entrypoints=websecure"
+#        - "traefik.http.routers.qbittorrent.tls=true"
+#        - "traefik.http.routers.qbittorrent.tls.certresolver=mydnschallenge"
+#        #        # Critical for Swarm: Specify the internal container port
+#        - "traefik.http.services.qbittorrent.loadbalancer.server.port=8080"
+#        #        # Ensure Traefik uses the correct network for routing
+#        - "traefik.docker.network=internal-only-torrent-network"
+#        # This line is key: it tells Traefik to look for the cert containing these domains
+#        - "traefik.http.routers.qbittorrent.tls.domains[0].main=${BASE_DOMAIN}"
+#        - "traefik.http.routers.qbittorrent.tls.domains[0].sans=*.${BASE_DOMAIN}"
+#      replicas: 1
+#      placement:
+#        constraints:
+##          - node.labels.docker_mount == true
+#          - node.labels.type != restricted
+
+networks:
+  proxy-private:
+    external: true
+    name: proxy_private
+#  internal-only-torrent-network:
+#    name: internal-only-torrent-network
+#    driver: overlay
+#    internal: true  # STRICTLY isolated; no external ingress/egress
+#  public-torrent-network:
+#    name: public-torrent-network
+#    driver: overlay
+#    internal: false # Standard network with internet access
+
+volumes:
+  torrent-data:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: "addr=${NFS_ADDRESS},nfsvers=4,nolock,soft,rw" # Replace with your NFS Server IP
+      device: ":${QBITTORRENT_NFS_DIRECTORY}"
