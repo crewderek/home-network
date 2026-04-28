@@ -261,22 +261,24 @@ services:
           - node.labels.video_mount == true
           - node.labels.type != restricted
 
-  cloud-solvr:
-    image: cloudsolvr/cloud-solvr:latest # Ensure you use the official tag
+  flaresolverr:
+    # Use the official GHCR image for the most up-to-date 2026 releases
+    image: ghcr.io/flaresolverr/flaresolverr:latest
     networks:
       - arr_network
     environment:
-      - PORT=8080
       - LOG_LEVEL=info
-      # - BROWSER_TIMEOUT=60000
+      - TZ=America/New_York # Set your timezone
+    # FlareSolverr doesn't need to expose ports to the web if
+    # Prowlarr is on the same overlay network.
     deploy:
       replicas: 1
       restart_policy:
         condition: on-failure
       resources:
         limits:
-          cpus: '0.50'
-          memory: 512M
+          memory: 1G  # Chromium needs some breathing room
+          cpus: '0.5'
       placement:
         constraints:
           - node.labels.type != restricted
