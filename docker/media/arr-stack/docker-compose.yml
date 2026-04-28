@@ -261,6 +261,26 @@ services:
           - node.labels.video_mount == true
           - node.labels.type != restricted
 
+  cloud-solvr:
+    image: cloudsolvr/cloud-solvr:latest # Ensure you use the official tag
+    networks:
+      - arr_network
+    environment:
+      - PORT=8080
+      - LOG_LEVEL=info
+      # - BROWSER_TIMEOUT=60000
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+      placement:
+        constraints:
+          - node.labels.type != restricted
+
 networks:
   arr_network:
     driver: overlay
