@@ -146,7 +146,7 @@ services:
         volume:
           subpath: sonarr/config
           nocopy: true
-      - /mnt/video/data/movie:/tvseries
+      - /mnt/video/data/shows:/tvseries
       - /mnt/video/completed-downloads:/downloads
     deploy:
       labels:
@@ -190,7 +190,7 @@ services:
         volume:
           subpath: lidarr/config
           nocopy: true
-      - /mnt/video/data/movie:/music
+      - /mnt/video/data/music:/music
       - /mnt/video/completed-downloads:/downloads
 #      - /path/to/music:/music #optional
 #      - /path/to/downloads:/downloads #optional
@@ -235,7 +235,7 @@ services:
         volume:
           subpath: lazylibrarian/config
           nocopy: true
-      - /mnt/video/data/movie:/books
+      - /mnt/video/data/books:/books
       - /mnt/video/completed-downloads:/downloads
 #      - /path/to/downloads/:/downloads
 #      - /path/to/data/:/books #optional
