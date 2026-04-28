@@ -89,7 +89,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
-      - monitor-network
+      - proxy_private
     deploy:
       placement:
         constraints:
