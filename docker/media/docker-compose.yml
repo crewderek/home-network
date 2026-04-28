@@ -6,7 +6,6 @@ services:
     networks:
       - media_network
       - proxy_private
-      - arr_network
     environment:
       - JELLYFIN_PublishedServerUrl=${DOMAIN}
       - NVIDIA_VISIBLE_DEVICES=all
@@ -87,9 +86,9 @@ networks:
     name: media-network
   proxy_public:
     external: true
-  arr_network:
-    external: true
-    name: arr_network
+#  arr_network:
+#    external: true
+#    name: arr_arr_network
   proxy_private:
     external: true
 
