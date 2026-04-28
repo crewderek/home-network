@@ -13,7 +13,7 @@ services:
       - NVIDIA_DRIVER_CAPABILITIES=all
     volumes:
       - /mnt/docker/jellyfin/config:/config
-      - jellyfin_cache:/cache
+      - /opt/jellyfin/cache:/cache
       - /mnt/video/data/movie:/media/movie:ro
       - /mnt/video/data/shows:/media/shows:ro
     deploy:
