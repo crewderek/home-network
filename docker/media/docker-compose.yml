@@ -6,7 +6,7 @@ services:
     networks:
       - media_network
       - proxy_private
-      - dns_network
+      - arr_network
     environment:
       - JELLYFIN_PublishedServerUrl=${DOMAIN}
       - NVIDIA_VISIBLE_DEVICES=all
@@ -52,7 +52,6 @@ services:
     networks:
       - media_network
       - proxy_private
-      - dns_network
     environment:
       - LOG_LEVEL=debug
       - TZ=America/Denver
@@ -87,9 +86,9 @@ networks:
     name: media-network
   proxy_public:
     external: true
-  dns_network:
+  arr_network:
     external: true
-    name: dns_dns_net
+    name: arr_network
   proxy_private:
     external: true
 
