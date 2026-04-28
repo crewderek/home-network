@@ -10,6 +10,8 @@ services:
       - OPENVPN_USER=${OPENVPN_USER}
       - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
       - SERVER_COUNTRIES=${GLUETUN_SERVER_COUNTRIES}
+      - HTTPPROXY=on # Enables the built-in HTTP proxy
+      - HTTPPROXY_LISTENING_ADDRESS=:8888
     networks:
       - public-torrent-network
       - internal-only-torrent-network
