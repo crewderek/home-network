@@ -19,6 +19,8 @@ services:
     networks:
       - public-torrent-network
       - internal-only-torrent-network
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     deploy:
       replicas: 1
       placement:
