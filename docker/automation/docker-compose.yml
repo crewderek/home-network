@@ -78,6 +78,23 @@ services:
           - node.labels.docker_mount == true
           - node.labels.type != restricted
 
+  auto-kuma:
+    image: bigmoby/auto-kuma:latest
+    environment:
+      - KUMA_URL=http://kuma:3001
+      # If you set up a user, add credentials:
+      # - KUMA_USERNAME=admin
+      # - KUMA_PASSWORD=yourpassword
+      - DOCKER_SOCKET=/var/run/docker.sock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - monitor-network
+    deploy:
+      placement:
+        constraints:
+          - node.labels.type != restricted
+
 
   ntfy:
     image: binwiederhier/ntfy:v2.19.1
@@ -110,6 +127,11 @@ services:
         # This line is key: it tells Traefik to look for the cert containing these domains
         - "traefik.http.routers.ntfy.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.ntfy.tls.domains[0].sans=*.${BASE_DOMAIN}"
+        - "kuma.check=true"
+        - "kuma.name=NTFY"
+        - "kuma.url=http://ntfy:80"
+        - "kuma.type=http"
+        - "kuma.interval=60"
       replicas: 1
       restart_policy:
         condition: on-failure
