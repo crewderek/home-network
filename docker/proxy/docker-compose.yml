@@ -55,7 +55,7 @@ services:
     networks:
       - proxy_private
       - proxy_public
-      - internal-only-torrent-network
+#      - internal-only-torrent-network
     deploy:
       labels:
         - "traefik.enable=true"
@@ -158,8 +158,8 @@ networks:
     driver: overlay
     attachable: true
     name: proxy_private
-  internal-only-torrent-network:
-    external: true
+#  internal-only-torrent-network:
+#    external: true
 #  dns_network:
 #    external: true
 #    name: dns_dns_net
