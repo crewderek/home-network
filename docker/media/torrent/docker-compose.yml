@@ -54,8 +54,10 @@ services:
 
 networks:
   internal-only-torrent-network:
+    name: internal-only-torrent-network
     driver: overlay
     internal: true  # STRICTLY isolated; no external ingress/egress
   public-torrent-network:
+    name: public-torrent-network
     driver: overlay
     internal: false # Standard network with internet access
