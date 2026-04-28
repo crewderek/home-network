@@ -49,6 +49,7 @@ services:
         volume:
           subpath: qbittorrent/config
           nocopy: true
+      - /mnt/video/completed-downloads:/downloads
     network_mode: "service:gluetun" # This routes ALL traffic through Gluetun
     depends_on:
       gluetun:
