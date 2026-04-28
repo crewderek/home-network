@@ -5,7 +5,7 @@ services:
 #      - "8096:8096"
     networks:
       - media_network
-      - proxy_public
+      - proxy_private
       - dns_network
     environment:
       - JELLYFIN_PublishedServerUrl=${DOMAIN}
@@ -51,7 +51,7 @@ services:
     image:  ghcr.io/seerr-team/seerr:v3.1.0
     networks:
       - media_network
-      - proxy_public
+      - proxy_private
       - dns_network
     environment:
       - LOG_LEVEL=debug
@@ -90,6 +90,8 @@ networks:
   dns_network:
     external: true
     name: dns_dns_net
+  proxy_private:
+    external: true
 
 volumes:
   jellyfin_cache:
