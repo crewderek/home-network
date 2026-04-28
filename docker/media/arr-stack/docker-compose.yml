@@ -103,8 +103,8 @@ services:
         volume:
           subpath: radarr/config
           nocopy: true
-#  -v /path/to/movies:/movies `#optional` \
-#  -v /path/to/download-client-downloads:/downloads `#optional` \
+      - /mnt/video/data/movie:/movies
+      - /mnt/video/completed-downloads:/downloads
     deploy:
       labels:
         - "traefik.enable=true"
