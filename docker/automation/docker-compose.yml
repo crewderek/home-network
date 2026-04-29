@@ -102,7 +102,6 @@ services:
 
   apprise:
     image: caronc/apprise:1.4
-    container_name: apprise
 #    ports:
 #      - "8000:8000"
     environment:
