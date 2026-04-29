@@ -94,7 +94,7 @@ services:
 #      - "8080:5000"   # HTTP UI (HostPort:ContainerPort)
 #      - "6556:6556"   # Agent receiver (if monitoring the swarm nodes)
     networks:
-      - monitoring
+      - monitor-network
     volumes:
       - /mnt/docker/checkmk/data:/sites
       - /etc/localtime:/etc/localtime:ro
