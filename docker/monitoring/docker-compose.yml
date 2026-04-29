@@ -89,7 +89,7 @@ services:
 
 
   checkmk:
-    image: checkmk/check-mk-raw:2.3.0-latest # Or 'enterprise' if you have a license
+    image: checkmk/check-mk-community:2.5.0 # Or 'enterprise' if you have a license
 #    ports:
 #      - "8080:5000"   # HTTP UI (HostPort:ContainerPort)
 #      - "6556:6556"   # Agent receiver (if monitoring the swarm nodes)
