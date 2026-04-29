@@ -78,6 +78,45 @@ services:
         constraints:
           - node.labels.type != restricted
 
+  audiobookshelf:
+    image: ghcr.io/advplyr/audiobookshelf:latest
+#    ports:
+#      - 13378:80
+    volumes:
+      - /opt/audiobookshelf/config:/config
+      - /mnt/video/data/audio-books:/audiobooks
+#      - /path/to/your/podcasts:/podcasts
+      - /opt/audiobookshelf/metadata:/metadata
+    environment:
+      - TZ=America/Denver
+      - PORT=80
+    networks:
+      - media_network
+      - proxy_private
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        #        # The URL you will use to access Nextcloud
+        - "traefik.http.routers.audiobookshelf.rule=Host(`${AUDIOBOOKSHELF_SUBDOMAIN}.${BASE_DOMAIN}`)"
+        - "traefik.http.routers.audiobookshelf.entrypoints=websecure"
+        - "traefik.http.routers.audiobookshelf.tls=true"
+        - "traefik.http.routers.audiobookshelf.tls.certresolver=mydnschallenge"
+        #        # Critical for Swarm: Specify the internal container port
+        - "traefik.http.services.audiobookshelf.loadbalancer.server.port=80"
+        #        # Ensure Traefik uses the correct network for routing
+        - "traefik.docker.network=proxy_private"
+        # This line is key: it tells Traefik to look for the cert containing these domains
+        - "traefik.http.routers.audiobookshelf.tls.domains[0].main=${BASE_DOMAIN}"
+        - "traefik.http.routers.audiobookshelf.tls.domains[0].sans=*.${BASE_DOMAIN}"
+      placement:
+        constraints:
+          - node.labels.docker_mount == true
+          - node.labels.video_mount == true
+          - node.labels.media_node == true
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
 
 networks:
   media_network:
