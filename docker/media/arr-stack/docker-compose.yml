@@ -215,51 +215,97 @@ services:
           - node.labels.docker_mount == true
           - node.labels.video_mount == true
           - node.labels.type != restricted
-#
-#  # NEW: BOOKS
-  lazy-librarian:
-    image: lscr.io/linuxserver/lazylibrarian:latest # Develop branch is often preferred for Readarr
+
+  listenarr:
+    image: ghcr.io/listenarrs/listenarr:canary
+    ports:
+      - "4545:4545"
     networks:
       - arr_network
       - proxy_private
-#    ports:
-#      - 5299:5299
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=America/Denver
+      - UMASK=022
+#      - LISTENARR_PUBLIC_URL=https://your-domain.com ## OPTIONAL: Used by Discord Bot
     volumes:
       - type: volume
         source: arr-data
         target: /config
         volume:
-          subpath: lazylibrarian/config
+          subpath: listenarr/config
           nocopy: true
-      - /mnt/video/data/books:/books
+#      - listenarr_data:/app/config
+      - /mnt/video/data/audio-books:/audiobooks #optional
       - /mnt/video/completed-downloads:/downloads
-#      - /path/to/downloads/:/downloads
-#      - /path/to/data/:/books #optional
+    restart: unless-stopped
     deploy:
       labels:
         - "traefik.enable=true"
         #        # The URL you will use to access Nextcloud
-        - "traefik.http.routers.lazylibrarian.rule=Host(`${LAZYLIBRARIAN_SUBDOMAIN}.${BASE_DOMAIN}`)"
-        - "traefik.http.routers.lazylibrarian.entrypoints=websecure"
-        - "traefik.http.routers.lazylibrarian.tls=true"
-        - "traefik.http.routers.lazylibrarian.tls.certresolver=mydnschallenge"
+        - "traefik.http.routers.listenarr.rule=Host(`${LISTENARR_SUBDOMAIN}.${BASE_DOMAIN}`)"
+        - "traefik.http.routers.listenarr.entrypoints=websecure"
+        - "traefik.http.routers.listenarr.tls=true"
+        - "traefik.http.routers.listenarr.tls.certresolver=mydnschallenge"
         #        # Critical for Swarm: Specify the internal container port
-        - "traefik.http.services.lazylibrarian.loadbalancer.server.port=5299"
+        - "traefik.http.services.listenarr.loadbalancer.server.port=4545"
         #        # Ensure Traefik uses the correct network for routing
         - "traefik.docker.network=proxy_private"
         # This line is key: it tells Traefik to look for the cert containing these domains
-        - "traefik.http.routers.lazylibrarian.tls.domains[0].main=${BASE_DOMAIN}"
-        - "traefik.http.routers.lazylibrarian.tls.domains[0].sans=*.${BASE_DOMAIN}"
+        - "traefik.http.routers.listenarr.tls.domains[0].main=${BASE_DOMAIN}"
+        - "traefik.http.routers.listenarr.tls.domains[0].sans=*.${BASE_DOMAIN}"
       replicas: 1
       placement:
         constraints:
           - node.labels.docker_mount == true
           - node.labels.video_mount == true
           - node.labels.type != restricted
+
+
+#  # NEW: BOOKS
+#  lazy-librarian:
+#    image: lscr.io/linuxserver/lazylibrarian:latest # Develop branch is often preferred for Readarr
+#    networks:
+#      - arr_network
+#      - proxy_private
+##    ports:
+##      - 5299:5299
+#    environment:
+#      - PUID=1000
+#      - PGID=1000
+#      - TZ=America/Denver
+#    volumes:
+#      - type: volume
+#        source: arr-data
+#        target: /config
+#        volume:
+#          subpath: lazylibrarian/config
+#          nocopy: true
+#      - /mnt/video/data/books:/books
+#      - /mnt/video/completed-downloads:/downloads
+##      - /path/to/downloads/:/downloads
+##      - /path/to/data/:/books #optional
+#    deploy:
+#      labels:
+#        - "traefik.enable=true"
+#        #        # The URL you will use to access Nextcloud
+#        - "traefik.http.routers.lazylibrarian.rule=Host(`${LAZYLIBRARIAN_SUBDOMAIN}.${BASE_DOMAIN}`)"
+#        - "traefik.http.routers.lazylibrarian.entrypoints=websecure"
+#        - "traefik.http.routers.lazylibrarian.tls=true"
+#        - "traefik.http.routers.lazylibrarian.tls.certresolver=mydnschallenge"
+#        #        # Critical for Swarm: Specify the internal container port
+#        - "traefik.http.services.lazylibrarian.loadbalancer.server.port=5299"
+#        #        # Ensure Traefik uses the correct network for routing
+#        - "traefik.docker.network=proxy_private"
+#        # This line is key: it tells Traefik to look for the cert containing these domains
+#        - "traefik.http.routers.lazylibrarian.tls.domains[0].main=${BASE_DOMAIN}"
+#        - "traefik.http.routers.lazylibrarian.tls.domains[0].sans=*.${BASE_DOMAIN}"
+#      replicas: 1
+#      placement:
+#        constraints:
+#          - node.labels.docker_mount == true
+#          - node.labels.video_mount == true
+#          - node.labels.type != restricted
 
   flaresolverr:
     # Use the official GHCR image for the most up-to-date 2026 releases
