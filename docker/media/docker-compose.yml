@@ -84,7 +84,7 @@ services:
 #      - 13378:80
     volumes:
       - /opt/audiobookshelf/config:/config
-      - /mnt/video/data/audio-books:/audiobooks
+      - /mnt/video/data/audio-books:/audiobooks:ro
 #      - /path/to/your/podcasts:/podcasts
       - /opt/audiobookshelf/metadata:/metadata
     environment:
