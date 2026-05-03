@@ -53,7 +53,7 @@ services:
 #                kind: 'NVIDIA-GPU'
 #                value: 0
             - discrete_resource_spec:
-                kind: "INTEL-GPU"
+                kind: "GPU"
                 value: 1
 
 
