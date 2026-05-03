@@ -218,8 +218,8 @@ services:
 
   listenarr:
     image: ghcr.io/listenarrs/listenarr:canary
-    ports:
-      - "4545:4545"
+#    ports:
+#      - "4545:4545"
     networks:
       - arr_network
       - proxy_private
