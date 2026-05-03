@@ -3,7 +3,7 @@ services:
     image: jellyfin/jellyfin:10
 #    ports:
 #      - "8096:8096"
-    user: "1000:${JELLYFIN_GROUP_ADD}" # Match your local UID:GID
+#    user: "0:${JELLYFIN_GROUP_ADD}" # Match your local UID:GID
     networks:
       - media_network
       - proxy_private
