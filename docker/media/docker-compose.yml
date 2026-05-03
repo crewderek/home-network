@@ -9,8 +9,10 @@ services:
       - proxy_private
     environment:
       - JELLYFIN_PublishedServerUrl=${DOMAIN}
-      - NVIDIA_VISIBLE_DEVICES=all
-      - NVIDIA_DRIVER_CAPABILITIES=all
+#      - NVIDIA_VISIBLE_DEVICES=all
+#      - NVIDIA_DRIVER_CAPABILITIES=all
+      - LIBVA_DRIVER_NAME=iHD
+      - DEVICE=/dev/dri/renderD128
     volumes:
 #      - /mnt/docker/jellyfin/config:/config
       - /opt/jellyfin/config:/config
