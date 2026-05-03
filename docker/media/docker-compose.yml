@@ -4,6 +4,7 @@ services:
 #    ports:
 #      - "8096:8096"
 #    user: "0:${JELLYFIN_GROUP_ADD}" # Match your local UID:GID
+    user: "0:0"
     networks:
       - media_network
       - proxy_private
@@ -12,6 +13,7 @@ services:
 #      - NVIDIA_VISIBLE_DEVICES=all
 #      - NVIDIA_DRIVER_CAPABILITIES=all
       - LIBVA_DRIVER_NAME=iHD
+      - LIBVA_DRIVERS_PATH=/usr/lib/jellyfin-ffmpeg/lib/dri
       - DEVICE=/dev/dri/renderD128
     volumes:
 #      - /mnt/docker/jellyfin/config:/config
