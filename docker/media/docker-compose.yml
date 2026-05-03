@@ -3,6 +3,8 @@ services:
     image: jellyfin/jellyfin:10
 #    ports:
 #      - "8096:8096"
+    group_add:
+      - "${JELLYFIN_GROUP_ADD}" # Use the GID you found in Step 1
     networks:
       - media_network
       - proxy_private
@@ -16,6 +18,7 @@ services:
       - /opt/jellyfin/cache:/cache
       - /mnt/video/data/movie:/media/movie:ro
       - /mnt/video/data/shows:/media/shows:ro
+      - /dev/dri:/dev/dri
     deploy:
       labels:
         - "traefik.enable=true"
@@ -42,9 +45,12 @@ services:
 #          cpus: '2.0'
 #          memory: 8192M
           generic_resources:
+#            - discrete_resource_spec:
+#                kind: 'NVIDIA-GPU'
+#                value: 0
             - discrete_resource_spec:
-                kind: 'NVIDIA-GPU'
-                value: 0
+                kind: "INTEL-GPU"
+                value: 1
 
 
   jellyseer:
