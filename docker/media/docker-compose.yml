@@ -18,7 +18,8 @@ services:
       - /opt/jellyfin/cache:/cache
       - /mnt/video/data/movie:/media/movie:ro
       - /mnt/video/data/shows:/media/shows:ro
-      - /dev/dri:/dev/dri
+      - /dev/dri/renderD128:/dev/dri/renderD128
+      - /dev/dri/card0:/dev/dri/card0
     deploy:
       labels:
         - "traefik.enable=true"
