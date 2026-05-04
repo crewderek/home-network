@@ -26,8 +26,8 @@ services:
         condition: on-failure
 
   rclone-sync-raspberry-pi:
-    image: pfidr/rclone:latest
-    platform: linux/arm64
+    image: rclone/rclone:latest
+#    platform: linux/arm64
     environment:
     - CRON=0 0 * * *
     - SYNC_SRC=/data/source
