@@ -49,5 +49,3 @@ services:
           - node.labels.platform == raspberry-pi
       restart_policy:
         condition: on-failure
-
-        platform: linux/arm64
