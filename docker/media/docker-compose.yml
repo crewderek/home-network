@@ -21,40 +21,40 @@ services:
       - /opt/jellyfin/cache:/cache
       - /mnt/video/data/movie:/media/movie:ro
       - /mnt/video/data/shows:/media/shows:ro
-      - /dev/dri/renderD128:/dev/dri/renderD128
-      - /dev/dri/card0:/dev/dri/card0
-    deploy:
-      labels:
-        - "traefik.enable=true"
-        #        # The URL you will use to access Nextcloud
-        - "traefik.http.routers.jellyfin.rule=Host(`${JELLYFIN_SUBDOMAIN}.${BASE_DOMAIN}`)"
-        - "traefik.http.routers.jellyfin.entrypoints=websecure"
-        - "traefik.http.routers.jellyfin.tls=true"
-        - "traefik.http.routers.jellyfin.tls.certresolver=mydnschallenge"
-        #        # Critical for Swarm: Specify the internal container port
-        - "traefik.http.services.jellyfin.loadbalancer.server.port=8096"
-        #        # Ensure Traefik uses the correct network for routing
-        - "traefik.docker.network=proxy_private"
-        # This line is key: it tells Traefik to look for the cert containing these domains
-        - "traefik.http.routers.jellyfin.tls.domains[0].main=${BASE_DOMAIN}"
-        - "traefik.http.routers.jellyfin.tls.domains[0].sans=*.${BASE_DOMAIN}"
-      placement:
-        constraints:
-          - node.labels.docker_mount == true
-          - node.labels.video_mount == true
-          - node.labels.media_node == true
-          - node.labels.gpu == true
-      resources:
-        reservations:
-#          cpus: '2.0'
-#          memory: 8192M
-          generic_resources:
+#      - /dev/dri/renderD128:/dev/dri/renderD128
+#      - /dev/dri/card0:/dev/dri/card0
+#    deploy:
+#      labels:
+#        - "traefik.enable=true"
+#        #        # The URL you will use to access Nextcloud
+#        - "traefik.http.routers.jellyfin.rule=Host(`${JELLYFIN_SUBDOMAIN}.${BASE_DOMAIN}`)"
+#        - "traefik.http.routers.jellyfin.entrypoints=websecure"
+#        - "traefik.http.routers.jellyfin.tls=true"
+#        - "traefik.http.routers.jellyfin.tls.certresolver=mydnschallenge"
+#        #        # Critical for Swarm: Specify the internal container port
+#        - "traefik.http.services.jellyfin.loadbalancer.server.port=8096"
+#        #        # Ensure Traefik uses the correct network for routing
+#        - "traefik.docker.network=proxy_private"
+#        # This line is key: it tells Traefik to look for the cert containing these domains
+#        - "traefik.http.routers.jellyfin.tls.domains[0].main=${BASE_DOMAIN}"
+#        - "traefik.http.routers.jellyfin.tls.domains[0].sans=*.${BASE_DOMAIN}"
+#      placement:
+#        constraints:
+#          - node.labels.docker_mount == true
+#          - node.labels.video_mount == true
+#          - node.labels.media_node == true
+#          - node.labels.gpu == true
+#      resources:
+#        reservations:
+##          cpus: '2.0'
+##          memory: 8192M
+#          generic_resources:
+##            - discrete_resource_spec:
+##                kind: 'NVIDIA-GPU'
+##                value: 0
 #            - discrete_resource_spec:
-#                kind: 'NVIDIA-GPU'
-#                value: 0
-            - discrete_resource_spec:
-                kind: "GPU"
-                value: 1
+#                kind: "GPU"
+#                value: 1
 
 
   jellyseer:
