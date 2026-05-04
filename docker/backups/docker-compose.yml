@@ -16,6 +16,6 @@ services:
       placement:
         constraints:
           # This ensures it ONLY runs on the labeled node
-          - node.labels.backup_mount = true
+          - node.labels.backup_mount == true
       restart_policy:
         condition: on-failure
