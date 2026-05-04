@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  rclone-sync:
+    image: rclone/rclone:latest
+#    container_name: rclone_automated_sync
+    # user: "1000:1000" # Match your host's PUID/PGID to avoid permission issues
+    volumes:
+      - /opt:/data/source:ro # Source folder (Read Only for safety)
+      - /mnt/backup:/data/dest # Destination folder
+      # - /path/to/rclone/config:/config/rclone # Stores rclone.conf
+    command: >
+      sync /data/source /data/dest
+    deploy:
+      mode: global
+      placement:
+        constraints:
+          # This ensures it ONLY runs on the labeled node
+          - node.labels.backup_mount = true
+      restart_policy:
+        condition: on-failure
