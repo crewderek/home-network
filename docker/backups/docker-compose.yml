@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-  rclone-sync:
+  rclone-sync-ubuntu:
     image: pfidr/rclone:latest
     environment:
     - CRON=0 0 * * *
@@ -21,5 +21,33 @@ services:
         constraints:
           # This ensures it ONLY runs on the labeled node
           - node.labels.backup_mount == true
+          - node.labels.platform == ubuntu
       restart_policy:
         condition: on-failure
+
+  rclone-sync-raspberry-pi:
+    image: pfidr/rclone:latest
+    platform: linux/arm64
+    environment:
+    - CRON=0 0 * * *
+    - SYNC_SRC=/data/source
+    - SYNC_DEST=/data/dest
+#    container_name: rclone_automated_sync
+    # user: "1000:1000" # Match your host's PUID/PGID to avoid permission issues
+    volumes:
+      - /opt:/data/source:ro # Source folder (Read Only for safety)
+      - /mnt/backup:/data/dest # Destination folder
+      # - /path/to/rclone/config:/config/rclone # Stores rclone.conf
+#    command: >
+#      sync /data/source /data/dest
+    deploy:
+      mode: global
+      placement:
+        constraints:
+          # This ensures it ONLY runs on the labeled node
+          - node.labels.backup_mount == true
+          - node.labels.platform == raspberry-pi
+      restart_policy:
+        condition: on-failure
+
+        platform: linux/arm64
