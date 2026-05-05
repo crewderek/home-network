@@ -33,6 +33,7 @@ services:
         # This line is key: it tells Traefik to look for the cert containing these domains
         - "traefik.http.routers.n8n.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.n8n.tls.domains[0].sans=*.${BASE_DOMAIN}"
+        - "kuma.automation.group.name=Automation"
       mode: replicated
       replicas: 1
       restart_policy:
@@ -64,6 +65,8 @@ services:
 #        published: 3001
 #        protocol: tcp
 #        mode: host
+    depends_on:
+      - uptime-kuma-db
     deploy:
       labels:
         - "traefik.enable=true"
@@ -79,6 +82,12 @@ services:
         # This line is key: it tells Traefik to look for the cert containing these domains
         - "traefik.http.routers.uptime-kuma.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.uptime-kuma.tls.domains[0].sans=*.${BASE_DOMAIN}"
+        - "kuma.kuma.group.name=Uptime Kuma"
+        - "kuma.kuma.parent=automation"
+        - "kuma.kuma.http.name=Uptime Kuma"
+        - "kuma.kuma.http.url=http://uptime-kuma:3001"
+        - "kuma.kuma.http.interval=300"
+        - "kuma.kuma.http.parent_name=kuma"
       mode: replicated
       replicas: 1
       restart_policy:
@@ -88,7 +97,7 @@ services:
           - node.labels.docker_mount == true
           - node.labels.type != restricted
 
-  mariadb:
+  uptime-kuma-db:
     image: mariadb:12.2.2
 #    container_name: nextcloud-db
     restart: unless-stopped
@@ -106,6 +115,13 @@ services:
       - MARIADB_USER=${UPTIME_DB_USERNAME}
       - MARIADB_PASSWORD=${UPTIME_DB_PASSWORD}
     deploy:
+      labels:
+        - "kuma.kuma-db.name=Uptime Kuma MariaDB"
+        - "kuma.kuma-db.hostname=uptime-kuma-db"
+        - "kuma.kuma-db.port=3306"
+        - "kuma.kuma-db.interval=300"
+        - "kuma.kuma-db.parent_name=kuma"
+        - "kuma.kuma-db.type=tcp"
       placement:
         constraints:
           - node.labels.database_node == true
@@ -128,6 +144,8 @@ services:
       - AUTOKUMA__KUMA__CALL_TIMEOUT=300
       - AUTOKUMA__KUMA__CONNECT_TIMEOUT=300
       - AUTOKUMA__DOCKER__SOURCE=both
+    depends_on:
+      - uptime-kuma
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
@@ -169,6 +187,11 @@ services:
         # This line is key: it tells Traefik to look for the cert containing these domains
         - "traefik.http.routers.apprise.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.apprise.tls.domains[0].sans=*.${BASE_DOMAIN}"
+        - "kuma.automation.group.name=Automation"
+        - "kuma.apprise.http.name=Apprise"
+        - "kuma.apprise.http.url=http://apprise:8000"
+        - "kuma.apprise.http.interval=300"
+        - "kuma.apprise.http.parent_name=automation"
       replicas: 1
       restart_policy:
         condition: on-failure
@@ -218,10 +241,9 @@ services:
         - "traefik.http.routers.ntfy.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.ntfy.tls.domains[0].sans=*.${BASE_DOMAIN}"
           # Format: <prefix>.<id>.<type>.<setting>: <value>
-        - "kuma.automation.group.name=Automation"
         - "kuma.ntfy.http.name=NTFY"
         - "kuma.ntfy.http.url=http://ntfy:80"
-        - "kuma.ntfy.http.interval=60"
+        - "kuma.ntfy.http.interval=300"
         - "kuma.ntfy.http.parent_name=automation"
         # Optional: Grouping
 #        - "kuma.web-apps.group.name=Web Applications"
