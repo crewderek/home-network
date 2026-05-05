@@ -114,6 +114,7 @@ services:
       - AUTOKUMA__TAG_NAME=AutoKuma
       - AUTOKUMA__KUMA__CALL_TIMEOUT=300
       - AUTOKUMA__KUMA__CONNECT_TIMEOUT=300
+      - AUTOKUMA__DOCKER__SOURCE=both
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
