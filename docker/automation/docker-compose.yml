@@ -83,8 +83,8 @@ services:
     environment:
         # Connection to Uptime Kuma
       - AUTOKUMA__KUMA__URL=http://uptime-kuma:3001
-#      - AUTOKUMA__KUMA__USERNAME=admin  # Change after first login
-#      - AUTOKUMA__KUMA__PASSWORD=yourpassword
+      - AUTOKUMA__KUMA__USERNAME=${KUMA_USERNAME}  # Change after first login
+      - AUTOKUMA__KUMA__PASSWORD=${KUMA_PASSWORD}
 
       # Swarm/Docker Configuration
       - AUTOKUMA__DOCKER__HOSTS=unix:///var/run/docker.sock
