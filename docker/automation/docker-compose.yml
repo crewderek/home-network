@@ -104,7 +104,7 @@ services:
     image: ghcr.io/bigboot/autokuma:latest
     environment:
         # Connection to Uptime Kuma
-      - AUTOKUMA__KUMA__URL=http://uptime-kuma:3001
+      - AUTOKUMA__KUMA__URL=http://uptime-kuma-testing:3001
       - AUTOKUMA__KUMA__USERNAME=${KUMA_USERNAME}  # Change after first login
       - AUTOKUMA__KUMA__PASSWORD=${KUMA_PASSWORD}
 
