@@ -113,7 +113,7 @@ services:
     image: cloudflare/cloudflared:latest
     restart: unless-stopped
     networks:
-      - public_proxy
+      - proxy_public
     command: tunnel --no-autoupdate run --token ${CLOUDFLARE_HTTP_TUNNEL_TOKEN}
     depends_on:
       - traefik
