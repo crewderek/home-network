@@ -9,7 +9,7 @@ services:
       - "--providers.swarm.endpoint=unix:///var/run/docker.sock"
       - "--providers.swarm.watch=true"
       - "--providers.docker.exposedbydefault=false"
-      - "--providers.docker.network=proxy-private"
+      - "--providers.docker.network=proxy_public"
       - "--api.dashboard=true"
       - "--api.insecure=true"
       - "--providers.file.directory=/etc/traefik/dynamic" # Point to the file
