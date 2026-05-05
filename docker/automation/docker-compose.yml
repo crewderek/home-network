@@ -90,6 +90,8 @@ services:
       - AUTOKUMA__DOCKER__HOSTS=unix:///var/run/docker.sock
       - AUTOKUMA__DOCKER__LABEL_PREFIX=kuma
       - AUTOKUMA__TAG_NAME=AutoKuma
+      - AUTOKUMA__KUMA__CALL_TIMEOUT=300
+      - AUTOKUMA__KUMA__CONNECT_TIMEOUT=300
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
