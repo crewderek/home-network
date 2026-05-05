@@ -1,26 +1,27 @@
 services:
-  jellyfin:
-    image: jellyfin/jellyfin:10
-#    ports:
-#      - "8096:8096"
-#    user: "0:${JELLYFIN_GROUP_ADD}" # Match your local UID:GID
-    user: "0:0"
-    networks:
-      - media_network
-      - proxy_private
-    environment:
-      - JELLYFIN_PublishedServerUrl=${DOMAIN}
-#      - NVIDIA_VISIBLE_DEVICES=all
-#      - NVIDIA_DRIVER_CAPABILITIES=all
-      - LIBVA_DRIVER_NAME=iHD
-      - LIBVA_DRIVERS_PATH=/usr/lib/jellyfin-ffmpeg/lib/dri
-      - DEVICE=/dev/dri/renderD128
-    volumes:
-#      - /mnt/docker/jellyfin/config:/config
-      - /opt/jellyfin/config:/config
-      - /opt/jellyfin/cache:/cache
-      - /mnt/video/data/movie:/media/movie:ro
-      - /mnt/video/data/shows:/media/shows:ro
+#  jellyfin:
+#    image: jellyfin/jellyfin:10
+##    ports:
+##      - "8096:8096"
+##    user: "0:${JELLYFIN_GROUP_ADD}" # Match your local UID:GID
+#    user: "0:0"
+#    networks:
+#      - media_network
+#      - proxy_private
+#    environment:
+#      - JELLYFIN_PublishedServerUrl=${DOMAIN}
+##      - NVIDIA_VISIBLE_DEVICES=all
+##      - NVIDIA_DRIVER_CAPABILITIES=all
+#      - LIBVA_DRIVER_NAME=iHD
+#      - LIBVA_DRIVERS_PATH=/usr/lib/jellyfin-ffmpeg/lib/dri
+#      - DEVICE=/dev/dri/renderD128
+#    volumes:
+##      - /mnt/docker/jellyfin/config:/config
+#      - /opt/jellyfin/config:/config
+#      - /opt/jellyfin/cache:/cache
+#      - /mnt/video/data/movie:/media/movie:ro
+#      - /mnt/video/data/shows:/media/shows:ro
+
 #      - /dev/dri/renderD128:/dev/dri/renderD128
 #      - /dev/dri/card0:/dev/dri/card0
 #    deploy:
@@ -72,18 +73,28 @@ services:
     deploy:
       labels:
         - "traefik.enable=true"
-        #        # The URL you will use to access Nextcloud
-        - "traefik.http.routers.jellyseer.rule=Host(`${JELLYSEER_SUBDOMAIN}.${BASE_DOMAIN}`)"
-        - "traefik.http.routers.jellyseer.entrypoints=websecure"
-        - "traefik.http.routers.jellyseer.tls=true"
-        - "traefik.http.routers.jellyseer.tls.certresolver=mydnschallenge"
+        # PRIVATE ROUTER
+        - "traefik.http.routers.jellyseer-private.rule=Host(`${JELLYSEER_SUBDOMAIN}.${BASE_DOMAIN}`)"
+        - "traefik.http.routers.jellyseer-private.entrypoints=websecure"
+        - "traefik.http.routers.jellyseer-private.tls=true"
+        - "traefik.http.routers.jellyseer-private.tls.certresolver=mydnschallenge"
+        - "traefik.http.routers.jellyseer-private.network=proxy_private"
+        - "traefik.http.routers.jellyseer-private.service=jellyseer"
+        - "traefik.http.routers.jellyseer-private.tls.domains[0].main=${BASE_DOMAIN}"
+        - "traefik.http.routers.jellyseer-private.tls.domains[0].sans=*.${BASE_DOMAIN}"
+
+        # PUBLIC ROUTER
+        - "traefik.http.routers.jellyseer-public.rule=Host(`${JELLYSEER_SUBDOMAIN}.${BASE_DOMAIN}`)"
+        - "traefik.http.routers.jellyseer-public.entrypoints=websecure"
+        - "traefik.http.routers.jellyseer-public.tls.certresolver=myresolver"
+        - "traefik.http.routers.jellyseer-public.service=jellyseer"
+        - "traefik.http.routers.jellyseer-public.network=proxy_public"
+        - "traefik.http.routers.jellyseer-public.tls.domains[0].main=${BASE_DOMAIN}"
+        - "traefik.http.routers.jellyseer-public.tls.domains[0].sans=*.${BASE_DOMAIN}"
         #        # Critical for Swarm: Specify the internal container port
         - "traefik.http.services.jellyseer.loadbalancer.server.port=5055"
         #        # Ensure Traefik uses the correct network for routing
-        - "traefik.docker.network=proxy_private"
-        # This line is key: it tells Traefik to look for the cert containing these domains
-        - "traefik.http.routers.jellyseer.tls.domains[0].main=${BASE_DOMAIN}"
-        - "traefik.http.routers.jellyseer.tls.domains[0].sans=*.${BASE_DOMAIN}"
+#        - "traefik.docker.network=proxy_private"
       replicas: 1
       placement:
         constraints:
