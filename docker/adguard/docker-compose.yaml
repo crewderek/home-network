@@ -47,6 +47,11 @@ services:
         # This line is key: it tells Traefik to look for the cert containing these domains
         - "traefik.http.routers.adguard-primary.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.adguard-primary.tls.domains[0].sans=*.${BASE_DOMAIN}"
+        - "kuma.dns.group.name=DNS"
+        - "kuma.adguard-one.http.name=Adguard 1"
+        - "kuma.adguard-one.http.url=http://adguard-primary:300"
+        - "kuma.adguard-one.http.interval=300"
+        - "kuma.adguard-one.http.parent_name=dns"
       mode: replicated
       replicas: 1
       placement:
@@ -102,6 +107,10 @@ services:
         # This line is key: it tells Traefik to look for the cert containing these domains
         - "traefik.http.routers.adguard-secondary.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.adguard-secondary.tls.domains[0].sans=*.${BASE_DOMAIN}"
+        - "kuma.adguard-two.http.name=Adguard 2"
+        - "kuma.adguard-two.http.url=http://adguard-secondary:300"
+        - "kuma.adguard-two.http.interval=300"
+        - "kuma.adguard-two.http.parent_name=dns"
       mode: replicated
       replicas: 1
       placement:
