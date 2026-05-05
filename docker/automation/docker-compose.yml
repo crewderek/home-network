@@ -5,6 +5,7 @@ services:
     image: n8nio/n8n:2.11.4
     networks:
       - proxy_private
+      - kuma_network
     environment:
       - N8N_HOST=automate.derek-crew.com
       - NODE_ENV=production
@@ -46,8 +47,17 @@ services:
     image: louislam/uptime-kuma:2.2.1
     networks:
       - proxy_private
+      - kuma_network
+    environment:
+      # Database Connection Details
+      - UPTIME_KUMA_DB_TYPE=mariadb
+      - UPTIME_KUMA_DB_HOSTNAME=uptime-kuma-db
+      - UPTIME_KUMA_DB_PORT=3306
+      - UPTIME_KUMA_DB_NAME=uptime_kuma
+      - UPTIME_KUMA_DB_USERNAME=${UPTIME_DB_USERNAME}
+      - UPTIME_KUMA_DB_PASSWORD=${UPTIME_DB_PASSWORD}
     volumes:
-      - /mnt/docker/uptime-kuma/data:/app/data
+#      - /mnt/docker/uptime-kuma/data:/app/data
       - /var/run/docker.sock:/var/run/docker.sock
 #    ports:
 #      - target: 3001
@@ -78,33 +88,36 @@ services:
           - node.labels.docker_mount == true
           - node.labels.type != restricted
 
-  uptime-kuma-testing:
-    image: louislam/uptime-kuma:2.2.1
+  mariadb:
+    image: mariadb:12.2.2
+#    container_name: nextcloud-db
+    restart: unless-stopped
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     networks:
-      - proxy_private
+      - kuma_network
     volumes:
-#      - /mnt/docker/uptime-kuma/data:/app/data
-      - /var/run/docker.sock:/var/run/docker.sock
-    ports:
-      - target: 3001
-        published: 3001
-        protocol: tcp
-        mode: host
+      - /opt/mysql/uptime-kuma:/var/lib/mysql
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TZ}
+      - MARIADB_ROOT_PASSWORD=${UPTIME_DB_PASSWORD}
+      - MARIADB_DATABASE=uptime_kuma
+      - MARIADB_USER=${UPTIME_DB_USERNAME}
+      - MARIADB_PASSWORD=${UPTIME_DB_PASSWORD}
     deploy:
-      mode: replicated
+      placement:
+        constraints:
+          - node.labels.database_node == true
       replicas: 1
       restart_policy:
         condition: on-failure
-      placement:
-        constraints:
-          - node.labels.docker_mount == true
-          - node.labels.type != restricted
 
   auto-kuma:
     image: ghcr.io/bigboot/autokuma:latest
     environment:
         # Connection to Uptime Kuma
-      - AUTOKUMA__KUMA__URL=http://uptime-kuma-testing:3001
+      - AUTOKUMA__KUMA__URL=http://uptime-kuma:3001
       - AUTOKUMA__KUMA__USERNAME=${KUMA_USERNAME}  # Change after first login
       - AUTOKUMA__KUMA__PASSWORD=${KUMA_PASSWORD}
 
@@ -118,7 +131,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
-      - proxy_private
+      - kuma_network
     deploy:
       placement:
         constraints:
@@ -140,6 +153,7 @@ services:
     networks:
       - proxy_private
       - smart_home
+      - kuma_network
     deploy:
       labels:
         - "traefik.enable=true"
@@ -183,6 +197,7 @@ services:
     networks:
       - proxy_private
       - smart_home
+      - kuma_network
 #    ports:
 #      - target: 80
 #        published: 8080 # Change this to your desired public port
@@ -241,3 +256,7 @@ networks:
     smart_home:
       external:  true
       name: smart-home-network
+    kuma_network:
+      name: kuma_network
+      driver: overlay
+      attachable: true
