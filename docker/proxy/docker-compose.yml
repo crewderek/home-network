@@ -11,6 +11,7 @@ services:
       - "--providers.docker.exposedbydefault=false"
       - "--providers.docker.network=proxy-private"
       - "--api.dashboard=true"
+      - "--api.insecure=true"
       - "--providers.file.directory=/etc/traefik/dynamic" # Point to the file
       - "--providers.file.watch=true"
       - "--serverstransport.insecureskipverify=true"
