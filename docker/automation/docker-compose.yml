@@ -88,7 +88,7 @@ services:
 
       # Swarm/Docker Configuration
       - AUTOKUMA__DOCKER__HOSTS=unix:///var/run/docker.sock
-#      - AUTOKUMA__DOCKER__SOURCE=Swarm  # Tell it to look at Swarm Services
+      - AUTOKUMA__DOCKER__SOURCE=Swarm  # Tell it to look at Swarm Services
       - AUTOKUMA__DOCKER__LABEL_PREFIX=kuma
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -178,12 +178,13 @@ services:
         - "traefik.http.routers.ntfy.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.ntfy.tls.domains[0].sans=*.${BASE_DOMAIN}"
           # Format: <prefix>.<id>.<type>.<setting>: <value>
+        - "kuma.automation.group.name=Automation"
         - "kuma.ntfy.http.name=NTFY"
         - "kuma.ntfy.http.url=http://ntfy:80"
         - "kuma.ntfy.http.interval=60"
+        - "kuma.ntfy.http.parent_name=automation"
         # Optional: Grouping
 #        - "kuma.web-apps.group.name=Web Applications"
-#        - "kuma.ntfy.http.parent_name=web-apps"
       replicas: 1
       restart_policy:
         condition: on-failure
