@@ -78,23 +78,14 @@ services:
         - "traefik.http.routers.jellyseer-private.entrypoints=websecure"
         - "traefik.http.routers.jellyseer-private.tls=true"
         - "traefik.http.routers.jellyseer-private.tls.certresolver=mydnschallenge"
-#        - "traefik.http.routers.jellyseer-private.network=proxy_private"
         - "traefik.http.routers.jellyseer-private.service=jellyseer"
         - "traefik.http.routers.jellyseer-private.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.jellyseer-private.tls.domains[0].sans=*.${BASE_DOMAIN}"
 
         # PUBLIC ROUTER
-#        - "traefik.http.routers.jellyseer-public.rule=Host(`${JELLYSEER_SUBDOMAIN}.${BASE_DOMAIN}`)"
-#        - "traefik.http.routers.jellyseer-public.entrypoints=websecure"
-#        - "traefik.http.routers.jellyseer-public.tls.certresolver=myresolver"
-#        - "traefik.http.routers.jellyseer-public.service=jellyseer"
-#        - "traefik.http.routers.jellyseer-public.network=proxy_public"
-#        - "traefik.http.routers.jellyseer-public.tls.domains[0].main=${BASE_DOMAIN}"
-#        - "traefik.http.routers.jellyseer-public.tls.domains[0].sans=*.${BASE_DOMAIN}"
-        #        # Critical for Swarm: Specify the internal container port
         - "traefik.http.services.jellyseer.loadbalancer.server.port=5055"
         #        # Ensure Traefik uses the correct network for routing
-        - "traefik.docker.network=proxy_public"
+        - "traefik.docker.network=proxy_private"
       replicas: 1
       placement:
         constraints:
