@@ -86,8 +86,8 @@ services:
         # This line is key: it tells Traefik to look for the cert containing these domains
         - "traefik.http.routers.uptime-kuma.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.uptime-kuma.tls.domains[0].sans=*.${BASE_DOMAIN}"
-        - "kuma.kuma-group.group.name=Uptime Kuma"
-        - "kuma.kuma-group.parent=automation"
+#        - "kuma.kuma-group.group.name=Uptime Kuma"
+#        - "kuma.kuma-group.parent=automation"
 #        - "kuma.kuma.http.name=Uptime Kuma"
 #        - "kuma.kuma.http.url=http://uptime-kuma:3001"
 #        - "kuma.kuma.http.interval=300"
@@ -119,13 +119,13 @@ services:
       - MARIADB_USER=${UPTIME_DB_USERNAME}
       - MARIADB_PASSWORD=${UPTIME_DB_PASSWORD}
     deploy:
-      labels:
-        - "kuma.kuma-db.name=Uptime Kuma MariaDB"
-        - "kuma.kuma-db.hostname=uptime-kuma-db"
-        - "kuma.kuma-db.port=3306"
-        - "kuma.kuma-db.interval=300"
-        - "kuma.kuma-db.parent_name=automation"
-        - "kuma.kuma-db.type=tcp"
+#      labels:
+#        - "kuma.kuma-db.name=Uptime Kuma MariaDB"
+#        - "kuma.kuma-db.hostname=uptime-kuma-db"
+#        - "kuma.kuma-db.port=3306"
+#        - "kuma.kuma-db.interval=300"
+#        - "kuma.kuma-db.parent_name=automation"
+#        - "kuma.kuma-db.type=tcp"
       placement:
         constraints:
           - node.labels.database_node == true
