@@ -9,7 +9,7 @@ services:
       - "--providers.swarm.endpoint=unix:///var/run/docker.sock"
       - "--providers.swarm.watch=true"
       - "--providers.docker.exposedbydefault=false"
-      - "--providers.docker.network=proxy_public"
+      - "--providers.docker.network=proxy_private"
       - "--api.dashboard=true"
       - "--api.insecure=true"
       - "--providers.file.directory=/etc/traefik/dynamic" # Point to the file
@@ -55,7 +55,7 @@ services:
     #      - lets-encrypt-data:/letsencrypt
     networks:
       - proxy_private
-      - proxy_public
+#      - proxy_public
     #      - internal-only-torrent-network
     deploy:
       labels:
