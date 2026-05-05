@@ -109,6 +109,20 @@ services:
           - node.role == manager
           - node.labels.type != restricted
 
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    networks:
+      - public_proxy
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_HTTP_TUNNEL_TOKEN}
+    depends_on:
+      - traefik
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.type != restricted
+
 networks:
   proxy_public:
     driver: overlay
