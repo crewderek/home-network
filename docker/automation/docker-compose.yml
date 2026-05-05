@@ -87,7 +87,7 @@ services:
         - "traefik.http.routers.uptime-kuma.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.uptime-kuma.tls.domains[0].sans=*.${BASE_DOMAIN}"
         - "kuma.kuma-group.group.name=Uptime Kuma"
-        - "kuma.kuma-group.parent=kuma-group"
+        - "kuma.kuma-group.parent=automation"
         - "kuma.kuma.http.name=Uptime Kuma"
         - "kuma.kuma.http.url=http://uptime-kuma:3001"
         - "kuma.kuma.http.interval=300"
