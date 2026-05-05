@@ -62,6 +62,7 @@ services:
     networks:
       - media_network
       - proxy_private
+      - proxy_public
     environment:
       - LOG_LEVEL=debug
       - TZ=America/Denver
