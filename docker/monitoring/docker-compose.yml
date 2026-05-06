@@ -26,7 +26,7 @@ services:
     networks:
       - monitor-network
       - proxy_private
-      - dns_network
+      - kuma_network
 #    ports:
 #      - "3000:3000"
     volumes:
@@ -144,3 +144,6 @@ networks:
   proxy_private:
     external: true
     name: proxy_private
+  kuma_network:
+    external: true
+    name: kuma_network
