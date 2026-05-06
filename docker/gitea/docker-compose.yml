@@ -41,6 +41,11 @@ services:
         # This line is key: it tells Traefik to look for the cert containing these domains
         - "traefik.http.routers.gitea.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.gitea.tls.domains[0].sans=*.${BASE_DOMAIN}"
+        - "kuma.git-group.group.name=Git"
+        - "kuma.git.http.name=Gitea"
+        - "kuma.git.http.url=http://apprise:3000"
+        - "kuma.git.http.interval=300"
+        - "kuma.git.http.parent_name=git-group"
       placement:
         constraints:
           - node.labels.docker_mount == true
@@ -75,6 +80,9 @@ networks:
     driver: overlay
   proxy_private:
     external: true
+  kuma_network:
+    external: true
+    name: kuma_network
 
 volumes:
   gitea-data:
