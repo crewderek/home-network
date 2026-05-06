@@ -42,7 +42,7 @@ services:
         - "traefik.http.routers.portainer.tls.domains[0].sans=*.${BASE_DOMAIN}"
 #        - "kuma.portainer-group.group.name=Automation"
         - "kuma.portainer.http.name=Portainer"
-        - "kuma.portainer.http.url=http://portainer:9000"
+        - "kuma.portainer.http.url=https://portainer:9443"
         - "kuma.portainer.http.interval=300"
 #        - "kuma.apprise.http.parent_name=automation"
       mode: replicated
