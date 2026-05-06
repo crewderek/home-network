@@ -12,10 +12,16 @@ services:
       - /opt/mysql/bookstack:/config
     networks:
       - bookstack_network
+      - kuma_network
     secrets:
       - bookstack_mysql_password
       - bookstack_mysql_root_password
     deploy:
+      labels:
+        - "kuma.bookstack_db.type=postgres"
+        - "kuma.bookstack_db.name=Bookstack Postgres DB"
+        - "kuma.bookstack_db.db_connection_string=postgresql://bookstack:${BOOKSTACK_DB_PASSWORD}@bookstack_db:5432/bookstack"
+        - "kuma.bookstack_db.interval=60"
       placement:
         constraints:
           - node.labels.database_node == true
@@ -41,6 +47,7 @@ services:
     networks:
       - bookstack_network
       - proxy_private
+      - kuma_network
     depends_on:
       - bookstack_db
     deploy:
@@ -82,6 +89,10 @@ networks:
     driver: overlay
   proxy_private:
     external: true
+  kuma_network:
+    external: true
+    name: kuma_network
+
 
 volumes:
   bookstack_data:
