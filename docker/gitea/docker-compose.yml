@@ -13,7 +13,7 @@ services:
       - GITEA__database__PASSWD_FILE=/run/secrets/db_password
     restart: always
     depends_on:
-      - db
+      - gitea_db
     networks:
       - gitea-network
       - proxy_private
