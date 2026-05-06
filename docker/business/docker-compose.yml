@@ -10,6 +10,7 @@ services:
     networks:
       - business_network
       - proxy_private
+      - kuma_network
     environment:
       # Set this to true if you are running behind a reverse proxy (recommended)
 #      - ACTUAL_HTTPS_KEY=/data/selfhost.key
@@ -30,6 +31,11 @@ services:
         # This line is key: it tells Traefik to look for the cert containing these domains
         - "traefik.http.routers.actual_server.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.actual_server.tls.domains[0].sans=*.${BASE_DOMAIN}"
+        - "kuma.business.group.name=Business"
+        - "kuma.actual_budget.http.name=Actual Budget"
+        - "kuma.actual_budget.http.url=http://actual_server:5006"
+        - "kuma.actual_budget.http.interval=300"
+        - "kuma.actual_budget.http.parent_name=business"
       mode: replicated
       replicas: 1
       restart_policy:
@@ -52,3 +58,6 @@ networks:
     name: business-network
   proxy_private:
     external: true
+  kuma_network:
+    external: true
+    name: kuma_network
