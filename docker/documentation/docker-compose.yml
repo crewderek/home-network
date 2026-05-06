@@ -58,6 +58,11 @@ services:
         # This line is key: it tells Traefik to look for the cert containing these domains
         - "traefik.http.routers.bookstack.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.bookstack.tls.domains[0].sans=*.${BASE_DOMAIN}"
+        - "kuma.documentation.group.name=Documentation"
+        - "kuma.bookstack.http.name=Book Stack"
+        - "kuma.bookstack.http.url=http://bookstack:80"
+        - "kuma.bookstack.http.interval=300"
+        - "kuma.bookstack.http.parent_name=documentation"
       placement:
         constraints:
 #          - node.labels.docker_mount == true
