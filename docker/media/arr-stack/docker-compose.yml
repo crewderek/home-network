@@ -231,7 +231,7 @@ services:
         - "traefik.http.routers.listenarr.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.listenarr.tls.domains[0].sans=*.${BASE_DOMAIN}"
         - "kuma.listenarr.http.name=Listenarr"
-        - "kuma.listenarr.http.url=http://lidarr:4545"
+        - "kuma.listenarr.http.url=http://listenarr:4545"
         - "kuma.listenarr.http.interval=300"
         - "kuma.listenarr.http.parent_name=arr"
       replicas: 1
