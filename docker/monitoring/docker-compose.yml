@@ -46,6 +46,11 @@ services:
         # This line is key: it tells Traefik to look for the cert containing these domains
         - "traefik.http.routers.grafana.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.grafana.tls.domains[0].sans=*.${BASE_DOMAIN}"
+        - "kuma.monitoring.group.name=Monitoring"
+        - "kuma.grafana.http.name=Grafana"
+        - "kuma.grafana.http.url=http://grafana:3000"
+        - "kuma.grafana.http.interval=300"
+        - "kuma.grafana.http.parent_name=monitoring"
       placement:
         constraints:
           - node.labels.docker_mount == true
@@ -88,46 +93,46 @@ services:
       mode: global  # This collects container stats from EVERY node
 
 
-  checkmk:
-    image: checkmk/check-mk-community:2.5.0 # Or 'enterprise' if you have a license
-#    ports:
-#      - "8080:5000"   # HTTP UI (HostPort:ContainerPort)
-#      - "6556:6556"   # Agent receiver (if monitoring the swarm nodes)
-    networks:
-      - monitor-network
-    volumes:
-      - /mnt/docker/checkmk/data:/sites
-      - /etc/localtime:/etc/localtime:ro
-    environment:
-      - CMK_SITE_ID=monitoring
-      - CMK_PASSWORD=${CHECKMK_PASSWORD}
-      - CMK_LIVESTATUS_TCP=on
-    deploy:
-      labels:
-        - "traefik.enable=true"
-        #        # The URL you will use to access Nextcloud
-        - "traefik.http.routers.checkmk.rule=Host(`${CHECKMK_SUBDOMAIN}.${BASE_DOMAIN}`)"
-        - "traefik.http.routers.checkmk.entrypoints=websecure"
-        - "traefik.http.routers.checkmk.tls=true"
-        - "traefik.http.routers.checkmk.tls.certresolver=mydnschallenge"
-        #        # Critical for Swarm: Specify the internal container port
-        - "traefik.http.services.checkmk.loadbalancer.server.port=5000"
-        #        # Ensure Traefik uses the correct network for routing
-        - "traefik.docker.network=proxy_private"
-        # This line is key: it tells Traefik to look for the cert containing these domains
-        - "traefik.http.routers.checkmk.tls.domains[0].main=${BASE_DOMAIN}"
-        - "traefik.http.routers.checkmk.tls.domains[0].sans=*.${BASE_DOMAIN}"
-      mode: replicated
-      replicas: 1
-      placement:
-        constraints:
-          - node.labels.docker_mount == true
-          - node.labels.type != restricted
-      resources:
-        limits:
-          memory: 2G
-        reservations:
-          memory: 1G
+#  checkmk:
+#    image: checkmk/check-mk-community:2.5.0 # Or 'enterprise' if you have a license
+##    ports:
+##      - "8080:5000"   # HTTP UI (HostPort:ContainerPort)
+##      - "6556:6556"   # Agent receiver (if monitoring the swarm nodes)
+#    networks:
+#      - monitor-network
+#    volumes:
+#      - /mnt/docker/checkmk/data:/sites
+#      - /etc/localtime:/etc/localtime:ro
+#    environment:
+#      - CMK_SITE_ID=monitoring
+#      - CMK_PASSWORD=${CHECKMK_PASSWORD}
+#      - CMK_LIVESTATUS_TCP=on
+#    deploy:
+#      labels:
+#        - "traefik.enable=true"
+#        #        # The URL you will use to access Nextcloud
+#        - "traefik.http.routers.checkmk.rule=Host(`${CHECKMK_SUBDOMAIN}.${BASE_DOMAIN}`)"
+#        - "traefik.http.routers.checkmk.entrypoints=websecure"
+#        - "traefik.http.routers.checkmk.tls=true"
+#        - "traefik.http.routers.checkmk.tls.certresolver=mydnschallenge"
+#        #        # Critical for Swarm: Specify the internal container port
+#        - "traefik.http.services.checkmk.loadbalancer.server.port=5000"
+#        #        # Ensure Traefik uses the correct network for routing
+#        - "traefik.docker.network=proxy_private"
+#        # This line is key: it tells Traefik to look for the cert containing these domains
+#        - "traefik.http.routers.checkmk.tls.domains[0].main=${BASE_DOMAIN}"
+#        - "traefik.http.routers.checkmk.tls.domains[0].sans=*.${BASE_DOMAIN}"
+#      mode: replicated
+#      replicas: 1
+#      placement:
+#        constraints:
+#          - node.labels.docker_mount == true
+#          - node.labels.type != restricted
+#      resources:
+#        limits:
+#          memory: 2G
+#        reservations:
+#          memory: 1G
 
 networks:
   monitor-network:
