@@ -5,6 +5,7 @@ services:
       - media_network
       - proxy_private
       - proxy_public
+      - kuma_network
     environment:
       - LOG_LEVEL=debug
       - TZ=America/Denver
@@ -27,6 +28,10 @@ services:
         - "traefik.http.services.jellyseer.loadbalancer.server.port=5055"
         #        # Ensure Traefik uses the correct network for routing
         - "traefik.docker.network=proxy_private"
+        - "kuma.jellyseer.http.name=Jellyseer"
+        - "kuma.jellyseer.http.url=http://jellyseer:5055"
+        - "kuma.jellyseer.http.interval=300"
+        - "kuma.jellyseer.http.parent_name=media"
       replicas: 1
       placement:
         constraints:
@@ -62,6 +67,10 @@ services:
         # This line is key: it tells Traefik to look for the cert containing these domains
         - "traefik.http.routers.audiobookshelf.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.audiobookshelf.tls.domains[0].sans=*.${BASE_DOMAIN}"
+        - "kuma.audiobookshelf.http.name=Audio Book Shelf"
+        - "kuma.audiobookshelf.http.url=http://audiobookshelf:80"
+        - "kuma.audiobookshelf.http.interval=300"
+        - "kuma.audiobookshelf.http.parent_name=media"
       placement:
         constraints:
           - node.labels.docker_mount == true
@@ -138,11 +147,11 @@ networks:
     name: media-network
   proxy_public:
     external: true
-#  arr_network:
-#    external: true
-#    name: arr_arr_network
   proxy_private:
     external: true
+  kuma_network:
+    external: true
+    name: kuma_network
 
 volumes:
 #  jellyfin_cache:
