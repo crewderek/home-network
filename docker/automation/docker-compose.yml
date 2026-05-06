@@ -286,3 +286,13 @@ networks:
       name: kuma_network
       driver: overlay
       attachable: true
+
+  kuma_network:
+    external: true
+    name: kuma_network
+
+        - "kuma.automation.group.name=Automation"
+        - "kuma.apprise.http.name=Apprise"
+        - "kuma.apprise.http.url=http://apprise:8000"
+        - "kuma.apprise.http.interval=300"
+        - "kuma.apprise.http.parent_name=automation"
