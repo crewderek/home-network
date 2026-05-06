@@ -8,8 +8,8 @@ services:
 #      - "8123:8123"
     networks:
       - smart-home-network
-      - dns_network
       - proxy_private
+      - kuma_network
     deploy:
       labels:
         - "traefik.enable=true"
