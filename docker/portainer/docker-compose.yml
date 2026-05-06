@@ -44,6 +44,7 @@ services:
         - "kuma.portainer.http.name=Portainer"
         - "kuma.portainer.http.url=https://portainer:9443"
         - "kuma.portainer.http.interval=300"
+        - "kuma.monitor.ignore_tls=True"
 #        - "kuma.apprise.http.parent_name=automation"
       mode: replicated
       replicas: 1
