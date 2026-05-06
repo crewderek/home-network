@@ -12,6 +12,7 @@ services:
     networks:
       - dns_net
       - proxy_private
+      - kuma_network
     volumes:
       - /mnt/docker/adguard/config:/opt/adguardhome/conf
       - /mnt/docker/adguard/work:/opt/adguardhome/work
@@ -72,6 +73,7 @@ services:
     networks:
       - dns_net
       - proxy_private
+      - kuma_network
     volumes:
       - /mnt/docker/adguard/config:/opt/adguardhome/conf
       - /mnt/docker/adguard/work-secondary:/opt/adguardhome/work
@@ -127,3 +129,6 @@ networks:
   proxy_private:
     external: true
     name: proxy_private
+  kuma_network:
+    external: true
+    name: kuma_network
