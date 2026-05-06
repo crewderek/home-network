@@ -186,7 +186,7 @@ services:
         - "traefik.http.routers.bento-pdf.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.bento-pdf.tls.domains[0].sans=*.${BASE_DOMAIN}"
         - "kuma.bentopdf.http.name=Bento PDF"
-        - "kuma.bentopdf.http.url=http://bento-pdf:80"
+        - "kuma.bentopdf.http.url=http://bento-pdf:8080"
         - "kuma.bentopdf.http.interval=300"
         - "kuma.bentopdf.http.parent_name=tools"
       placement:
