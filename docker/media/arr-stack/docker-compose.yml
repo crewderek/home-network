@@ -1,56 +1,11 @@
 services:
-  # VPN GATEWAY
-#  gluetun:
-#    image: qmcgaw/gluetun
-#    cap_add:
-#      - NET_ADMIN
-#    devices:
-#      - /dev/net/tun:/dev/net/tun
-#    environment:
-#      - VPN_SERVICE_PROVIDER=custom
-#      - VPN_TYPE=wireguard
-#      - WIREGUARD_PRIVATE_KEY=your_key_here
-#      - WIREGUARD_ADDRESSES=10.0.0.2/32
-#      - FIREWALL_OUTBOUND_SUBNETS=192.168.1.0/24
-#    networks:
-#      - arr_network
-#    ports:
-#      - target: 8080
-#        published: 8080
-#        mode: host # Host mode ensures we don't hit routing mesh issues
-#    deploy:
-#      placement:
-#        constraints:
-#          - node.role == worker # Or pick a specific node name
-
-  # DOWNLOADER
-  # Note: Swarm doesn't support network_mode: service:gluetun.
-  # For Swarm, it is standard practice to run the VPN and Client
-  # in a single custom image or via a sidecar pod-like structure.
-  # However, for a home lab, the most stable Swarm approach is
-  # keeping them as separate services on the same network:
-#  qbittorrent:
-#    image: lscr.io/linuxserver/qbittorrent:latest
-#    environment:
-#      - PUID=1000
-#      - PGID=1000
-#      - WEBUI_PORT=8080
-#    volumes:
-#      - /mnt/shared/config/qbittorrent:/config
-#      - /mnt/shared/data/downloads:/data/downloads
-#    networks:
-#      - arr_network
-#    deploy:
-#      placement:
-#        constraints:
-#          - node.hostname == vpn-node-01 # Keep qbit and vpn on same node
-
   # INDEXER MANAGER
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:2.3.5
     networks:
       - arr_network
       - proxy_private
+      - kuma_network
 #    ports:+
 #      - 9696:9696
     environment:
@@ -79,6 +34,11 @@ services:
         # This line is key: it tells Traefik to look for the cert containing these domains
         - "traefik.http.routers.prowlarr.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.prowlarr.tls.domains[0].sans=*.${BASE_DOMAIN}"
+        - "kuma.arr.group.name=ARR Stack"
+        - "kuma.prowlarr.http.name=Prowlarr"
+        - "kuma.prowlarr.http.url=http://prowlarr:9696"
+        - "kuma.prowlarr.http.interval=300"
+        - "kuma.prowlarr.http.parent_name=arr"
       replicas: 1
       placement:
         constraints:
@@ -90,6 +50,7 @@ services:
     networks:
       - arr_network
       - proxy_private
+      - kuma_network
 #    ports:
 #      - 7878:7878
     environment:
@@ -120,6 +81,10 @@ services:
         # This line is key: it tells Traefik to look for the cert containing these domains
         - "traefik.http.routers.radarr.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.radarr.tls.domains[0].sans=*.${BASE_DOMAIN}"
+        - "kuma.radarr.http.name=Radarr"
+        - "kuma.radarr.http.url=http://radarr:7878"
+        - "kuma.radarr.http.interval=300"
+        - "kuma.radarr.http.parent_name=arr"
       replicas: 1
       placement:
         constraints:
@@ -133,6 +98,7 @@ services:
     networks:
       - arr_network
       - proxy_private
+      - kuma_network
 #    ports:
 #      - 8989:8989
     environment:
@@ -163,6 +129,10 @@ services:
         # This line is key: it tells Traefik to look for the cert containing these domains
         - "traefik.http.routers.sonarr.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.sonarr.tls.domains[0].sans=*.${BASE_DOMAIN}"
+        - "kuma.sonarr.http.name=Sonarr"
+        - "kuma.sonarr.http.url=http://sonarr:8989"
+        - "kuma.sonarr.http.interval=300"
+        - "kuma.sonarr.http.parent_name=arr"
       replicas: 1
       placement:
         constraints:
@@ -177,6 +147,7 @@ services:
     networks:
       - arr_network
       - proxy_private
+      - kuma_network
 #    ports:
 #      - 8686:8686
     environment:
@@ -209,6 +180,10 @@ services:
         # This line is key: it tells Traefik to look for the cert containing these domains
         - "traefik.http.routers.lidarr.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.lidarr.tls.domains[0].sans=*.${BASE_DOMAIN}"
+        - "kuma.lidarr.http.name=Lidarr"
+        - "kuma.lidarr.http.url=http://lidarr:8686"
+        - "kuma.lidarr.http.interval=300"
+        - "kuma.lidarr.http.parent_name=arr"
       replicas: 1
       placement:
         constraints:
@@ -223,6 +198,7 @@ services:
     networks:
       - arr_network
       - proxy_private
+      - kuma_network
     environment:
       - PUID=1000
       - PGID=1000
@@ -254,6 +230,10 @@ services:
         # This line is key: it tells Traefik to look for the cert containing these domains
         - "traefik.http.routers.listenarr.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.listenarr.tls.domains[0].sans=*.${BASE_DOMAIN}"
+        - "kuma.listenarr.http.name=Listenarr"
+        - "kuma.listenarr.http.url=http://lidarr:4545"
+        - "kuma.listenarr.http.interval=300"
+        - "kuma.listenarr.http.parent_name=arr"
       replicas: 1
       placement:
         constraints:
@@ -335,6 +315,9 @@ networks:
     attachable: true
   proxy_private:
     external: true
+  kuma_network:
+    external: true
+    name: kuma_network
 
 volumes:
   arr-data:
