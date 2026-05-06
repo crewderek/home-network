@@ -52,6 +52,7 @@ services:
     networks:
       - media_network
       - proxy_private
+      - kuma_network
     deploy:
       labels:
         - "traefik.enable=true"
