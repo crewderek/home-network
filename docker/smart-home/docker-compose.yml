@@ -25,6 +25,11 @@ services:
         # This line is key: it tells Traefik to look for the cert containing these domains
         - "traefik.http.routers.homeassistant.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.homeassistant.tls.domains[0].sans=*.${BASE_DOMAIN}"
+        - "kuma.smart-home.group.name=Smart Home"
+        - "kuma.homeassistant.http.name=Home Assistant"
+        - "kuma.homeassistant.http.url=http://homeassistant:8123"
+        - "kuma.homeassistant.http.interval=300"
+        - "kuma.homeassistant.http.parent_name=smart-home"
       placement:
         constraints:
           - node.labels.docker_mount == true
@@ -43,6 +48,7 @@ services:
     networks:
       - smart-home-network
       - proxy_private
+      - kuma_network
 #    ports:
 #      - "1883:1883"
 #      - "9001:9001"
@@ -94,12 +100,14 @@ networks:
     driver: overlay
     attachable: true
     name: smart-home-network
-  dns_network:
-    external: true
-    name: dns_dns_net
   proxy_private:
     external: true
     name: proxy_private
+  kuma_network:
+    external: true
+    name: kuma_network
+
+
 
 volumes:
   mosquitto_nfs:
