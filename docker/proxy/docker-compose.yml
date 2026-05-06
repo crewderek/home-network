@@ -55,6 +55,7 @@ services:
     #      - lets-encrypt-data:/letsencrypt
     networks:
       - proxy_private
+      - kuma_network
 #      - proxy_public
     #      - internal-only-torrent-network
     deploy:
@@ -66,6 +67,11 @@ services:
         # This is the "magic" service name Traefik uses for itself
         - "traefik.http.routers.traefik-dashboard.service=api@internal"
         - "traefik.http.services.traefik.loadbalancer.server.port=8080"
+        - "kuma.proxy.group.name=Proxy"
+        - "kuma.traefik.http.name=Traefik API"
+        - "kuma.traefik.http.url=http://traefik:8080"
+        - "kuma.traefik.http.interval=300"
+        - "kuma.traefik.http.parent_name=proxy"
       placement:
         constraints:
           - node.labels.docker_mount == true
@@ -85,6 +91,7 @@ services:
     #      - /path/to/traefik-manager/backups:/app/backups
     networks:
       - proxy_private
+      - kuma_network
     #      - proxy_public
     #      - internal-only-torrent-network
     deploy:
@@ -102,6 +109,10 @@ services:
         # This line is key: it tells Traefik to look for the cert containing these domains
         - "traefik.http.routers.traefik-manager.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.traefik-manager.tls.domains[0].sans=*.${BASE_DOMAIN}"
+        - "kuma.traefik.http.name=Traefik Manager"
+        - "kuma.traefik.http.url=http://traefik-manager:5000"
+        - "kuma.traefik.http.interval=300"
+        - "kuma.traefik.http.parent_name=proxy"
       replicas: 1
       placement:
         constraints:
@@ -132,3 +143,6 @@ networks:
     driver: overlay
     attachable: true
     name: proxy_private
+  kuma_network:
+    external: true
+    name: kuma_network
