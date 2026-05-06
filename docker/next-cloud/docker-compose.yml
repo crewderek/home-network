@@ -8,6 +8,7 @@ services:
     networks:
       - next-cloud-network
       - proxy-private
+      - kuma_network
     depends_on:
       - nextclouddb
       - redis
@@ -47,6 +48,11 @@ services:
         # This line is key: it tells Traefik to look for the cert containing these domains
         - "traefik.http.routers.nextcloud.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.nextcloud.tls.domains[0].sans=*.${BASE_DOMAIN}"
+        - "kuma.cloud.group.name=Cloud"
+        - "kuma.next-cloud.http.name=Next Cloud"
+        - "kuma.next-cloud.http.url=http://nextcloud:80"
+        - "kuma.next-cloud.http.interval=300"
+        - "kuma.next-cloud.http.parent_name=cloud"
       placement:
         constraints:
           - node.labels.docker_mount == true
@@ -127,6 +133,10 @@ networks:
   proxy-private:
     external: true
     name: proxy_private
+  kuma_network:
+    external: true
+    name: kuma_network
+
 
 volumes:
   next-cloud-data:
