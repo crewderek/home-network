@@ -6,6 +6,7 @@ services:
     networks:
       - proxy_private
       - tools
+      - kuma_network
 #    ports:
 #      - target: 80
 #        published: 8080
@@ -26,6 +27,11 @@ services:
         # This line is key: it tells Traefik to look for the cert containing these domains
         - "traefik.http.routers.it-tools.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.it-tools.tls.domains[0].sans=*.${BASE_DOMAIN}"
+        - "kuma.tools.group.name=Tools"
+        - "kuma.it-tools.http.name=IT Tools"
+        - "kuma.it-tools.http.url=http://it-tools:80"
+        - "kuma.it-tools.http.interval=300"
+        - "kuma.it-tools.http.parent_name=tools"
       placement:
         constraints:
           - node.labels.type != restricted
@@ -49,6 +55,7 @@ services:
       - heimdall_nfs:/config:subpath=config
     networks:
       - proxy_private
+      - kuma_network
 #    ports:
 #      - "8080:80"
 #      - "8443:443"
@@ -67,6 +74,10 @@ services:
         # This line is key: it tells Traefik to look for the cert containing these domains
         - "traefik.http.routers.heimdall.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.heimdall.tls.domains[0].sans=*.${BASE_DOMAIN}"
+        - "kuma.heimdall.http.name=Heimdall"
+        - "kuma.heimdall.http.url=http://heimdall:80"
+        - "kuma.heimdall.http.interval=300"
+        - "kuma.heimdall.http.parent_name=tools"
       placement:
         constraints:
           - node.labels.type != restricted
@@ -93,6 +104,7 @@ services:
     networks:
       - tools
       - proxy_private
+      - kuma_network
     environment:
       # This tells the browser where to find the collaboration server
       # Replace 'excalidraw.yourdomain.com' with your actual IP or Domain
@@ -112,6 +124,10 @@ services:
         # This line is key: it tells Traefik to look for the cert containing these domains
         - "traefik.http.routers.excalidraw.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.excalidraw.tls.domains[0].sans=*.${BASE_DOMAIN}"
+        - "kuma.draw.http.name=Excalidraw"
+        - "kuma.draw.http.url=http://excalidraw:80"
+        - "kuma.draw.http.interval=300"
+        - "kuma.draw.http.parent_name=tools"
       placement:
         constraints:
           - node.labels.type != restricted
@@ -144,6 +160,7 @@ services:
     image: ghcr.io/alam00000/bentopdf-simple:latest
     networks:
       - proxy_private
+      - kuma_network
 #    ports:
 #      - "8080:8080"
     environment:
@@ -168,6 +185,10 @@ services:
         # This line is key: it tells Traefik to look for the cert containing these domains
         - "traefik.http.routers.bento-pdf.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.bento-pdf.tls.domains[0].sans=*.${BASE_DOMAIN}"
+        - "kuma.bentopdf.http.name=Bento PDF"
+        - "kuma.bentopdf.http.url=http://bento-pdf:80"
+        - "kuma.bentopdf.http.interval=300"
+        - "kuma.bentopdf.http.parent_name=tools"
       placement:
         constraints:
           - node.labels.type != restricted
@@ -182,6 +203,9 @@ networks:
       name: tools-network
       driver: overlay
       attachable: true
+    kuma_network:
+      external: true
+      name: kuma_network
 
 volumes:
   heimdall_nfs:
