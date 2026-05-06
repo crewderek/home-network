@@ -38,6 +38,11 @@ services:
         # This line is key: it tells Traefik to look for the cert containing these domains
         - "traefik.http.routers.immich-server.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.immich-server.tls.domains[0].sans=*.${BASE_DOMAIN}"
+        - "kuma.media.group.name=Media"
+        - "kuma.immich.http.name=Immich"
+        - "kuma.immich.http.url=http://immich-server:2283"
+        - "kuma.immich.http.interval=300"
+        - "kuma.immich.http.parent_name=media"
       placement:
         constraints:
           - node.labels.photo_mount == true
