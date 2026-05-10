@@ -293,6 +293,10 @@ services:
       - PUID=1000 # Replace with your user ID
       - PGID=1000 # Replace with your group ID
       - TZ=America/Denver # Replace with your timezone
+    networks:
+      - arr_network
+      - proxy_private
+      - kuma_network
     volumes:
       - type: volume
         source: arr-data
