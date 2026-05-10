@@ -287,6 +287,45 @@ services:
 #          - node.labels.video_mount == true
 #          - node.labels.type != restricted
 
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:1.5.6
+    environment:
+      - PUID=1000 # Replace with your user ID
+      - PGID=1000 # Replace with your group ID
+      - TZ=America/Denver # Replace with your timezone
+    volumes:
+      - /path/to/bazarr/config:/config
+      - /mnt/video/data/movie:/movies # Must match Radarr's path for compatibility
+      - /mnt/video/data/shows:/tv # Must match Sonarr's path for compatibility
+#    ports:
+#      - 6767:6767
+    restart: unless-stopped
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        #        # The URL you will use to access Nextcloud
+        - "traefik.http.routers.bazarr.rule=Host(`${BAZARR_SUBDOMAIN}.${BASE_DOMAIN}`)"
+        - "traefik.http.routers.bazarr.entrypoints=websecure"
+        - "traefik.http.routers.bazarr.tls=true"
+        - "traefik.http.routers.bazarr.tls.certresolver=mydnschallenge"
+        #        # Critical for Swarm: Specify the internal container port
+        - "traefik.http.services.bazarr.loadbalancer.server.port=6767"
+        #        # Ensure Traefik uses the correct network for routing
+        - "traefik.docker.network=proxy_private"
+        # This line is key: it tells Traefik to look for the cert containing these domains
+        - "traefik.http.routers.bazarr.tls.domains[0].main=${BASE_DOMAIN}"
+        - "traefik.http.routers.bazarr.tls.domains[0].sans=*.${BASE_DOMAIN}"
+        - "kuma.bazarr.http.name=Bazarr"
+        - "kuma.bazarr.http.url=http://bazarr:6767"
+        - "kuma.bazarr.http.interval=300"
+        - "kuma.bazarr.http.parent_name=arr"
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.docker_mount == true
+          - node.labels.video_mount == true
+          - node.labels.type != restricted
+
   flaresolverr:
     # Use the official GHCR image for the most up-to-date 2026 releases
     image: ghcr.io/flaresolverr/flaresolverr:latest
