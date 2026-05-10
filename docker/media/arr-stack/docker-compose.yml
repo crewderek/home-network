@@ -294,7 +294,13 @@ services:
       - PGID=1000 # Replace with your group ID
       - TZ=America/Denver # Replace with your timezone
     volumes:
-      - /path/to/bazarr/config:/config
+      - type: volume
+        source: arr-data
+        target: /config
+        volume:
+          subpath: bazarr/config
+          nocopy: true
+#      - /path/to/bazarr/config:/config
       - /mnt/video/data/movie:/movies # Must match Radarr's path for compatibility
       - /mnt/video/data/shows:/tv # Must match Sonarr's path for compatibility
 #    ports:
