@@ -306,7 +306,7 @@ services:
           nocopy: true
 #      - /path/to/bazarr/config:/config
       - /mnt/video/data/movie:/movies # Must match Radarr's path for compatibility
-      - /mnt/video/data/shows:/tv # Must match Sonarr's path for compatibility
+      - /mnt/video/data/shows:/tvseries # Must match Sonarr's path for compatibility
 #    ports:
 #      - 6767:6767
     restart: unless-stopped
