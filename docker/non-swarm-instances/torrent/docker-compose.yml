@@ -4,10 +4,14 @@ services:
   gluetun:
     image: qmcgaw/gluetun:v3.41
     container_name: gluetun
+    devices:
+      - /dev/net/tun:/dev/net/tun
     cap_add:
       - NET_ADMIN
     environment:
       - VPN_SERVICE_PROVIDER=nordvpn
+      - VPN_TYPE=openvpn
+      - OPENVPN_MSSFIX=1300 # Adjusts the MTU size
       - OPENVPN_USER=${OPENVPN_USER}
       - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
       - SERVER_COUNTRIES=${GLUETUN_SERVER_COUNTRIES}
@@ -22,7 +26,10 @@ services:
 #      - public-torrent-network
 #      - internal-only-torrent-network
     networks:
+#      - vpn-network
       - proxy-private
+#    ports:
+#      - 8080:8080
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: always
@@ -77,6 +84,11 @@ services:
 #          - node.labels.type != restricted
 
 networks:
+#  vpn-network:
+#    attachable: true
+#    driver: bridge
+#    driver_opts:
+#      com.docker.network.driver.mtu: "1200"
   proxy-private:
     external: true
     name: proxy_private
