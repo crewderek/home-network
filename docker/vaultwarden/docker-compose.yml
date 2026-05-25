@@ -29,7 +29,9 @@ services:
       - vaultwarden-network
       - proxy_private
     environment:
-      - DATABASE_URL=postgres://vaultwarden:$$(cat /run/secrets/vault_warden_pg_password)@vaultwarden-db:5432/vaultwarden
+      - DATABASE_URL=postgres://vaultwarden@db:5432/vaultwarden
+      - DB_PASSWORD_FILE=/run/secrets/pg_password
+#      - DATABASE_URL=postgres://vaultwarden:$$(cat /run/secrets/vault_warden_pg_password)@vaultwarden-db:5432/vaultwarden
       - ADMIN_TOKEN_FILE=/run/secrets/vw_admin_token
     volumes:
       - vw-data:/data
