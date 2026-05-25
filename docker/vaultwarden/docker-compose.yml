@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  vaultwarden-db:
+    image: postgres:15-alpine
+    networks:
+      - vaultwarden-network
+    volumes:
+      - /opt/postgres/vault-warden:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=vaultwarden
+      - POSTGRES_USER=vaultwarden
+      - POSTGRES_PASSWORD_FILE=/run/secrets/vault_warden_pg_password
+    secrets:
+      - vault_warden_pg_password
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.database_node == true
+
+  vaultwarden:
+    image: vaultwarden/server:latest
+    depends_on:
+      - vaultwarden-db
+    networks:
+      - vaultwarden-network
+      - proxy_private
+    environment:
+      - DATABASE_URL=postgres://vaultwarden:$$(cat /run/secrets/vault_warden_pg_password)@vaultwarden-db:5432/vaultwarden
+      - ADMIN_TOKEN_FILE=/run/secrets/vw_admin_token
+    volumes:
+      - vw-data:/data
+    secrets:
+      - vw_admin_token
+      - vault_warden_pg_password
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        #        # The URL you will use to access Nextcloud
+        - "traefik.http.routers.vault-warden.rule=Host(`${VAULT_WARDEN_SUBDOMAIN}.${BASE_DOMAIN}`)"
+        - "traefik.http.routers.vault-warden.entrypoints=websecure"
+        - "traefik.http.routers.vault-warden.tls=true"
+        - "traefik.http.routers.vault-warden.tls.certresolver=mydnschallenge"
+        #        # Critical for Swarm: Specify the internal container port
+        - "traefik.http.services.vault-warden.loadbalancer.server.port=80"
+        #        # Ensure Traefik uses the correct network for routing
+        - "traefik.docker.network=proxy_private"
+        # This line is key: it tells Traefik to look for the cert containing these domains
+        - "traefik.http.routers.vault-warden.tls.domains[0].main=${BASE_DOMAIN}"
+        - "traefik.http.routers.vault-warden.tls.domains[0].sans=*.${BASE_DOMAIN}"
+#        - "kuma.tools.group.name=Vault"
+        - "kuma.vault-warden.http.name=Vault Warden"
+        - "kuma.vault-warden.http.url=http://vault-warden:80"
+        - "kuma.vault-warden.http.interval=300"
+#        - "kuma.vault-warden.http.parent_name=tools"
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.docker_mount == true
+          - node.labels.type != restricted
+      restart_policy:
+        condition: on-failure
+
+#volumes:
+#  vw-data:
+#  db-data:
+
+networks:
+  vaultwarden-network:
+    name: vaultwarden-network
+    attachable: true
+  proxy_private:
+    external: true
+
+secrets:
+  vw_admin_token:
+    external: true
+  vault_warden_pg_password:
+    external: true
