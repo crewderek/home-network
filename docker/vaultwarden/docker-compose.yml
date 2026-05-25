@@ -29,8 +29,8 @@ services:
       - vaultwarden-network
       - proxy_private
     environment:
-      - DATABASE_URL=postgres://vaultwarden@vaultwarden-db:5432/vaultwarden
-      - DB_PASSWORD_FILE=/run/secrets/vault_warden_pg_password
+#      - DATABASE_URL=postgres://vaultwarden@vaultwarden-db:5432/vaultwarden
+#      - DB_PASSWORD_FILE=/run/secrets/vault_warden_pg_password
 #      - DATABASE_URL=postgres://vaultwarden:$$(cat /run/secrets/vault_warden_pg_password)@vaultwarden-db:5432/vaultwarden
       - ADMIN_TOKEN_FILE=/run/secrets/vw_admin_token
     volumes:
@@ -38,6 +38,10 @@ services:
     secrets:
       - vw_admin_token
       - vault_warden_pg_password
+    entrypoint: >
+      /bin/sh -c "
+      export DATABASE_URL=postgres://vaultwarden:$$(cat /run/secrets/vault_warden_pg_password)@vaultwarden-db:5432/vaultwarden;
+      /vaultwarden"
     deploy:
       labels:
         - "traefik.enable=true"
