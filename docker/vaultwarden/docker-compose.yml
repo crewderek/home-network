@@ -64,8 +64,8 @@ services:
       restart_policy:
         condition: on-failure
 
-#volumes:
-#  vw-data:
+volumes:
+  vw-data:
 #  db-data:
 
 networks:
