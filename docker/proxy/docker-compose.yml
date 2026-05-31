@@ -28,6 +28,8 @@ services:
       - "--certificatesresolvers.mydnschallenge.acme.dnschallenge.provider=route53"
       #      - "--certificatesresolvers.mydnschallenge.acme.email="
       - "--certificatesresolvers.mydnschallenge.acme.storage=/letsencrypt/acme.json"
+      #  MQTT
+      - "--entrypoints.mqtt.address=:1883"
     environment:
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_KEY}
@@ -40,6 +42,7 @@ services:
     ports:
       #      - "9888:80"
       #      - "443:443"
+      - "1883:1883"
       - target: 443
         published: 443
         protocol: tcp

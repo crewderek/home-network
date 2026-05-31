@@ -49,8 +49,8 @@ services:
       - smart-home-network
       - proxy_private
       - kuma_network
-#    ports:
-#      - "1883:1883"
+    ports:
+      - "1883:1883"
 #      - "9001:9001"
     volumes:
       - mosquitto_nfs:/mosquitto
@@ -58,6 +58,15 @@ services:
 #      - mosquitto_nfs:/mosquitto/log:subpath=log
     environment:
       - TZ=America/Denver
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        # Bind this service to the MQTT entrypoint created in Traefik
+        - "traefik.tcp.routers.my-mqtt.entrypoints=mqtt"
+        # Must be a wildcard since unencrypted TCP doesn't have an SNI host header
+        - "traefik.tcp.routers.my-mqtt.rule=HostSNI(`*`)"
+        # Tell Traefik which port the mosquitto container is using internally
+        - "traefik.tcp.services.my-mqtt-svc.loadbalancer.server.port=1883"
 #
 #  zigbee2mqtt:
 #    container_name: zigbee2mqtt
