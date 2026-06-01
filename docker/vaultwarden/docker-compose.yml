@@ -60,7 +60,7 @@ services:
         - "traefik.http.routers.vault-warden.tls.domains[0].sans=*.${BASE_DOMAIN}"
 #        - "kuma.tools.group.name=Vault"
         - "kuma.vault-warden.http.name=Vault Warden"
-        - "kuma.vault-warden.http.url=http://vault-warden:80"
+        - "kuma.vault-warden.http.url=http://vaultwarden:80"
         - "kuma.vault-warden.http.interval=300"
 #        - "kuma.vault-warden.http.parent_name=tools"
       replicas: 1
