@@ -194,6 +194,17 @@ services:
           - node.labels.type != restricted
       replicas: 1
 
+  ntp:
+    image: cturra/ntp:latest
+    environment:
+      - NTP_SERVERS=time.cloudflare.com,time.google.com
+    ports:
+      # Publish port directly to the host network, bypassing the Swarm mesh and Traefik
+      - target: 123
+        published: 123
+        protocol: udp
+        mode: host
+
 
 networks:
     proxy_private:
