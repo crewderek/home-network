@@ -196,6 +196,7 @@ services:
 
   ntp:
     image: cturra/ntp:latest
+    restart: unless-stopped
     environment:
       - NTP_SERVERS=time.cloudflare.com,time.google.com
     ports:
@@ -204,6 +205,11 @@ services:
         published: 123
         protocol: udp
         mode: host
+    deploy:
+      placement:
+        constraints:
+          - node.labels.type != restricted
+      replicas: 1
 
 
 networks:
