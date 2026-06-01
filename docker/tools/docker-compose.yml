@@ -204,7 +204,6 @@ services:
       - target: 123
         published: 123
         protocol: udp
-        mode: host
     deploy:
       placement:
         constraints:
