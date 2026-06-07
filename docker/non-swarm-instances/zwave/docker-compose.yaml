@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  zwave-js-ui:
+    container_name: zwave-js-ui
+    image: zwavejs/zwave-js-ui:11.14
+    restart: unless-stopped
+    tty: true
+    stop_signal: SIGINT
+    networks:
+      - proxy_private
+      - smart-home-network
+    environment:
+#      - SESSION_SECRET=change_me_to_a_random_string # Used for signing UI sessions
+      - TZ=America/Denver                         # Change to your local timezone
+    devices:
+      # Map your USB Z-Wave stick into the container
+      # Host Path : Container Path
+      - '/dev/serial/by-id/${USB_DEVICE}:/dev/zwave'
+    volumes:
+      - /opt/docker/zwave:/usr/src/app/store
+#    ports:
+#      - '8091:8091' # Web UI port
+#      - '3000:3000' # Z-Wave JS WebSocket port (For Home Assistant connection)
+
+networks:
+  proxy_private:
+    external: true
+    name: "proxy_private"
+  smart-home-network:
+    external: true
+    name: "smart-home-network"
