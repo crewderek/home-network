@@ -58,12 +58,13 @@ services:
       - PGID=1000
       - TZ=America/Denver
     volumes:
-      - type: volume
-        source: arr-data
-        target: /config
-        volume:
-          subpath: radarr/config
-          nocopy: true
+      - /mnt/cephfs/docker/home/arr-stack/radarr/config:/config
+#      - type: volume
+#        source: arr-data
+#        target: /config
+#        volume:
+#          subpath: radarr/config
+#          nocopy: true
       - /mnt/video/data/movie:/movies
       - /mnt/video/completed-downloads:/downloads
     deploy:
@@ -88,7 +89,7 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.labels.docker_mount == true
+          - node.labels.ceph_mount == true
           - node.labels.video_mount == true
           - node.labels.type != restricted
 #
@@ -106,12 +107,13 @@ services:
       - PGID=1000
       - TZ=America/Denver
     volumes:
-      - type: volume
-        source: arr-data
-        target: /config
-        volume:
-          subpath: sonarr/config
-          nocopy: true
+      - /mnt/cephfs/docker/home/arr-stack/sonarr/config:/config
+#      - type: volume
+#        source: arr-data
+#        target: /config
+#        volume:
+#          subpath: sonarr/config
+#          nocopy: true
       - /mnt/video/data/shows:/tvseries
       - /mnt/video/completed-downloads:/downloads
     deploy:
@@ -136,7 +138,7 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.labels.docker_mount == true
+          - node.labels.ceph_mount == true
           - node.labels.video_mount == true
           - node.labels.type != restricted
 #
