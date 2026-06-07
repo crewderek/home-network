@@ -6,6 +6,9 @@ services:
     volumes:
       - /mnt/docker/zigbee2mqtt/data:/app/data
       - /run/udev:/run/udev:ro
+    networks:
+      - proxy_private
+      - smart-home-network
 #    ports:
 #      - "8080:8080" # Web UI port
     devices:
