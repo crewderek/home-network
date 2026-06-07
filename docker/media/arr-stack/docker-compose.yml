@@ -13,12 +13,13 @@ services:
       - PGID=1000
       - TZ=America/Denver
     volumes:
-      - type: volume
-        source: arr-data
-        target: /config
-        volume:
-          subpath: prowlarr/config
-          nocopy: true
+      - /mnt/cephfs/docker/home/arr-stack/prowlarr/config:/config
+#      - type: volume
+#        source: arr-data
+#        target: /config
+#        volume:
+#          subpath: prowlarr/config
+#          nocopy: true
     deploy:
       labels:
         - "traefik.enable=true"
@@ -42,7 +43,8 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.labels.docker_mount == true
+          - node.labels.ceph_mount == true
+          - node.labels.video_mount == true
           - node.labels.type != restricted
   # MOVIES
   radarr:
@@ -157,12 +159,13 @@ services:
       - PGID=1000
       - TZ=America/Denver
     volumes:
-      - type: volume
-        source: arr-data
-        target: /config
-        volume:
-          subpath: lidarr/config
-          nocopy: true
+      - /mnt/cephfs/docker/home/arr-stack/lidarr/config:/config
+#      - type: volume
+#        source: arr-data
+#        target: /config
+#        volume:
+#          subpath: lidarr/config
+#          nocopy: true
       - /mnt/video/data/music:/music
       - /mnt/video/completed-downloads:/downloads
 #      - /path/to/music:/music #optional
@@ -189,7 +192,7 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.labels.docker_mount == true
+          - node.labels.ceph_mount == true
           - node.labels.video_mount == true
           - node.labels.type != restricted
 
@@ -207,12 +210,13 @@ services:
       - UMASK=022
 #      - LISTENARR_PUBLIC_URL=https://your-domain.com ## OPTIONAL: Used by Discord Bot
     volumes:
-      - type: volume
-        source: arr-data
-        target: /config
-        volume:
-          subpath: listenarr/config
-          nocopy: true
+      - /mnt/cephfs/docker/home/arr-stack/listenarr/config:/config
+#      - type: volume
+#        source: arr-data
+#        target: /config
+#        volume:
+#          subpath: listenarr/config
+#          nocopy: true
 #      - listenarr_data:/app/config
       - /mnt/video/data/audio-books:/audiobooks #optional
       - /mnt/video/completed-downloads:/downloads
@@ -239,7 +243,7 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.labels.docker_mount == true
+          - node.labels.ceph_mount == true
           - node.labels.video_mount == true
           - node.labels.type != restricted
 
@@ -300,12 +304,13 @@ services:
       - proxy_private
       - kuma_network
     volumes:
-      - type: volume
-        source: arr-data
-        target: /config
-        volume:
-          subpath: bazarr/config
-          nocopy: true
+      - /mnt/cephfs/docker/home/arr-stack/bazarr/config:/config
+#      - type: volume
+#        source: arr-data
+#        target: /config
+#        volume:
+#          subpath: bazarr/config
+#          nocopy: true
 #      - /path/to/bazarr/config:/config
       - /mnt/video/data/movie:/movies # Must match Radarr's path for compatibility
       - /mnt/video/data/shows:/tvseries # Must match Sonarr's path for compatibility
@@ -334,7 +339,7 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.labels.docker_mount == true
+          - node.labels.ceph_mount == true
           - node.labels.video_mount == true
           - node.labels.type != restricted
 
