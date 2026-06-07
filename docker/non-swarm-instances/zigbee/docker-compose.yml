@@ -1,0 +1,20 @@
+services:
+  zigbee2mqtt:
+    image: koenkk/zigbee2mqtt:latest
+    container_name: Zigbee2MQTT
+    restart: unless-stopped
+    volumes:
+      - /mnt/docker/zigbee2mqtt/data:/app/data
+      - /run/udev:/run/udev:ro
+#    ports:
+#      - "8080:8080" # Web UI port
+    devices:
+      - /dev/serial/by-id/${USB_DEVICE}:/dev/ttyUSB0
+
+networks:
+  proxy_private:
+    external: true
+    name: "proxy_private"
+  smart-home-network:
+    external: true
+    name: "smart-home-network"
