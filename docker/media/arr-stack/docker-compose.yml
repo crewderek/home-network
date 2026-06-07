@@ -375,10 +375,10 @@ networks:
     external: true
     name: kuma_network
 
-volumes:
-  arr-data:
-    driver: local
-    driver_opts:
-      type: nfs
-      o: "addr=${NFS_ADDRESS},nfsvers=4,nolock,soft,rw" # Replace with your NFS Server IP
-      device: ":${ARR_NFS_DIRECTORY}"
+#volumes:
+#  arr-data:
+#    driver: local
+#    driver_opts:
+#      type: nfs
+#      o: "addr=${NFS_ADDRESS},nfsvers=4,nolock,soft,rw" # Replace with your NFS Server IP
+#      device: ":${ARR_NFS_DIRECTORY}"
