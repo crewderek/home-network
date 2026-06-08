@@ -91,6 +91,7 @@ services:
     volumes:
       - /mnt/docker/traefik/dynamic/dynamic.yml:/app/config/dynamic.yml
       - /mnt/docker/traefik/manager:/app/config
+      - /mnt/docker/traefik/lets-encrypt/acme.json:/app/acme.json:ro
     #      - /path/to/traefik-manager/backups:/app/backups
     networks:
       - proxy_private
