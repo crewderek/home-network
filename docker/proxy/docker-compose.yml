@@ -82,24 +82,6 @@ services:
           - node.labels.type != restricted
       replicas: 1
 
-  # Cert bot for the 2nd certificate
-  certbot-account-b:
-    image: certbot/dns-route53
-    environment:
-      - AWS_ACCESS_KEY_ID=${ACCOUNT_B_ACCESS_KEY}
-      - AWS_SECRET_ACCESS_KEY=${ACCOUNT_B_SECRET_KEY}
-    volumes:
-      - ${TRAEFIK_MOUNT}/certs:/letsencrypt
-    # Fetches the cert on startup
-    command: certonly --dns-route53 -d "${SECONDARY_BASE_DOMAIN}" -d "*.${SECONDARY_BASE_DOMAIN}" --email ${SECONDARY_DNS_EMAIL} --agree-tos --non-interactive
-    deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.labels.ceph_mount == true
-          - node.role == manager
-          - node.labels.type != restricted
-
 
   traefik-manager:
     image: ghcr.io/chr0nzz/traefik-manager:latest
