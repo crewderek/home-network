@@ -80,7 +80,7 @@ services:
           - node.labels.docker_mount == true
           - node.role == manager
           - node.labels.type != restricted
-      replicas: 2
+      replicas: 1
 
   traefik-manager:
     image: ghcr.io/chr0nzz/traefik-manager:latest
