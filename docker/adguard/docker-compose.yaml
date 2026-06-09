@@ -27,12 +27,12 @@ services:
         protocol: tcp
         mode: host
       # Setup/Web UI
-#      - target: 3000
-#        published: 3000
-#        protocol: tcp
-#      - target: 80
-#        published: 80
-#        protocol: tcp
+    #      - target: 3000
+    #        published: 3000
+    #        protocol: tcp
+    #      - target: 80
+    #        published: 80
+    #        protocol: tcp
     deploy:
       labels:
         - "traefik.enable=true"
@@ -88,12 +88,12 @@ services:
         protocol: tcp
         mode: host
       # Setup/Web UI
-#      - target: 3000
-#        published: 3000
-#        protocol: tcp
-#      - target: 80
-#        published: 80
-#        protocol: tcp
+    #      - target: 3000
+    #        published: 3000
+    #        protocol: tcp
+    #      - target: 80
+    #        published: 80
+    #        protocol: tcp
     deploy:
       labels:
         - "traefik.enable=true"
@@ -119,6 +119,36 @@ services:
         constraints:
           # This ensures it ONLY runs on the labeled node
           - node.labels.static_ip == 192.168.4.22
+      restart_policy:
+        condition: on-failure
+
+
+
+  adguard-sync:
+    image: ghcr.io/bakito/adguardhome-sync:latest
+    command: run
+    networks:
+      - dns_net
+    environment:
+      - LOG_LEVEL=info
+      - RUN_ON_START=true
+      - CRON=*/10 * * * * # Syncs primary to secondary every 10 minutes
+
+      # Origin (Primary) Configuration
+      - ORIGIN_URL=http://adguard-primary:80
+      - ORIGIN_USERNAME=admin # Change to match your primary dashboard username
+      - ORIGIN_PASSWORD=${PRIMARY_PASSWORD}
+
+      # Replica (Secondary) Configuration
+      - REPLICA1_URL=http://adguard-secondary:80
+      - REPLICA1_USERNAME=admin # Change to match your secondary dashboard username
+      - REPLICA1_PASSWORD=${SECONDARY_PASSWORD}
+    restart: unless-stopped
+    depends_on:
+      - adguard-primary
+      - adguard-secondary
+    deploy:
+      replicas: 1
       restart_policy:
         condition: on-failure
 
