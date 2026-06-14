@@ -16,15 +16,15 @@ services:
       # Host Path : Container Path
       - '/dev/serial/by-id/${USB_DEVICE}:/dev/zwave'
     volumes:
-      - /opt/docker/zwave:/usr/src/app/store
-#    ports:
-#      - '8091:8091' # Web UI port
-#      - '3000:3000' # Z-Wave JS WebSocket port (For Home Assistant connection)
+      - ${ZWAVE_DIRECTORY}:/usr/src/app/store
+    ports:
+      - '8091:8091' # Web UI port
+      - '3000:3000' # Z-Wave JS WebSocket port (For Home Assistant connection)
 
-networks:
-  proxy_private:
-    external: true
-    name: "proxy_private"
-  smart-home-network:
-    external: true
-    name: "smart-home-network"
+#networks:
+#  proxy_private:
+#    external: true
+#    name: "proxy_private"
+#  smart-home-network:
+#    external: true
+#    name: "smart-home-network"
