@@ -5,9 +5,9 @@ services:
     restart: unless-stopped
     tty: true
     stop_signal: SIGINT
-    networks:
-      - proxy_private
-      - smart-home-network
+#    networks:
+#      - proxy_private
+#      - smart-home-network
     environment:
 #      - SESSION_SECRET=change_me_to_a_random_string # Used for signing UI sessions
       - TZ=America/Denver                         # Change to your local timezone
