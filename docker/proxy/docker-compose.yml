@@ -70,6 +70,7 @@ services:
         # This is the "magic" service name Traefik uses for itself
         - "traefik.http.routers.traefik-dashboard.service=api@internal"
         - "traefik.http.services.traefik.loadbalancer.server.port=8080"
+        - "traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https"
         - "kuma.proxy.group.name=Proxy"
         - "kuma.traefik.http.name=Traefik API"
         - "kuma.traefik.http.url=http://traefik:8080"
