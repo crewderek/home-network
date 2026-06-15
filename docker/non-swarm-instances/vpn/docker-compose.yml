@@ -14,8 +14,8 @@ services:
 #          - HOST=${WG_HOST}
 #          - PASSWORD=${WG_PASSWORD}
           - PORT=51820
-    networks:
-      - vpn-internal-network
+#    networks:
+#      - vpn-internal-network
     volumes:
       - etc_wireguard:/etc/wireguard
       - /lib/modules:/lib/modules:ro
@@ -49,11 +49,11 @@ services:
         limits:
           memory: 256M
 
-networks:
-  vpn-internal-network:
-    driver: overlay
-
-    ipam:
-      driver: default
-      config:
-        - subnet: 10.42.42.0/24
+#networks:
+#  vpn-internal-network:
+#    driver: overlay
+#
+#    ipam:
+#      driver: default
+#      config:
+#        - subnet: 10.42.42.0/24
