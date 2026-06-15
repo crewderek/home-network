@@ -78,7 +78,7 @@ services:
       placement:
         constraints:
           - node.labels.ceph_mount == true
-#          - node.role == manager
+          - node.role == manager
           - node.labels.type != restricted
       replicas: 1
 
