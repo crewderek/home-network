@@ -40,6 +40,7 @@ services:
         # This line is key: it tells Traefik to look for the cert containing these domains
         - "traefik.http.routers.portainer.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.portainer.tls.domains[0].sans=*.${BASE_DOMAIN}"
+        - "traefik.http.middlewares.portainer-ssl-headers.headers.customrequestheaders.X-Forwarded-Proto=https"
 #        - "kuma.portainer-group.group.name=Automation"
         - "kuma.portainer.http.name=Portainer"
         - "kuma.portainer.http.url=https://portainer:9443"
