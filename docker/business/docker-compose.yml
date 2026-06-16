@@ -6,7 +6,7 @@ services:
 #    ports:
 #      - "5006:5006"
     volumes:
-      - /mnt/docker/actual-budget/data:/data
+      - ${ACTUAL_DIRECTORY}/data:/data
     networks:
       - business_network
       - proxy_private
@@ -46,7 +46,7 @@ services:
           memory: 512M
       placement:
         constraints:
-          - node.labels.docker_mount == true
+          - node.labels.ceph_mount == true
           - node.labels.type != restricted
 #volumes:
 #  n8n_data:
