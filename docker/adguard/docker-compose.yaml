@@ -14,8 +14,8 @@ services:
       - proxy_private
       - kuma_network
     volumes:
-      - /mnt/docker/adguard/config:/opt/adguardhome/conf
-      - /mnt/docker/adguard/work:/opt/adguardhome/work
+      - ${ADGUARD1_DIRECTORY}/config:/opt/adguardhome/conf
+      - ${ADGUARD1_DIRECTORY}/work:/opt/adguardhome/work
     ports:
       # Host mode ensures you see client IPs in the dashboard
       - target: 53
@@ -58,7 +58,8 @@ services:
       placement:
         constraints:
           # This ensures it ONLY runs on the labeled node
-          - node.labels.static_ip == 192.168.4.47
+          - node.labels.static_ip == ${ADGUARD_PRIMARY_IP}
+          - node.labels.ceph_mount == true
       restart_policy:
         condition: on-failure
 
@@ -75,8 +76,8 @@ services:
       - proxy_private
       - kuma_network
     volumes:
-      - /mnt/docker/adguard/config:/opt/adguardhome/conf
-      - /mnt/docker/adguard/work-secondary:/opt/adguardhome/work
+      - ${ADGUARD2_DIRECTORY}/config:/opt/adguardhome/conf
+      - ${ADGUARD2_DIRECTORY}/work:/opt/adguardhome/work
     ports:
       # Host mode ensures you see client IPs in the dashboard
       - target: 53
@@ -118,7 +119,8 @@ services:
       placement:
         constraints:
           # This ensures it ONLY runs on the labeled node
-          - node.labels.static_ip == 192.168.4.22
+          - node.labels.static_ip == ${ADGUARD_SECONDARY_IP}
+          - node.labels.ceph_mount == true
       restart_policy:
         condition: on-failure
 
