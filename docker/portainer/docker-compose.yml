@@ -19,7 +19,7 @@ services:
     ports:
       - "9443:9443"
     volumes:
-      - portainer_data:/data
+      - ${PORTAINER_DIRECTORY}:/data
     networks:
       - agent_network
       - dns_network
@@ -68,10 +68,10 @@ networks:
     external: true
     name: kuma_network
 
-volumes:
-  portainer_data:
-    driver: local
-    driver_opts:
-      type: nfs
-      o: "addr=${NFS_ADDRESS},nfsvers=4,nolock,soft,rw" # Replace with your NFS Server IP
-      device: ":${PORTAINER_NFS_DIRECTORY}"
+#volumes:
+#  portainer_data:
+#    driver: local
+#    driver_opts:
+#      type: nfs
+#      o: "addr=${NFS_ADDRESS},nfsvers=4,nolock,soft,rw" # Replace with your NFS Server IP
+#      device: ":${PORTAINER_NFS_DIRECTORY}"
