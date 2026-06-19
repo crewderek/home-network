@@ -18,7 +18,7 @@ services:
       - gitea-network
       - proxy_private
     volumes:
-      - gitea-data:/data:subpath=data
+      - ${GITEA_DIRECTORY}:/data
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
 #    ports:
@@ -48,7 +48,7 @@ services:
         - "kuma.git.http.parent_name=git-group"
       placement:
         constraints:
-          - node.labels.docker_mount == true
+          - node.labels.ceph_mount == true
           - node.labels.type != restricted
       replicas: 1
       restart_policy:
@@ -84,14 +84,14 @@ networks:
     external: true
     name: kuma_network
 
-volumes:
-  gitea-data:
-    driver: local
-    name: gitea-data-nfs
-    driver_opts:
-      type: nfs
-      o: "addr=${NFS_ADDRESS},nfsvers=3,nolock,soft,rw" # Replace with your NFS Server IP
-      device: ":${GITEA_NFS_DIRECTORY}"
+#volumes:
+#  gitea-data:
+#    driver: local
+#    name: gitea-data-nfs
+#    driver_opts:
+#      type: nfs
+#      o: "addr=${NFS_ADDRESS},nfsvers=3,nolock,soft,rw" # Replace with your NFS Server IP
+#      device: ":${GITEA_NFS_DIRECTORY}"
 
 secrets:
   db_password:
