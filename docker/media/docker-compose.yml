@@ -11,7 +11,7 @@ services:
       - TZ=America/Denver
     user: 1000:1000
     volumes:
-      - jellyseer_nfs:/app/config:subpath=config
+      - ${JELLYSEER_DIRECTORY}:/app
     deploy:
       labels:
         - "traefik.enable=true"
@@ -35,6 +35,7 @@ services:
       replicas: 1
       placement:
         constraints:
+          - node.labels.ceph_mount = true
           - node.labels.type != restricted
 
   audiobookshelf:
@@ -154,12 +155,12 @@ networks:
     external: true
     name: kuma_network
 
-volumes:
-#  jellyfin_cache:
+#volumes:
+##  jellyfin_cache:
+##    driver: local
+#  jellyseer_nfs:
 #    driver: local
-  jellyseer_nfs:
-    driver: local
-    driver_opts:
-      type: nfs
-      o: "addr=${NFS_ADDRESS},nfsvers=3,nolock,soft,rw"
-      device: ":${SEERR_CONF_NFS_DIRECTORY}"
+#    driver_opts:
+#      type: nfs
+#      o: "addr=${NFS_ADDRESS},nfsvers=3,nolock,soft,rw"
+#      device: ":${SEERR_CONF_NFS_DIRECTORY}"
