@@ -11,7 +11,7 @@ services:
       - TZ=America/Denver
     user: 1000:1000
     volumes:
-      - ${JELLYSEER_DIRECTORY}:/app
+      - ${JELLYSEER_DIRECTORY}:/app/config
     deploy:
       labels:
         - "traefik.enable=true"
