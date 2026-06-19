@@ -12,8 +12,8 @@ services:
     environment:
       - JELLYFIN_PublishedServerUrl="https://${JELLYFIN_SUBDOMAIN}.${BASE_DOMAIN}"
     volumes:
-      - /opt/jellyfin/config:/config
-      - /opt/jellyfin/cache:/cache
+      - ${JELLYFIN_DIRECTORY}/config:/config
+      - ${JELLYFIN_DIRECTORY}/cache:/cache
       - /mnt/video/data/movie:/media/movie:ro
       - /mnt/video/data/shows:/media/shows:ro
     devices:
