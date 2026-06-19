@@ -45,7 +45,7 @@ services:
   penpot-backend:
     image: penpotapp/backend:2.14.3
     volumes:
-      - /mnt/docker/penpot/assets:/opt/data/assets
+      - ${PENPOT_DIRECTORY}/assets:/opt/data/assets
     depends_on:
       - db
       - redis
@@ -69,7 +69,7 @@ services:
         condition: on-failure
       placement:
         constraints:
-          - node.labels.docker_mount == true
+          - node.labels.ceph_mount == true
           - node.labels.type != restricted
 
   penpot-exporter:
