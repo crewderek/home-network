@@ -2,7 +2,7 @@ services:
   homeassistant:
     image: "ghcr.io/home-assistant/home-assistant:2026.3"
     volumes:
-      - /mnt/docker/home-assistant/config:/config
+      - ${HOME_ASSISTANT_DIRECTORY}/config:/config
       - /etc/localtime:/etc/localtime:ro
 #    ports:
 #      - "8123:8123"
@@ -32,7 +32,7 @@ services:
         - "kuma.homeassistant.http.parent_name=smart-home"
       placement:
         constraints:
-          - node.labels.docker_mount == true
+          - node.labels.ceph_mount == true
           - node.labels.type != restricted
       mode: replicated
       replicas: 1
@@ -53,12 +53,16 @@ services:
       - "1883:1883"
 #      - "9001:9001"
     volumes:
-      - mosquitto_nfs:/mosquitto
+      - ${MOSQUITTO_DIRECTORY}:/mosquitto
 #      - mosquitto_nfs:/mosquitto/data:subpath=data
 #      - mosquitto_nfs:/mosquitto/log:subpath=log
     environment:
       - TZ=America/Denver
     deploy:
+      placement:
+        constraints:
+          - node.labels.ceph_mount == true
+          - node.labels.type != restricted
       labels:
         - "traefik.enable=true"
         # Bind this service to the MQTT entrypoint created in Traefik
@@ -118,10 +122,10 @@ networks:
 
 
 
-volumes:
-  mosquitto_nfs:
-    driver: local
-    driver_opts:
-      type: nfs
-      o: "addr=${NFS_ADDRESS},nfsvers=3,nolock,soft,rw"
-      device: ":${MOSQUITTO_NFS_DIRECTORY}"
+#volumes:
+#  mosquitto_nfs:
+#    driver: local
+#    driver_opts:
+#      type: nfs
+#      o: "addr=${NFS_ADDRESS},nfsvers=3,nolock,soft,rw"
+#      device: ":${MOSQUITTO_NFS_DIRECTORY}"
