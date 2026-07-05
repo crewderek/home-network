@@ -1,6 +1,6 @@
 services:
   homeassistant:
-    image: "ghcr.io/home-assistant/home-assistant:2026.3"
+    image: "ghcr.io/home-assistant/home-assistant:${HOME_ASSISTANT_VERSION}"
     volumes:
       - ${HOME_ASSISTANT_DIRECTORY}/config:/config
       - /etc/localtime:/etc/localtime:ro
