@@ -4,8 +4,8 @@ services:
     volumes:
       - ${HOME_ASSISTANT_DIRECTORY}/config:/config
       - /etc/localtime:/etc/localtime:ro
-#    ports:
-#      - "8123:8123"
+    ports:
+      - "5683:5683" #Shelly ColoT port
     networks:
       - smart-home-network
       - proxy_private
