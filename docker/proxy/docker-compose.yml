@@ -77,7 +77,7 @@ services:
           - node.labels.ceph_mount == true
           - node.role == manager
           - node.labels.type != restricted
-      replicas: 1
+      replicas: 2
 
 
   traefik-manager:
