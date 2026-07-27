@@ -31,11 +31,13 @@ services:
       #  MQTT
       - "--entrypoints.mqtt.address=:1883"
     environment:
-      - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
-      - TRAEFIK_CERTIFICATESRESOLVERS_MYDNSCHALLENGE_ACME_EMAIL=${ACME_EMAIL}
+      - "CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}"
+      - "TRAEFIK_CERTIFICATESRESOLVERS_MYDNSCHALLENGE_ACME_EMAIL=${ACME_EMAIL}"
       # This line is key: it tells Traefik to look for the cert containing these domains
       - "TRAEFIK_CERTIFICATESRESOLVERS_MYDNSCHALLENGE_ACME_DOMAINS_0_MAIN=${DOMAIN_NAME}"
       - "TRAEFIK_CERTIFICATESRESOLVERS_MYDNSCHALLENGE_ACME_DOMAINS_0_SANS=*.${DOMAIN_NAME}"
+      - "TRAEFIK_CERTIFICATESRESOLVERS_MYDNSCHALLENGE_ACME_DOMAINS_1_MAIN=${SECONDARY_DOMAIN_NAME}"
+      - "TRAEFIK_CERTIFICATESRESOLVERS_MYDNSCHALLENGE_ACME_DOMAINS_1_SANS=*.${SECONDARY_DOMAIN_NAME}"
     ports:
       #      - "9888:80"
       #      - "443:443"
@@ -56,6 +58,7 @@ services:
     networks:
       - proxy_private
       - kuma_network
+      - secondary_proxy_private
 #      - proxy_public
     #      - internal-only-torrent-network
     deploy:
@@ -149,3 +152,7 @@ networks:
   kuma_network:
     external: true
     name: kuma_network
+  secondary_proxy_private:
+    driver: overlay
+    attachable: true
+    name: ${SECONDARY_PROXY_NETWORK}
