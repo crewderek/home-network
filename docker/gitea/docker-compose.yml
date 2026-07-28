@@ -54,6 +54,36 @@ services:
       restart_policy:
         condition: on-failure
 
+  gitea_runner:
+    image: gitea/act_runner:latest
+    environment:
+      - GITEA_INSTANCE_URL=https://${SUBDOMAIN}.${BASE_DOMAIN}
+      - GITEA_RUNNER_NAME=swarm-runner
+    entrypoint:
+      - sh
+      - -c
+      - |
+        export GITEA_RUNNER_REGISTRATION_TOKEN=$(cat /run/secrets/runner_token)
+        exec /usr/local/bin/act_runner daemon
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${RUNNER_DIRECTORY}:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    secrets:
+      - runner_token
+    networks:
+      - gitea-network
+    depends_on:
+      - gitea_app
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.type != restricted
+
   gitea_db:
     image: postgres:18.3-alpine
     restart: always
@@ -97,3 +127,6 @@ secrets:
   db_password:
     external: true
     name: gitea_db_password
+  runner_token:
+    external: true
+    name: gitea_runner_token
