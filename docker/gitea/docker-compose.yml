@@ -11,9 +11,6 @@ services:
       - GITEA__database__NAME=gitea
       - GITEA__database__USER=gitea
       - GITEA__database__PASSWD_FILE=/run/secrets/db_password
-    restart: always
-    depends_on:
-      - gitea_db
     networks:
       - gitea-network
       - proxy_private
@@ -62,9 +59,7 @@ services:
     entrypoint:
       - sh
       - -c
-      - |
-        export GITEA_RUNNER_REGISTRATION_TOKEN=$(cat /run/secrets/runner_token)
-        exec /usr/local/bin/act_runner daemon
+      - "export GITEA_RUNNER_REGISTRATION_TOKEN=$$(cat /run/secrets/runner_token) && exec /usr/local/bin/act_runner daemon"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ${RUNNER_DIRECTORY}:/data
