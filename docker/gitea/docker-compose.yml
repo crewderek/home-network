@@ -82,6 +82,7 @@ services:
         condition: on-failure
       placement:
         constraints:
+          - node.labels.ceph_mount == true
           - node.labels.type != restricted
 
   gitea_db:
