@@ -74,8 +74,6 @@ services:
       - runner_token
     networks:
       - gitea-network
-    depends_on:
-      - gitea_app
     deploy:
       replicas: 1
       restart_policy:
@@ -87,7 +85,6 @@ services:
 
   gitea_db:
     image: postgres:18.3-alpine
-    restart: always
     environment:
       - POSTGRES_USER=gitea
       - POSTGRES_PASSWORD_FILE=/run/secrets/db_password
