@@ -82,6 +82,19 @@ services:
           - node.labels.ceph_mount == true
           - node.labels.type != restricted
 
+  gitea-oidc-tunnel:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate run --token ${GITEA_OIDC_TUNNEL_TOKEN}
+    networks:
+      - proxy_private
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.type != restricted
+
   gitea_db:
     image: postgres:18.3-alpine
     environment:
