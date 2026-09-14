@@ -5,7 +5,7 @@ services:
     image: traefik:v3.6.13
     command:
       # Enable Docker Swarm mode
-      - "--log.level=DEBUG"
+      - "--log.level=INFO"
       - "--providers.swarm.endpoint=unix:///var/run/docker.sock"
       - "--providers.swarm.watch=true"
       - "--providers.docker.exposedbydefault=false"
@@ -50,6 +50,11 @@ services:
         published: 443
         protocol: udp
         mode: ingress
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ${TRAEFIK_MOUNT}/dynamic:/etc/traefik/dynamic:ro
@@ -114,7 +119,7 @@ services:
         #        # Critical for Swarm: Specify the internal container port
         - "traefik.http.services.traefik-manager.loadbalancer.server.port=5000"
         #        # Ensure Traefik uses the correct network for routing
-        - "traefik.docker.network=proxy_private"
+        - "traefik.swarm.network=proxy_private"
         # This line is key: it tells Traefik to look for the cert containing these domains
         - "traefik.http.routers.traefik-manager.tls.domains[0].main=${BASE_DOMAIN}"
         - "traefik.http.routers.traefik-manager.tls.domains[0].sans=*.${BASE_DOMAIN}"
