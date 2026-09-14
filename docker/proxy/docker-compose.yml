@@ -81,6 +81,9 @@ services:
           - node.role == manager
           - node.labels.type != restricted
       replicas: 1
+      update_config:
+        order: start-first
+        failure_action: rollback
 
 
   traefik-manager:
