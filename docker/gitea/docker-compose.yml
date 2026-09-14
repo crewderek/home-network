@@ -14,6 +14,7 @@ services:
       - GITEA__server__SSH_DOMAIN=${BASE_DOMAIN}
       - GITEA__server__SSH_PORT=2222
       - GITEA__server__START_SSH_SERVER=false
+      - GITEA__actions__ENABLED=true
     networks:
       - gitea-network
       - proxy_private
