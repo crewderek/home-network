@@ -11,7 +11,7 @@ services:
       - GITEA__database__NAME=gitea
       - GITEA__database__USER=gitea
       - GITEA__database__PASSWD_FILE=/run/secrets/db_password
-      - GITEA__server__SSH_DOMAIN=${BASE_DOMAIN}
+      - GITEA__server__SSH_DOMAIN=git.${BASE_DOMAIN}
       - GITEA__server__SSH_PORT=2222
       - GITEA__server__START_SSH_SERVER=false
       - GITEA__actions__ENABLED=true
@@ -83,18 +83,18 @@ services:
           - node.labels.ceph_mount == true
           - node.labels.type != restricted
 
-  gitea-oidc-tunnel:
-    image: cloudflare/cloudflared:latest
-    command: tunnel --no-autoupdate run --token ${GITEA_OIDC_TUNNEL_TOKEN}
-    networks:
-      - proxy_private
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-      placement:
-        constraints:
-          - node.labels.type != restricted
+#  gitea-oidc-tunnel:
+#    image: cloudflare/cloudflared:latest
+#    command: tunnel --no-autoupdate run --token ${GITEA_OIDC_TUNNEL_TOKEN}
+#    networks:
+#      - proxy_private
+#    deploy:
+#      replicas: 1
+#      restart_policy:
+#        condition: on-failure
+#      placement:
+#        constraints:
+#          - node.labels.type != restricted
 
   gitea_db:
     image: postgres:18.3-alpine
