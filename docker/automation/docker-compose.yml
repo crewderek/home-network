@@ -13,6 +13,7 @@ services:
       - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
       - NODE_ENV=production
       - GENERIC_TIMEZONE=America/Denver
+      - N8N_TRUST_PROXY=true
 #      - NODES_EXCLUDE=[]
     volumes:
       - ${N8N_DIRECTORY}:/home/node/.n8n
