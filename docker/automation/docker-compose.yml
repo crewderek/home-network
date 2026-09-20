@@ -15,7 +15,7 @@ services:
       - GENERIC_TIMEZONE=America/Denver
 #      - NODES_EXCLUDE=[]
     volumes:
-      - ${N8N_DIRECTORY}:/home/node/.local/share/n8n
+      - ${N8N_DIRECTORY}:/home/node/.n8n
 #    ports:
 #      - target: 5678
 #        published: 5678
