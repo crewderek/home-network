@@ -8,6 +8,9 @@ services:
       - kuma_network
     environment:
       - N8N_HOST=automate.derek-crew.com
+      - N8N_EDITOR_BASE_URL=https://${N8N_SUBDOMAIN}.${BASE_DOMAIN}
+      - WEBHOOK_URL=https://${N8N_SUBDOMAIN}.${BASE_DOMAIN}
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
       - NODE_ENV=production
       - GENERIC_TIMEZONE=America/Denver
 #      - NODES_EXCLUDE=[]
