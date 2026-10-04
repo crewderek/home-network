@@ -15,34 +15,42 @@ services:
       - OPENVPN_USER=${OPENVPN_USER}
       - OPENVPN_PASSWORD=${OPENVPN_PASSWORD}
       - SERVER_COUNTRIES=${GLUETUN_SERVER_COUNTRIES}
-#      - SHADOWSOCKS=on
-#      - SHADOWSOCKS_LOG=on
-#      - SHADOWSOCKS_LISTENING_ADDRESS=":8388"
-#      - HTTPPROXY=on # Enables the built-in HTTP proxy
-#      - HTTPPROXY_LISTENING_ADDRESS=:8888
-#      - DNS_ADDRESS=1.1.1.1
-#      - DNS_UPSTREAM_RESOLVER_TYPE=DoT
-#    networks:
-#      - public-torrent-network
-#      - internal-only-torrent-network
+    #      - SHADOWSOCKS=on
+    #      - SHADOWSOCKS_LOG=on
+    #      - SHADOWSOCKS_LISTENING_ADDRESS=":8388"
+    #      - HTTPPROXY=on # Enables the built-in HTTP proxy
+    #      - HTTPPROXY_LISTENING_ADDRESS=:8888
+    #      - DNS_ADDRESS=1.1.1.1
+    #      - DNS_UPSTREAM_RESOLVER_TYPE=DoT
+    #    networks:
+    #      - public-torrent-network
+    #      - internal-only-torrent-network
     networks:
-#      - vpn-network
+      #      - vpn-network
       - proxy-private
-#    ports:
-#      - 8080:8080
+    #    ports:
+    #      - 8080:8080
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: always
-#    deploy:
-#      replicas: 1
-#      placement:
-#        constraints:
-##          - node.labels.docker_mount == true
-#          - node.labels.type != restricted
+  #    deploy:
+  #      replicas: 1
+  #      placement:
+  #        constraints:
+  ##          - node.labels.docker_mount == true
+  #          - node.labels.type != restricted
 
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:5.1.4
     container_name: qbittorrent
+    labels:
+      - autoheal=true
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- -T 5 https://ipinfo.io/ip || exit 1" ]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
     environment:
       - PUID=1000
       - PGID=1000
@@ -84,11 +92,11 @@ services:
 #          - node.labels.type != restricted
 
 networks:
-#  vpn-network:
-#    attachable: true
-#    driver: bridge
-#    driver_opts:
-#      com.docker.network.driver.mtu: "1200"
+  #  vpn-network:
+  #    attachable: true
+  #    driver: bridge
+  #    driver_opts:
+  #      com.docker.network.driver.mtu: "1200"
   proxy-private:
     external: true
     name: proxy_private
