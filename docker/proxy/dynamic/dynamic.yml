@@ -1,0 +1,169 @@
+http:
+  routers:
+    opensprinkler-router:
+      rule: "Host(`sprinkler.derek-crew.com`)"
+      service: opensprinkler-service
+      entryPoints:
+        - websecure
+      tls:
+        domains:
+          - main: "derek-crew.com"
+            sans:
+              - "*.derek-crew.com"
+        certResolver: mydnschallenge # Change this to your actual resolver name
+    proxmox-router:
+      rule: "Host(`proxmox.derek-crew.com`)"
+      service: proxmox-service
+      entryPoints:
+        - websecure
+      tls:
+        domains:
+          - main: "derek-crew.com"
+            sans:
+              - "*.derek-crew.com"
+        certResolver: mydnschallenge # Change this to your actual resolver name
+    qbittorrent-router:
+      rule: Host(`torrent.derek-crew.com`)
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: letsencrypt
+      service: qbittorrent-router-service
+      middlewares:
+        - redirect-web-to-websecure@internal
+    truenas-router:
+      rule: "Host(`truenas.derek-crew.com`)"
+      service: truenas-service
+      entryPoints:
+        - websecure
+      tls:
+        domains:
+          - main: "derek-crew.com"
+            sans:
+              - "*.derek-crew.com"
+        certResolver: mydnschallenge # Change this to your actual resolver name
+    unifi-router:
+      rule: "Host(`network.derek-crew.com`)"
+      service: unifi-service
+      entryPoints:
+        - websecure
+      tls:
+        domains:
+          - main: "derek-crew.com"
+            sans:
+              - "*.derek-crew.com"
+        certResolver: mydnschallenge # Change this to your actual resolver name
+    vpn-router:
+      rule: "Host(`vpn.derek-crew.com`)"
+      service: vpn-service
+      entryPoints:
+        - websecure
+      tls:
+        domains:
+          - main: "derek-crew.com"
+            sans:
+              - "*.derek-crew.com"
+        certResolver: mydnschallenge # Change this to your actual resolver name
+    zwave-router:
+      rule: "Host(`zwave.derek-crew.com`)"
+      service: zwave-service
+      entryPoints:
+        - websecure
+      tls:
+        domains:
+          - main: "derek-crew.com"
+            sans:
+              - "*.derek-crew.com"
+        certResolver: mydnschallenge # Change this to your actual resolver name
+    zigbee-router:
+      rule: "Host(`zigbee.derek-crew.com`)"
+      service: zigbee-service
+      entryPoints:
+        - websecure
+      tls:
+        domains:
+          - main: "derek-crew.com"
+            sans:
+              - "*.derek-crew.com"
+        certResolver: mydnschallenge # Change this to your actual resolver name
+
+
+    traefik-manager:
+      rule: Host(`https://manager.derek-crew.com/`)
+      entryPoints:
+        - websecure
+      service: traefik-manager
+      tls:
+        certResolver: letsencrypt
+    jellyfin:
+      rule: Host(`media.derek-crew.com`)
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: letsencrypt
+      service: jellyfin-service
+    ceph:
+      rule: Host(`ceph.derek-crew.com`)
+      entryPoints:
+        - websecure
+      service: ceph-service
+      tls:
+        certResolver: letsencrypt
+      middlewares:
+        - redirect-web-to-websecure@internal
+  services:
+    opensprinkler-service:
+      loadBalancer:
+        servers:
+          # Replace with the actual IP and Portainer port (usually 9000 or 9443)
+          - url: "http://192.168.2.246"
+    proxmox-service:
+      loadBalancer:
+        servers:
+          # Replace with the actual IP and Portainer port (usually 9000 or 9443)
+          - url: "https://192.168.4.5:8006"
+    unifi-service:
+      loadBalancer:
+        servers:
+          # Replace with the actual IP and Portainer port (usually 9000 or 9443)
+          - url: "https://192.168.1.1:443"
+    truenas-service:
+      loadBalancer:
+        servers:
+          # Replace with the actual IP and Portainer port (usually 9000 or 9443)
+          - url: "http://192.168.1.5:80"
+    vpn-service:
+      loadBalancer:
+        servers:
+          # Replace with the actual IP and Portainer port (usually 9000 or 9443)
+          - url: "http://wg-easy:51821"
+    zwave-service:
+      loadBalancer:
+        servers:
+          # Replace with the actual IP and Portainer port (usually 9000 or 9443)
+          - url: "http://zwave-js-ui:8091"
+    zigbee-service:
+      loadBalancer:
+        servers:
+          # Replace with the actual IP and Portainer port (usually 9000 or 9443)
+          - url: "http://192.168.1.165:8080"
+    traefik-manager:
+      loadBalancer:
+        servers:
+          - url: http://traefik-manager:5000
+    jellyfin-service:
+      loadBalancer:
+        servers:
+          - url: http://jellyfin:8096
+    qbittorrent-router-service:
+      loadBalancer:
+        servers:
+          - url: http://gluetun:8080
+        passHostHeader: false
+    ceph-service:
+      loadBalancer:
+        servers:
+          - url: http://192.168.4.23:8081
+  serversTransports:
+    torrents-transport:
+      insecureSkipVerify: true
