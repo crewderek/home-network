@@ -5,14 +5,12 @@ services:
     image: postgres:18.3-alpine
     environment:
       - POSTGRES_USER=vikunja
-      - POSTGRES_PASSWORD_FILE=/run/secrets/db_password
+      - POSTGRES_PASSWORD=${VIKUNJA_DATABASE_PASSWORD}
       - POSTGRES_DB=vikunja
     volumes:
       - ${VIKUNJA_DIRECTORY}/postgres:/var/lib/postgresql
     networks:
       - vikunja_network
-    secrets:
-      - db_password
     deploy:
       replicas: 1
       restart_policy:
@@ -28,30 +26,23 @@ services:
       - VIKUNJA_DATABASE_HOST=vikunja_db:5432
       - VIKUNJA_DATABASE_DATABASE=vikunja
       - VIKUNJA_DATABASE_USER=vikunja
+      - VIKUNJA_DATABASE_PASSWORD=${VIKUNJA_DATABASE_PASSWORD}
       - VIKUNJA_REDIS_ENABLED=true
       - VIKUNJA_REDIS_HOST=vikunja_redis:6379
       - VIKUNJA_SERVICE_FRONTENDURL=https://${VIKUNJA_SUBDOMAIN}.${BASE_DOMAIN}
+      - VIKUNJA_SERVICE_JWTSECRET=${VIKUNJA_JWT_SECRET}
       - VIKUNJA_AUTH_OPENID_ENABLED=true
       - VIKUNJA_AUTH_OPENID_REDIRECTURL=https://${VIKUNJA_SUBDOMAIN}.${BASE_DOMAIN}/auth/openid/authentik
       - VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_NAME=authentik
       - VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_AUTHURL=${AUTHENTIK_URL}/application/o/vikunja/
       - VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_CLIENTID=${VIKUNJA_OIDC_CLIENT_ID}
-    entrypoint: >
-      /bin/sh -c "
-      export VIKUNJA_DATABASE_PASSWORD=$$(cat /run/secrets/db_password);
-      export VIKUNJA_SERVICE_JWTSECRET=$$(cat /run/secrets/jwt_secret);
-      export VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_CLIENTSECRET=$$(cat /run/secrets/oidc_client_secret);
-      exec /app/vikunja/vikunja"
+      - VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_CLIENTSECRET=${VIKUNJA_OIDC_CLIENT_SECRET}
     volumes:
       - ${VIKUNJA_DIRECTORY}/files:/app/vikunja/files
     networks:
       - vikunja_network
       - proxy_private
       - kuma_network
-    secrets:
-      - db_password
-      - jwt_secret
-      - oidc_client_secret
     deploy:
       labels:
         - "traefik.enable=true"
@@ -87,17 +78,6 @@ services:
       placement:
         constraints:
           - node.labels.type != restricted
-
-secrets:
-  db_password:
-    external: true
-    name: vikunja_db_password
-  jwt_secret:
-    external: true
-    name: vikunja_jwt_secret
-  oidc_client_secret:
-    external: true
-    name: vikunja_oidc_client_secret
 
 networks:
   vikunja_network:
