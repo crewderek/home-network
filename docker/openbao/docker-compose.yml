@@ -44,28 +44,28 @@ services:
 
   openbao-unseal:
     image: alpine/curl:latest
-    # Polls every 30s; unseals if sealed. Handles missing secret gracefully (pre-init state).
+    # Polls every 30s; unseals if sealed. No-ops if OPENBAO_UNSEAL_KEY is blank (pre-init state).
+    # Set OPENBAO_UNSEAL_KEY in Portainer stack env after running 'bao operator init'.
     command: >
       sh -c '
         while true; do
-          if [ ! -f /run/secrets/openbao_unseal_key ]; then
+          if [ -z "$$OPENBAO_UNSEAL_KEY" ]; then
             sleep 30;
             continue;
           fi;
           SEALED=$$(curl -sf http://openbao:8200/v1/sys/health | grep -c "\"sealed\":true" || true);
           if [ "$$SEALED" -gt 0 ]; then
-            KEY=$$(cat /run/secrets/openbao_unseal_key);
             curl -sf -X PUT http://openbao:8200/v1/sys/unseal \
               -H "Content-Type: application/json" \
-              -d "{\"key\":\"$$KEY\"}";
+              -d "{\"key\":\"$$OPENBAO_UNSEAL_KEY\"}";
           fi;
           sleep 30;
         done
       '
+    environment:
+      - OPENBAO_UNSEAL_KEY=${OPENBAO_UNSEAL_KEY:-}
     networks:
       - openbao-internal
-    secrets:
-      - openbao_unseal_key
     deploy:
       replicas: 1
       placement:
@@ -78,10 +78,6 @@ services:
 configs:
   openbao_config:
     file: ./config/openbao.hcl
-
-secrets:
-  openbao_unseal_key:
-    external: true
 
 networks:
   openbao-internal:
