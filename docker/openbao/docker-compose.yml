@@ -12,12 +12,9 @@ services:
       - kuma_network
     volumes:
       - ${OPENBAO_DATA_DIRECTORY}:/vault/data
-    configs:
-      - source: openbao_config
-        target: /vault/config/openbao.hcl
-        mode: 0444
     environment:
       - BAO_API_ADDR=https://${OPENBAO_SUBDOMAIN}.${BASE_DOMAIN}
+      - BAO_LOCAL_CONFIG={"ui":true,"storage":{"raft":{"path":"/vault/data","node_id":"openbao-1"}},"listener":[{"tcp":{"address":"0.0.0.0:8200","tls_disable":1}}]}
     deploy:
       labels:
         - "traefik.enable=true"
@@ -74,10 +71,6 @@ services:
           - node.labels.type != restricted
       restart_policy:
         condition: on-failure
-
-configs:
-  openbao_config:
-    file: ./config/openbao.hcl
 
 networks:
   openbao-internal:
