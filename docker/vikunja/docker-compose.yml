@@ -28,17 +28,20 @@ services:
       - VIKUNJA_DATABASE_HOST=vikunja_db:5432
       - VIKUNJA_DATABASE_DATABASE=vikunja
       - VIKUNJA_DATABASE_USER=vikunja
-      - VIKUNJA_DATABASE_PASSWORD_FILE=/run/secrets/db_password
       - VIKUNJA_REDIS_ENABLED=true
       - VIKUNJA_REDIS_HOST=vikunja_redis:6379
       - VIKUNJA_SERVICE_FRONTENDURL=https://${VIKUNJA_SUBDOMAIN}.${BASE_DOMAIN}
-      - VIKUNJA_SERVICE_JWTSECRET_FILE=/run/secrets/jwt_secret
       - VIKUNJA_AUTH_OPENID_ENABLED=true
       - VIKUNJA_AUTH_OPENID_REDIRECTURL=https://${VIKUNJA_SUBDOMAIN}.${BASE_DOMAIN}/auth/openid/authentik
       - VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_NAME=authentik
       - VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_AUTHURL=${AUTHENTIK_URL}/application/o/vikunja/
       - VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_CLIENTID=${VIKUNJA_OIDC_CLIENT_ID}
-      - VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_CLIENTSECRET_FILE=/run/secrets/oidc_client_secret
+    entrypoint: >
+      /bin/sh -c "
+      export VIKUNJA_DATABASE_PASSWORD=$$(cat /run/secrets/db_password);
+      export VIKUNJA_SERVICE_JWTSECRET=$$(cat /run/secrets/jwt_secret);
+      export VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_CLIENTSECRET=$$(cat /run/secrets/oidc_client_secret);
+      exec /app/vikunja/vikunja"
     volumes:
       - ${VIKUNJA_DIRECTORY}/files:/app/vikunja/files
     networks:
